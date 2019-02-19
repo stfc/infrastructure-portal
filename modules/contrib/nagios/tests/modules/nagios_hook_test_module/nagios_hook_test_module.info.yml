@@ -1,0 +1,12 @@
+name: Nagios Hook Test Module
+type: module
+# core: 8.x
+package: Custom
+dependencies:
+  - nagios:nagios
+
+# Information added by Drupal.org packaging script on 2018-12-20
+version: '8.x-1.5'
+core: '8.x'
+project: 'nagios'
+datestamp: 1545299289

@@ -1,0 +1,25 @@
+<?php
+
+use Drupal\business_rules\Entity\Action;
+
+/**
+ * Update the email actions to allow HTML.
+ */
+function business_rules_update_8101(&$sandbox) {
+  $actions = Action::loadMultiple();
+  /** @var \Drupal\business_rules\Entity\Action $action */
+  foreach ($actions as $key => $action) {
+    if ($action->getType() == 'send_email') {
+      $old_body = $action->getSettings('body');
+      if (!is_array($old_body)) {
+        $new_body = [
+          'format' => 'full_html',
+          'value' => $old_body,
+        ];
+
+        $action->setSetting('body', $new_body);
+        $action->save();
+      }
+    }
+  }
+}
