@@ -61,7 +61,6 @@
 
 .navbar.navbar-default.container{
     background: url(/sites/default/files/ukri4colourbanner.svg) no-repeat bottom center;
-  	background-size: contain;
 }
 
 .col-sm-12 .form--inline.form-inline.clearfix{
@@ -74,6 +73,12 @@
 	display:flex;
     justify-content: flex-start;
 
+}
+
+#navbar > div.navbar-header > div > a.name.navbar-brand{
+	font-size: 3em;
+	margin-top: -20px;
+    color:red;
 }
 
 @media (min-width:770px){
@@ -121,6 +126,11 @@
 
   .menu.menu--main.nav.navbar-nav :last-child{
     border-right: 0px;
+  }
+  
+  #navbar > div.navbar-header > div > a.name.navbar-brand{
+    margin-top: 0px;
+	padding-top:1em;
   }
   
 }
@@ -383,11 +393,15 @@ a:focus {
 	background-color:#8c4799;
 }
 
-#navbar > div.navbar-header > div > a.name.navbar-brand{
-	font-size: 3em;
-  padding-top:1em;
-    color:red;
-}
+
 
 .navbar-default .navbar-nav>li>a{
 	color:#1D4F91;}
+
+.contextual-region.rii.full.clearfix .field--label + .field--item{
+	padding:8px;
+}
+
+.navbar-toggle{
+    background-color: #1D4F91;
+}
