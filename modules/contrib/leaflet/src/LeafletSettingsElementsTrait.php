@@ -5,6 +5,8 @@ namespace Drupal\leaflet;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url as CoreUrl;
 use Drupal\views\Plugin\views\ViewsPluginInterface;
+use Drupal\Core\Url;
+use Drupal\Component\Serialization\Json;
 
 /**
  * Class GeofieldMapFieldTrait.
@@ -47,6 +49,53 @@ trait LeafletSettingsElementsTrait {
    *
    * @var \Drupal\Core\Utility\LinkGeneratorInterface $this->link
    */
+
+  /**
+   * Get the Default Settings.
+   *
+   * @return array
+   *   The default settings.
+   */
+  public static function getDefaultSettings() {
+    return [
+      'multiple_map' => 0,
+      'leaflet_map' => 'OSM Mapnik',
+      'height' => 400,
+      'hide_empty_map' => 0,
+      'disable_wheel' => 0,
+      'fullscreen_control' => 1,
+      'reset_map' => [
+        'control' => 0,
+        'position' => 'topright',
+      ],
+      'popup' => FALSE,
+      'popup_content' => '',
+      'map_position' => [
+        'force' => 0,
+        'center' => [
+          'lat' => 0,
+          'lon' => 0,
+        ],
+        'zoom' => 12,
+        'minZoom' => 1,
+        'maxZoom' => 18,
+      ],
+      'icon' => [
+        'iconUrl' => '',
+        'iconSize' => ['x' => NULL, 'y' => NULL],
+        'iconAnchor' => ['x' => NULL, 'y' => NULL],
+        'shadowUrl' => '',
+        'shadowSize' => ['x' => NULL, 'y' => NULL],
+        'shadowAnchor' => ['x' => NULL, 'y' => NULL],
+        'popupAnchor' => ['x' => NULL, 'y' => NULL],
+      ],
+      'leaflet_markercluster' => [
+        'control' => 0,
+        'options' => '{"spiderfyOnMaxZoom":true,"showCoverageOnHover":true,"removeOutsideVisibleBounds": false}',
+      ],
+      'path' => '{"color":"#3388ff","opacity":"1.0","stroke":true,"weight":3,"fill":"depends","fillColor":"*","fillOpacity":"0.2"}',
+    ];
+  }
 
   /**
    * Generate the Leaflet Map General Settings.
@@ -100,6 +149,15 @@ trait LeafletSettingsElementsTrait {
       '#default_value' => $settings['disable_wheel'],
       '#return_value' => 1,
     ];
+
+    $elements['fullscreen_control'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Fullscreen Control'),
+      '#description' => $this->t('Enable the Fullscreen View of the Map.'),
+      '#default_value' => $settings['fullscreen_control'],
+      '#return_value' => 1,
+    ];
+
   }
 
   /**
@@ -223,6 +281,8 @@ trait LeafletSettingsElementsTrait {
    */
   protected function generateIconFormElement(array $icon_options) {
 
+    $icon_url_description = $this->t('Can be an absolute or relative URL.<br><b>Note: </b> Using Tokens it is possible to dynamically define the Marker Icon output, with the composition of Marker Icon paths including entity properties or fields values.');
+
     $element = [
       '#type' => 'fieldset',
       '#title' => $this->t('Map Icon'),
@@ -235,33 +295,33 @@ trait LeafletSettingsElementsTrait {
 
     $element['iconUrl'] = [
       '#title' => $this->t('Icon URL'),
-      '#description' => $this->t('Can be an absolute or relative URL.'),
+      '#description' => $icon_url_description,
       '#type' => 'textfield',
-      '#maxlength' => 999,
+      '#size' => 125,
       '#default_value' => isset($icon_options['iconUrl']) ? $icon_options['iconUrl'] : NULL,
     ];
 
     $element['shadowUrl'] = [
       '#title' => $this->t('Icon Shadow URL'),
-      '#description' => $this->t('Can be an absolute or relative URL.'),
+      '#description' => $icon_url_description,
       '#type' => 'textfield',
-      '#maxlength' => 999,
+      '#size' => 125,
       '#default_value' => isset($icon_options['shadowUrl']) ? $icon_options['shadowUrl'] : NULL,
     ];
 
     if (method_exists($this, 'getProvider') && $this->getProvider() == 'leaflet_views') {
+      $twig_link = $this->link->generate('Twig', Url::fromUri('http://twig.sensiolabs.org/documentation', [
+        'absolute' => TRUE,
+        'attributes' => ['target' => 'blank'],
+      ])
+      );
 
-      $icon_url_description = $this->t('Can be an absolute or relative URL. You may include <a href="@url" target="_blank">Twig</a>. You may enter data from this view as per the "Replacement patterns" below.<br><b>Note: </b> Using Tokens it is possible to dynamically define the Marker Icon output, with the composition of Marker Icon paths including entity properties or fields values.', [
-        '@url' => CoreUrl::fromUri('http://twig.sensiolabs.org/documentation')
-          ->toString(),
+      $icon_url_description .= '<br>' . $this->t('You may include @twig_link. You may enter data from this view as per the "Replacement patterns" below.', [
+        '@twig_link' => $twig_link,
       ]);
 
       $element['iconUrl']['#description'] = $icon_url_description;
-      $element['iconUrl']['#type'] = "textarea";
-
       $element['shadowUrl']['#description'] = $icon_url_description;
-      $element['shadowUrl']['#type'] = "textarea";
-
 
       // Setup the tokens for views fields.
       // Code is snatched from Drupal\views\Plugin\views\field\FieldPluginBase.
@@ -399,6 +459,32 @@ trait LeafletSettingsElementsTrait {
   }
 
   /**
+   * Set Map Geometries Options Element.
+   *
+   * @param array $element
+   *   The Form element to alter.
+   * @param array $settings
+   *   The Form Settings.
+   */
+  protected function setMapPathOptionsElement(array &$element, array $settings) {
+
+    $element['path'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Path Geometries Options'),
+      '#rows' => 3,
+      '#description' => $this->t('Set here options that will be applied to the rendering of Map Path Geometries (Lines & Polylines, Polygons, Multipolygons, etc.).<br>Refer to the @polygons_documentation.<br>Note: If empty the default Leaflet path style, or the one choosen and defined in leaflet.api/hook_leaflet_map_info, will be used.', [
+        '@polygons_documentation' => $this->link->generate($this->t('Leaflet Path Documentation'), Url::fromUri('https://leafletjs.com/reference-1.0.3.html#path', [
+          'absolute' => TRUE,
+          'attributes' => ['target' => 'blank'],
+        ])),
+      ]),
+      '#default_value' => $settings['path'],
+      '#placeholder' => $this::getDefaultSettings()['path'],
+      '#element_validate' => [[get_class($this), 'jsonValidate']],
+    ];
+  }
+
+  /**
    * Set Map additional map Settings.
    *
    * @param array $map
@@ -407,18 +493,140 @@ trait LeafletSettingsElementsTrait {
    *   The options from where to set additional options.
    */
   protected function setAdditionalMapOptions(array &$map, array $options) {
+    $default_settings = $this::getDefaultSettings();
 
     // Add additional settings to the Map, with fallback on the
     // hook_leaflet_map_info ones.
-    $map['settings']['map_position_force'] = isset($options['map_position']['force']) ? $options['map_position']['force'] : 0;
-    $map['settings']['zoom'] = isset($options['map_position']['zoom']) ? (int) $options['map_position']['zoom'] : NULL;
-    $map['settings']['minZoom'] = isset($options['map_position']['minZoom']) ? (int) $options['map_position']['minZoom'] : (isset($map['settings']['minZoom']) ? $map['settings']['minZoom'] : 1);
-    $map['settings']['maxZoom'] = isset($options['map_position']['maxZoom']) ? (int) $options['map_position']['maxZoom'] : (isset($map['settings']['maxZoom']) ? $map['settings']['maxZoom'] : 18);
+    $map['settings']['map_position_force'] = isset($options['map_position']['force']) ? $options['map_position']['force'] : $default_settings['map_position']['force'];
+    $map['settings']['zoom'] = isset($options['map_position']['zoom']) ? (int) $options['map_position']['zoom'] : $default_settings['map_position']['force'];
+    $map['settings']['minZoom'] = isset($options['map_position']['minZoom']) ? (int) $options['map_position']['minZoom'] : (isset($map['settings']['minZoom']) ? $map['settings']['minZoom'] : $default_settings['settings']['minZoom']);
+    $map['settings']['maxZoom'] = isset($options['map_position']['maxZoom']) ? (int) $options['map_position']['maxZoom'] : (isset($map['settings']['maxZoom']) ? $map['settings']['maxZoom'] : $default_settings['settings']['maxZoom']);
     $map['settings']['center'] = (isset($options['map_position']['center']['lat']) && isset($options['map_position']['center']['lon'])) ? [
       'lat' => floatval($options['map_position']['center']['lat']),
-      'lng' => floatval($options['map_position']['center']['lon']),
-    ] : NULL;
+      'lon' => floatval($options['map_position']['center']['lon']),
+    ] : $default_settings['map_position']['center'];
     $map['settings']['scrollWheelZoom'] = $options['disable_wheel'] ? !(bool) $options['disable_wheel'] : (isset($map['settings']['scrollWheelZoom']) ? $map['settings']['scrollWheelZoom'] : TRUE);
+    $map['settings']['path'] = isset($options['path']) && !empty($options['path']) ? $options['path'] : (isset($map['path']) ? Json::encode($map['path']) : Json::encode($default_settings['path']));
+    $map['settings']['leaflet_markercluster'] = isset($options['leaflet_markercluster']) ? $options['leaflet_markercluster'] : NULL;
+    $map['settings']['fullscreen_control'] = isset($options['fullscreen_control']) ? $options['fullscreen_control'] : $default_settings['fullscreen_control'];
+    $map['settings']['reset_map'] = isset($options['reset_map']) ? $options['reset_map'] : $default_settings['reset_map'];
+  }
+
+  /**
+   * Set Map MarkerCluster Element.
+   *
+   * @param array $element
+   *   The Form element to alter.
+   * @param array $settings
+   *   The Form Settings.
+   */
+  protected function setMapMarkerclusterElement(array &$element, array $settings) {
+
+    $default_settings = $this::getDefaultSettings();
+    $leaflet_markercluster_submodule_warning = $this->t("<u>Note</u>: This functionality and settings are related to the Leaflet Markercluster submodule, present inside the Leaflet module itself.<br><u>(DON'T USE the external self standing Leaflet Markecluster module).</u>");
+
+    $element['leaflet_markercluster'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Marker Clustering'),
+    ];
+
+    if ($this->moduleHandler->moduleExists('leaflet_markercluster')) {
+      $element['leaflet_markercluster']['control'] = [
+        '#type' => 'checkbox',
+        '#title' => $this->t('Enable the functionality of the @markeclusterer_api_link.', [
+          '@markeclusterer_api_link' => $this->link->generate($this->t('Leaflet Markercluster Js Library'), Url::fromUri('https://github.com/Leaflet/Leaflet.markercluster', [
+            'absolute' => TRUE,
+            'attributes' => ['target' => 'blank'],
+          ])),
+        ]),
+        '#default_value' => isset($settings['leaflet_markercluster']['control']) ? $settings['leaflet_markercluster']['control'] : $default_settings['leaflet_markercluster']['control'],
+        '#description' => $this->t("@leaflet_markercluster_submodule_warning", [
+          '@leaflet_markercluster_submodule_warning' => $leaflet_markercluster_submodule_warning,
+        ]),
+        '#return_value' => 1,
+      ];
+      $element['leaflet_markercluster']['options'] = [
+        '#type' => 'textarea',
+        '#rows' => 4,
+        '#title' => $this->t('Marker Cluster Additional Options'),
+        '#description' => $this->t('An object literal of additional marker cluster options, that comply with the Leaflet Markercluster Js Library.<br>The syntax should respect the javascript object notation (json) format.<br>As suggested in the field placeholder, always use double quotes (") both for the indexes and the string values.'),
+        '#default_value' => isset($settings['leaflet_markercluster']['options']) ? $settings['leaflet_markercluster']['options'] : $default_settings['leaflet_markercluster']['options'],
+        '#placeholder' => $default_settings['leaflet_markercluster']['options'],
+        '#element_validate' => [[get_class($this), 'jsonValidate']],
+      ];
+      if (isset($this->fieldDefinition)) {
+        $element['leaflet_markercluster']['options']['#states'] = [
+          'visible' => [
+            ':input[name="fields[' . $this->fieldDefinition->getName() . '][settings_edit_form][settings][leaflet_markercluster][control]"]' => ['checked' => TRUE],
+          ],
+        ];
+      }
+      else {
+        $element['leaflet_markercluster']['options']['#states'] = [
+          'visible' => [
+            ':input[name="style_options[leaflet_markercluster][control]"]' => ['checked' => TRUE],
+          ],
+        ];
+      }
+    }
+    else {
+      $element['leaflet_markercluster']['markup'] = [
+        '#markup' => $this->t("Enable the Leaflet Markecluster submodule to activate this functionality.<br>@leaflet_markercluster_submodule_warning", [
+          '@leaflet_markercluster_submodule_warning' => $leaflet_markercluster_submodule_warning,
+        ]),
+      ];
+    }
+  }
+
+  /**
+   * Set Map MarkerCluster Element.
+   *
+   * @param array $element
+   *   The Form element to alter.
+   * @param array $settings
+   *   The Form Settings.
+   */
+  protected function setResetMapControl(array &$element, array $settings) {
+    $default_settings = $this::getDefaultSettings();
+
+    $element['reset_map'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Reset Map Control'),
+    ];
+
+    $element['reset_map']['control'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable Map Reset Control'),
+      '#description' => $this->t('This will show a "Reset Map" button to reset the Map to its initial center & zoom state.'),
+      '#default_value' => isset($settings['reset_map']['control']) ? $settings['reset_map']['control'] : $default_settings['reset_map']['control'],
+    ];
+
+    $element['reset_map']['position'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Position'),
+      '#options' => [
+        'topleft' => 'Top Left',
+        'topright' => 'Top Right',
+        'bottomleft' => 'Bottom Left',
+        'bottomright' => 'Bottom Right',
+      ],
+      '#default_value' => isset($settings['reset_map']['position']) ? $settings['reset_map']['position'] : $default_settings['reset_map']['position'],
+    ];
+
+    if (isset($this->fieldDefinition)) {
+      $element['reset_map']['position']['#states'] = [
+        'visible' => [
+          ':input[name="fields[' . $this->fieldDefinition->getName() . '][settings_edit_form][settings][reset_map][control]"]' => ['checked' => TRUE],
+        ],
+      ];
+    }
+    else {
+      $element['reset_map']['position']['#states'] = [
+        'visible' => [
+          ':input[name="style_options[reset_map][control]"]' => ['checked' => TRUE],
+        ],
+      ];
+    }
   }
 
   /**
@@ -459,6 +667,22 @@ trait LeafletSettingsElementsTrait {
     $max_zoom = $element['#value'];
     if ($max_zoom && $max_zoom <= $min_zoom) {
       $form_state->setError($element, t('The Max Zoom level should be above the Minimum Zoom level.'));
+    }
+  }
+
+  /**
+   * Form element json format validation handler.
+   *
+   * {@inheritdoc}
+   */
+  public static function jsonValidate($element, FormStateInterface &$form_state) {
+    $element_values_array = JSON::decode($element['#value']);
+    // Check the jsonValue.
+    if (!empty($element['#value']) && $element_values_array == NULL) {
+      $form_state->setError($element, t('The @field field is not valid Json Format.', ['@field' => $element['#title']]));
+    }
+    elseif (!empty($element['#value'])) {
+      $form_state->setValueForElement($element, JSON::encode($element_values_array));
     }
   }
 

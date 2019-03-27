@@ -13,7 +13,7 @@
         "drupal/geocoder": "^2.0@beta",
         "drupal/search_api": "^1.10",
         "drupal/search_api_autocomplete": "^1.1",
-        "drupal/leaflet": "^1.0@beta",
+        "drupal/leaflet": "^1.4",
         "drupal/contentimport": "^4.1",
         "drupal/facets": "^1.1",
         "drupal/collapsiblock": "^2.0",

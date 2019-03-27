@@ -70,7 +70,16 @@ class LeafletService {
    */
   public function leafletRenderMap(array $map, array $features = [], $height = '400px') {
     $map_id = isset($map['id']) ? $map['id'] : Html::getUniqueId('leaflet_map');
-
+    $attached_libraries = ['leaflet/leaflet-drupal', 'leaflet/general'];
+    // Add the Leaflet Fullscreen library, if requested.
+    if (isset($map['settings']['fullscreen_control'])) {
+      $attached_libraries[] = 'leaflet/leaflet.fullscreen';
+    }
+    // Add the Leaflet Markecluster library and functionalities, if requested.
+    if ($this->moduleHandler->moduleExists('leaflet_markercluster') && isset($map['settings']['leaflet_markercluster']) && $map['settings']['leaflet_markercluster']['control']) {
+      $attached_libraries[] = 'leaflet_markercluster/leaflet-markercluster';
+      $attached_libraries[] = 'leaflet_markercluster/leaflet-markercluster-drupal';
+    }
     $settings[$map_id] = [
       'mapId' => $map_id,
       'map' => $map,
@@ -83,7 +92,7 @@ class LeafletService {
       '#height' => $height,
       '#map' => $map,
       '#attached' => [
-        'library' => ['leaflet/leaflet-drupal', 'leaflet/general'],
+        'library' => $attached_libraries,
         'drupalSettings' => [
           'leaflet' => $settings,
         ],
@@ -311,6 +320,27 @@ class LeafletService {
       $path = Url::fromUri('base:', ['absolute' => TRUE])->toString() . $path;
     }
     return $path;
+  }
+
+  /**
+   * Check if an array has all his values empty.
+   *
+   * @param array $array
+   *   The array to check.
+   *
+   * @return bool
+   *   The bool result.
+   */
+  public function multipleEmpty(array $array) {
+    foreach ($array as $value) {
+      if (empty($value)) {
+        continue;
+      }
+      else {
+        return FALSE;
+      }
+    }
+    return TRUE;
   }
 
 }

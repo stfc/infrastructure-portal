@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2532c3151486beaa1703d101d140391c",
+    "content-hash": "968e05fc8388824788cdcbe8c2a66fdf",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2481,17 +2481,17 @@
         },
         {
             "name": "drupal/leaflet",
-            "version": "1.1.0",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/leaflet",
-                "reference": "8.x-1.1"
+                "reference": "8.x-1.4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/leaflet-8.x-1.1.zip",
-                "reference": "8.x-1.1",
-                "shasum": "d42ce9a1f2bfe4ecfd6f5a0ebdc9c1ec1492c282"
+                "url": "https://ftp.drupal.org/files/projects/leaflet-8.x-1.4.zip",
+                "reference": "8.x-1.4",
+                "shasum": "70ae22535b67a2f0370ec1ad0d7285a4c0528650"
             },
             "require": {
                 "drupal/core": "~8.0",
@@ -2503,8 +2503,8 @@
                     "dev-1.x": "1.x-dev"
                 },
                 "drupal": {
-                    "version": "8.x-1.1",
-                    "datestamp": "1548793084",
+                    "version": "8.x-1.4",
+                    "datestamp": "1551757985",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -8096,6 +8096,7 @@
                 "mock",
                 "xunit"
             ],
+            "abandoned": true,
             "time": "2018-08-09T05:50:03+00:00"
         },
         {
@@ -8986,7 +8987,6 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "drupal/geocoder": 10,
-        "drupal/leaflet": 10,
         "drupal/search_api_location": 15,
         "drupal/view_unpublished": 15,
         "drupal/business_rules": 10,
