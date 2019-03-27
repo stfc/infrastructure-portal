@@ -245,10 +245,20 @@ html.js fieldset.collapsible.collapsed span.fieldset-legend {
   margin-bottom:1.1em;
 }
 
+#views-exposed-form-searchmap-page-1 .form--inline.form-inline.clearfix{
+  flex-wrap:wrap;
+  margin-top:1.1em;	
+  margin-bottom:1.1em;
+}
+
 .input-group{
   	padding-right:10px;
   	width:100%;
 
+}
+
+.form-item.js-form-item.form-type-search-api-autocomplete.js-form-type-search-api-autocomplete.form-item-search-api-fulltext .form-text.form-control{
+	width:100%
 }
 
 .form-item.js-form-item.form-type-search-api-autocomplete{
@@ -404,4 +414,16 @@ a:focus {
 
 .navbar-toggle{
     background-color: #1D4F91;
+}
+
+.leaflet-popup-content .field.field--name-field-uk-postcode-geofield{
+    display:none;
+}
+
+.views-row .base-page.full.clearfix > h2{
+	display:none;
+}
+
+.view.view-homepage-search-text-block .views-row {
+	border-bottom:0px !important;
 }
