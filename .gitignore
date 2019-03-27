@@ -6,3 +6,6 @@ sites/*/files/css
 sites/*/files/js
 sites/*/files/php
 sites/*/private/*
+
+# Ignore salt directory
+default_private/*

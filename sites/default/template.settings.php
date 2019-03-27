@@ -280,7 +280,7 @@ $config_directories = [];
  *   $settings['hash_salt'] = file_get_contents('/home/example/salt.txt');
  * @endcode
  */
-$salt = file_get_contents('/opt/rh/httpd24/root/var/www/html/sites/default/private/salt.txt');
+$salt = file_get_contents('/opt/rh/httpd24/root/var/www/html/default_private/salt.txt');
 $settings['hash_salt'] = $salt;
 
 /**

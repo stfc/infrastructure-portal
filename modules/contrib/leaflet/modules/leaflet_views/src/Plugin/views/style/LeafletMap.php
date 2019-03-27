@@ -19,6 +19,7 @@ use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Leaflet\LeafletService;
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Utility\LinkGeneratorInterface;
 use Drupal\leaflet\LeafletSettingsElementsTrait;
 use Drupal\views\Plugin\views\PluginBase;
 
@@ -105,6 +106,13 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
   protected $leafletService;
 
   /**
+   * The Link generator Service.
+   *
+   * @var \Drupal\Core\Utility\LinkGeneratorInterface
+   */
+  protected $link;
+
+  /**
    * Constructs a LeafletMap style instance.
    *
    * @param array $configuration
@@ -125,6 +133,8 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
    *   The module handler.
    * @param \Drupal\Leaflet\LeafletService $leaflet_service
    *   The Leaflet service.
+   * @param \Drupal\Core\Utility\LinkGeneratorInterface $link_generator
+   *   The Link Generator service.
    */
   public function __construct(
     array $configuration,
@@ -135,7 +145,8 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
     EntityDisplayRepositoryInterface $entity_display,
     RendererInterface $renderer,
     ModuleHandlerInterface $module_handler,
-    LeafletService $leaflet_service
+    LeafletService $leaflet_service,
+    LinkGeneratorInterface $link_generator
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
@@ -145,6 +156,7 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
     $this->renderer = $renderer;
     $this->moduleHandler = $module_handler;
     $this->leafletService = $leaflet_service;
+    $this->link = $link_generator;
   }
 
   /**
@@ -160,7 +172,8 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
       $container->get('entity_display.repository'),
       $container->get('renderer'),
       $container->get('module_handler'),
-      $container->get('leaflet.service')
+      $container->get('leaflet.service'),
+      $container->get('link_generator')
     );
   }
 
@@ -312,6 +325,9 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
     // Generate the Leaflet Map General Settings.
     $this->generateMapGeneralSettings($form, $this->options);
 
+    // Generate the Leaflet Map Reset Control.
+    $this->setResetMapControl($form, $this->options);
+
     // Generate the Leaflet Map Position Form Element.
     $map_position_options = $this->options['map_position'];
     $form['map_position'] = $this->generateMapPositionElement($map_position_options);
@@ -320,6 +336,11 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
     $icon_options = $this->options['icon'];
     $form['icon'] = $this->generateIconFormElement($icon_options);
 
+    // Set Map Marker Cluster Element.
+    $this->setMapMarkerclusterElement($form, $this->options);
+
+    // Set Map Geometries Options Element.
+    $this->setMapPathOptionsElement($form, $this->options);
   }
 
   /**
@@ -349,6 +370,16 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
     $this->leafletService->preProcessMapSettings($this->options);
 
     $data = [];
+
+    // Always render the map, otherwise ...
+    $leaflet_map_style = !isset($this->options['leaflet_map']) ? $this->options['map'] : $this->options['leaflet_map'];
+    $map = leaflet_map_get_info($leaflet_map_style);
+
+    // Set Map additional map Settings.
+    $this->setAdditionalMapOptions($map, $this->options);
+
+    // Add a specific map id.
+    $map['id'] = Html::getUniqueId("leaflet_map_view_" . $this->view->id() . '_' . $this->view->current_display);
 
     if ($geofield_name = $this->options['data_source']) {
       $this->renderFields($this->view->result);
@@ -444,6 +475,19 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
             }
           }
 
+          // Add/merge eventual map icon definition from hook_leaflet_map_info.
+          if (!empty($map['icon'])) {
+            $this->options['icon'] = $this->options['icon'] ?: [];
+            // Remove empty icon options so that they might be replaced by the
+            // ones set by the hook_leaflet_map_info.
+            foreach ($this->options['icon'] as $k => $icon_option) {
+              if (empty($icon_option) || (is_array($icon_option) && $this->leafletService->multipleEmpty($icon_option))) {
+                unset($this->options['icon'][$k]);
+              }
+            }
+            $this->options['icon'] = array_replace($map['icon'], $this->options['icon']);
+          }
+
           // Attach iconUrl properties to each point.
           if (!empty($this->options['icon']) && !empty($this->options['icon']['iconUrl'])) {
             $tokens = [];
@@ -466,13 +510,10 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
             \Drupal::moduleHandler()
               ->alter('leaflet_views_feature', $point, $result, $this->view->rowPlugin);
           }
-
           // Add new points to the whole basket.
           $data = array_merge($data, $points);
-
         }
       }
-
     }
 
     // Don't render the map, if we do not have any data
@@ -480,16 +521,6 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
     if (empty($data) && !empty($this->options['hide_empty_map'])) {
       return [];
     }
-
-    // Always render the map, otherwise ...
-    $leaflet_map_style = !isset($this->options['leaflet_map']) ? $this->options['map'] : $this->options['leaflet_map'];
-    $map = leaflet_map_get_info($leaflet_map_style);
-
-    // Set Map additional map Settings.
-    $this->setAdditionalMapOptions($map, $this->options);
-
-    // Add a specific map id.
-    $map['id'] = Html::getUniqueId("leaflet_map_view_" . $this->view->id() . '_' . $this->view->current_display);
 
     $js_settings = [
       'map' => $map,
@@ -511,24 +542,12 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
     $options['name_field'] = ['default' => ''];
     $options['description_field'] = ['default' => ''];
     $options['view_mode'] = ['default' => 'full'];
-    $options['map'] = ['default' => ''];
-    $options['height'] = ['default' => '400'];
-    $options['hide_empty_map'] = ['default' => 0];
-    $options['map_position'] = [
-      'default' => [
-        'force' => 0,
-        'center' => [
-          'lat' => 0,
-          'lon' => 0,
-        ],
-        'zoom' => 12,
-        'minZoom' => 1,
-        'maxZoom' => 18,
-      ],
-    ];
-    $options['icon'] = ['default' => []];
-    $options['disable_wheel'] = ['default' => 0];
-    return $options;
+
+    $leaflet_map_default_settings = [];
+    foreach (self::getDefaultSettings() as $k => $setting) {
+      $leaflet_map_default_settings[$k] = ['default' => $setting];
+    }
+    return $options + $leaflet_map_default_settings;
   }
 
 }

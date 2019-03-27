@@ -56,6 +56,15 @@ function hook_leaflet_map_info() {
           ],
         ],
       ],
+      // Uncomment the lines below to use a custom path style for geometries.
+      /*'path' => [
+        "color" => "black",
+        "opacity" => "0.8",
+        "stroke" => 2,
+        "fill" => TRUE,
+        "fillColor" => "blue",
+        "fillOpacity" => "0.1",
+      ],*/
       // Uncomment the lines below to use a custom icon.
       /*'icon' => array(
         'iconUrl'       => '/sites/default/files/icon.png',
