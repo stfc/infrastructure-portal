@@ -9,3 +9,4 @@ sites/*/private/*
 
 # Ignore salt directory
 default_private/*
+default_private/
