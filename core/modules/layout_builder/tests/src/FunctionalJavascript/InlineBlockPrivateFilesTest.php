@@ -139,7 +139,7 @@ class InlineBlockPrivateFilesTest extends InlineBlockTestBase {
     $assert_session->pageTextContains('You are not authorized to access this page');
 
     $this->drupalGet('node/2/layout');
-    $file4 = $this->createPrivateFile('drupal.txt');
+    $file4 = $this->createPrivateFile('drupal_4.txt');
     $this->addInlineFileBlockToLayout('The file', $file4);
     $this->assertSaveLayout();
 
@@ -192,8 +192,8 @@ class InlineBlockPrivateFilesTest extends InlineBlockTestBase {
     $page = $this->getSession()->getPage();
     $page->clickLink('Add Block');
     $assert_session->assertWaitOnAjaxRequest();
-    $this->assertNotEmpty($assert_session->waitForElementVisible('css', '.block-categories details:contains(Create new block)'));
-    $this->clickLink('Basic block');
+    $this->assertNotEmpty($assert_session->waitForLink('Create custom block'));
+    $this->clickLink('Create custom block');
     $assert_session->assertWaitOnAjaxRequest();
     $assert_session->fieldValueEquals('Title', '');
     $page->findField('Title')->setValue($title);

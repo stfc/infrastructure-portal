@@ -112,13 +112,13 @@ class OverridesSectionStorageTest extends UnitTestCase {
       $entity_storage = $this->prophesize(EntityStorageInterface::class);
 
       $entity_without_layout = $this->prophesize(FieldableEntityInterface::class);
-      $entity_without_layout->hasField('layout_builder__layout')->willReturn(FALSE);
-      $entity_without_layout->get('layout_builder__layout')->shouldNotBeCalled();
+      $entity_without_layout->hasField(OverridesSectionStorage::FIELD_NAME)->willReturn(FALSE);
+      $entity_without_layout->get(OverridesSectionStorage::FIELD_NAME)->shouldNotBeCalled();
       $entity_storage->load('entity_without_layout')->willReturn($entity_without_layout->reveal());
 
       $entity_with_layout = $this->prophesize(FieldableEntityInterface::class);
-      $entity_with_layout->hasField('layout_builder__layout')->willReturn(TRUE);
-      $entity_with_layout->get('layout_builder__layout')->willReturn('the_return_value');
+      $entity_with_layout->hasField(OverridesSectionStorage::FIELD_NAME)->willReturn(TRUE);
+      $entity_with_layout->get(OverridesSectionStorage::FIELD_NAME)->willReturn('the_return_value');
       $entity_storage->load('entity_with_layout')->willReturn($entity_with_layout->reveal());
 
       $this->entityTypeManager->getStorage($expected_entity_type_id)->willReturn($entity_storage->reveal());
@@ -184,6 +184,22 @@ class OverridesSectionStorageTest extends UnitTestCase {
     $entity_types['no_canonical_link'] = $no_canonical_link->reveal();
     $this->entityFieldManager->getFieldStorageDefinitions('no_canonical_link')->shouldNotBeCalled();
 
+    $canonical_link_no_route = $this->prophesize(EntityTypeInterface::class);
+    $canonical_link_no_route->entityClassImplements(FieldableEntityInterface::class)->willReturn(TRUE);
+    $canonical_link_no_route->hasViewBuilderClass()->willReturn(TRUE);
+    $canonical_link_no_route->hasLinkTemplate('canonical')->willReturn(TRUE);
+    $canonical_link_no_route->getLinkTemplate('canonical')->willReturn('/entity/{entity}');
+    $canonical_link_no_route->hasHandlerClass('form', 'layout_builder')->willReturn(TRUE);
+    $entity_types['canonical_link_no_route'] = $canonical_link_no_route->reveal();
+    $this->entityFieldManager->getFieldStorageDefinitions('canonical_link_no_route')->shouldNotBeCalled();
+
+    $from_canonical = $this->prophesize(EntityTypeInterface::class);
+    $from_canonical->entityClassImplements(FieldableEntityInterface::class)->willReturn(TRUE);
+    $from_canonical->hasViewBuilderClass()->willReturn(TRUE);
+    $from_canonical->hasLinkTemplate('canonical')->willReturn(TRUE);
+    $from_canonical->getLinkTemplate('canonical')->willReturn('/entity/{entity}');
+    $entity_types['from_canonical'] = $from_canonical->reveal();
+
     $with_string_id = $this->prophesize(EntityTypeInterface::class);
     $with_string_id->entityClassImplements(FieldableEntityInterface::class)->willReturn(TRUE);
     $with_string_id->hasViewBuilderClass()->willReturn(TRUE);
@@ -211,6 +227,109 @@ class OverridesSectionStorageTest extends UnitTestCase {
     $this->entityTypeManager->getDefinitions()->willReturn($entity_types);
 
     $expected = [
+      'entity.from_canonical.canonical' => new Route(
+        '/entity/{entity}',
+        [],
+        [
+          'custom requirement' => 'from_canonical_route',
+        ]
+      ),
+      'entity.with_string_id.canonical' => new Route(
+        '/entity/{entity}'
+      ),
+      'entity.with_integer_id.canonical' => new Route(
+        '/entity/{entity}',
+        [],
+        [
+          'with_integer_id' => '\d+',
+        ]
+      ),
+      'layout_builder.overrides.from_canonical.view' => new Route(
+        '/entity/{entity}/layout',
+        [
+          'entity_type_id' => 'from_canonical',
+          'section_storage_type' => 'overrides',
+          'section_storage' => '',
+          'is_rebuilding' => FALSE,
+          '_controller' => '\Drupal\layout_builder\Controller\LayoutBuilderController::layout',
+          '_title_callback' => '\Drupal\layout_builder\Controller\LayoutBuilderController::title',
+        ],
+        [
+          '_has_layout_section' => 'true',
+          '_layout_builder_access' => 'view',
+          'custom requirement' => 'from_canonical_route',
+        ],
+        [
+          'parameters' => [
+            'section_storage' => ['layout_builder_tempstore' => TRUE],
+            'from_canonical' => ['type' => 'entity:from_canonical'],
+          ],
+          '_layout_builder' => TRUE,
+        ]
+      ),
+      'layout_builder.overrides.from_canonical.save' => new Route(
+        '/entity/{entity}/layout/save',
+        [
+          'entity_type_id' => 'from_canonical',
+          'section_storage_type' => 'overrides',
+          'section_storage' => '',
+          '_controller' => '\Drupal\layout_builder\Controller\LayoutBuilderController::saveLayout',
+        ],
+        [
+          '_has_layout_section' => 'true',
+          '_layout_builder_access' => 'view',
+          'custom requirement' => 'from_canonical_route',
+        ],
+        [
+          'parameters' => [
+            'section_storage' => ['layout_builder_tempstore' => TRUE],
+            'from_canonical' => ['type' => 'entity:from_canonical'],
+          ],
+          '_layout_builder' => TRUE,
+        ]
+      ),
+      'layout_builder.overrides.from_canonical.cancel' => new Route(
+        '/entity/{entity}/layout/cancel',
+        [
+          'entity_type_id' => 'from_canonical',
+          'section_storage_type' => 'overrides',
+          'section_storage' => '',
+          '_controller' => '\Drupal\layout_builder\Controller\LayoutBuilderController::cancelLayout',
+        ],
+        [
+          '_has_layout_section' => 'true',
+          '_layout_builder_access' => 'view',
+          'custom requirement' => 'from_canonical_route',
+        ],
+        [
+          'parameters' => [
+            'section_storage' => ['layout_builder_tempstore' => TRUE],
+            'from_canonical' => ['type' => 'entity:from_canonical'],
+          ],
+          '_layout_builder' => TRUE,
+        ]
+      ),
+      'layout_builder.overrides.from_canonical.revert' => new Route(
+        '/entity/{entity}/layout/revert',
+        [
+          'entity_type_id' => 'from_canonical',
+          'section_storage_type' => 'overrides',
+          'section_storage' => '',
+          '_form' => '\Drupal\layout_builder\Form\RevertOverridesForm',
+        ],
+        [
+          '_has_layout_section' => 'true',
+          '_layout_builder_access' => 'view',
+          'custom requirement' => 'from_canonical_route',
+        ],
+        [
+          'parameters' => [
+            'section_storage' => ['layout_builder_tempstore' => TRUE],
+            'from_canonical' => ['type' => 'entity:from_canonical'],
+          ],
+          '_layout_builder' => TRUE,
+        ]
+      ),
       'layout_builder.overrides.with_string_id.view' => new Route(
         '/entity/{entity}/layout',
         [
@@ -382,6 +501,12 @@ class OverridesSectionStorageTest extends UnitTestCase {
     ];
 
     $collection = new RouteCollection();
+    // Entity types that declare a link template for canonical must have a
+    // canonical route present in the route colletion.
+    $collection->add('entity.from_canonical.canonical', $expected['entity.from_canonical.canonical']);
+    $collection->add('entity.with_string_id.canonical', $expected['entity.with_string_id.canonical']);
+    $collection->add('entity.with_integer_id.canonical', $expected['entity.with_integer_id.canonical']);
+
     $this->plugin->buildRoutes($collection);
     $this->assertEquals($expected, $collection->all());
     $this->assertSame(array_keys($expected), array_keys($collection->all()));

@@ -28,15 +28,14 @@
         "drupal/business_rules": "^1.0@beta",
         "drupal/age_field_formatter": "^2.1",
         "drupal/bootstrap": "3.14",
-        "drupal/core": "^8.6",
+        "drupal/core": "8.6.13",
         "drupal/geophp": "^1.0@beta",
         "drupal/textarea_widget_for_text": "^1.1",
         "drupal/nagios": "^1.4",
         "drupal/markdown": "^1.2",
-        "drupal/geofield": "^1.1"
-    },    "replace": {
-        "drupal/core": "^8.6"
-    },
+        "drupal/geofield": "^1.1",
+        "twig/twig": "1.38.2"
+    },    
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
