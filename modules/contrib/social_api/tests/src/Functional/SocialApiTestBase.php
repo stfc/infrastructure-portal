@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\social_api;
+namespace Drupal\Tests\social_api\Functional;
 
 use Drupal\Tests\BrowserTestBase;
 
 /**
- * Provides a test case for functional Social Api settings form tests.
+ * Defines a base class for testing Social Auth implementers.
  */
-abstract class SocialApiSettingsFormBaseTest extends BrowserTestBase {
+abstract class SocialApiTestBase extends BrowserTestBase {
 
   /**
    * Modules to enable.
@@ -38,6 +38,13 @@ abstract class SocialApiSettingsFormBaseTest extends BrowserTestBase {
   protected $adminUser;
 
   /**
+   * The permissions for the admin user.
+   *
+   * @var array
+   */
+  protected $adminUserPermissions;
+
+  /**
    * The module machine name that is being tested.
    *
    * @var string
@@ -45,14 +52,14 @@ abstract class SocialApiSettingsFormBaseTest extends BrowserTestBase {
   protected $module;
 
   /**
-   * The social network the module works with.
+   * The machine name of the provider the module works with.
    *
-   * @var string
+   * @var null|string
    */
-  protected $socialNetwork;
+  protected $provider = NULL;
 
   /**
-   * The module type (social auth, social post).
+   * The module type (social_auth, social_post).
    *
    * @var string
    */
@@ -82,18 +89,13 @@ abstract class SocialApiSettingsFormBaseTest extends BrowserTestBase {
     $this->noPermsUser = $this->drupalCreateUser();
 
     // Create an administrative user.
-    $this->adminUser = $this->drupalCreateUser(
-      [
-        'access administration pages',
-        'administer social api authentication',
-      ]
-    );
+    $this->adminUser = $this->drupalCreateUser($this->adminUserPermissions);
   }
 
   /**
-   * Tests that module is available in social api list.
+   * Check that module is available in integration list.
    */
-  public function testIsAvailableInIntegrationList() {
+  public function checkIsAvailableInIntegrationList() {
     $this->drupalLogin($this->adminUser);
     $this->drupalGet('/admin/config/social-api/' . $this->moduleType);
 
@@ -102,18 +104,18 @@ abstract class SocialApiSettingsFormBaseTest extends BrowserTestBase {
   }
 
   /**
-   * Tests configuration page.
+   * Test for configuration page.
    *
    * @throws \Behat\Mink\Exception\ElementNotFoundException
-   *   If element is not found.
+   * @throws \Behat\Mink\Exception\ExpectationException
    */
-  public function testSettingsPage() {
+  public function checkPermissionForSettingsPage() {
 
     $assert = $this->assertSession();
 
-    // Verifies that permissions are applied to the various defined paths.
+    // Verifies that permissions are applied to the defined paths.
     $forbidden_paths = [
-      '/admin/config/social-api/' . $this->moduleType . '/' . $this->socialNetwork,
+      '/admin/config/social-api/' . $this->moduleType . '/' . $this->provider,
     ];
 
     // Checks each of the paths to make sure we don't have access. At this point
@@ -143,7 +145,7 @@ abstract class SocialApiSettingsFormBaseTest extends BrowserTestBase {
     }
 
     // Now that we have the admin user logged in, check the menu links.
-    $this->drupalGet('/admin/config/social-api/' . $this->moduleType . '/' . $this->socialNetwork);
+    $this->drupalGet('/admin/config/social-api/' . $this->moduleType . '/' . $this->provider);
 
     foreach ($this->fields as $field) {
       $assert->fieldExists($field);
@@ -153,9 +155,9 @@ abstract class SocialApiSettingsFormBaseTest extends BrowserTestBase {
   /**
    * Tests module settings form submission.
    */
-  public function testSettingsFormSubmission() {
+  public function checkSettingsFormSubmission() {
     $this->drupalLogin($this->adminUser);
-    $path = 'admin/config/social-api/' . $this->moduleType . '/' . $this->socialNetwork;
+    $path = 'admin/config/social-api/' . $this->moduleType . '/' . $this->provider;
 
     $this->drupalPostForm($path, $this->edit, t('Save configuration'));
     $this->assertSession()->pageTextContains('The configuration options have been saved.');
