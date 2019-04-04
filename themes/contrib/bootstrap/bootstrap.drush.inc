@@ -65,8 +65,7 @@ function _drush_bootstrap_generate_docs_settings(Theme $bootstrap) {
   $output[] = '```yaml';
   $output[] = '# Settings';
   $output[] = '';
-  $output[] = 'settings:';
-  $output[] = '  SETTING_NAME: SETTING_VALUE';
+  $output[] = 'SETTING_NAME: SETTING_VALUE';
   $output[] = '```';
 
   // Determine the groups.
@@ -117,7 +116,7 @@ function _drush_bootstrap_generate_docs_settings(Theme $bootstrap) {
   // Ensure we have link references at the bottom.
   $output[] = '';
   $output[] = '[Drupal Bootstrap]: https://www.drupal.org/project/bootstrap';
-  $output[] = '[Bootstrap Framework]: https://getbootstrap.com/docs/3.3/';
+  $output[] = '[Bootstrap Framework]: https://getbootstrap.com/docs/3.4/';
 
   // Save the generated output to the appropriate file.
   return file_put_contents(realpath($bootstrap->getPath() . '/docs/Theme-Settings.md'), implode("\n", $output)) !== FALSE;

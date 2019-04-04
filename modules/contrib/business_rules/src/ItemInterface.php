@@ -70,7 +70,7 @@ interface ItemInterface extends ConfigEntityInterface {
    * @param string $settingId
    *   the settings ID for the config entity.
    *
-   * @return array
+   * @return array|string
    *   The item settings.
    */
   public function getSettings($settingId = '');

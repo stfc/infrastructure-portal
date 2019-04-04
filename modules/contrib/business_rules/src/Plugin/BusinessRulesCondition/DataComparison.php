@@ -115,7 +115,7 @@ class DataComparison extends BusinessRulesConditionPlugin {
     $operator = $condition->getSettings('operator');
     $variables = $event->getArgument('variables');
     $values_to_compare = explode(chr(10), $condition->getSettings('value_to_compare'));
-    $values_to_compare = $this->processVariables($values_to_compare, $variables);
+    $values_to_compare = $this->processInternalVariables($values_to_compare, $variables);
     $data_to_compare = $condition->getSettings('data_to_compare');
 
     if ($data_to_compare == self::CURRENT_DATA) {
@@ -174,9 +174,17 @@ class DataComparison extends BusinessRulesConditionPlugin {
   }
 
   /**
-   * {@inheritdoc}
+   * Process the item replacing the variables by it's values.
+   *
+   * @param mixed $values_to_compare
+   *   The item to be replaced by the variable value.
+   * @param \Drupal\business_rules\VariablesSet $variables
+   *   Array of Variables provided by the event.
+   *
+   * @return mixed
+   *   The processed content, replacing the variables tokens for it's values.
    */
-  public function processVariables($values_to_compare, VariablesSet $variables) {
+  public function processInternalVariables($values_to_compare, VariablesSet $variables) {
 
     /** @var \Drupal\business_rules\VariableObject $variable */
     if ($variables->count()) {

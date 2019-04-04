@@ -3,14 +3,12 @@
 <!-- @ingroup -->
 # Theme Settings
 
-To override a setting, open `./config/install/THEMENAME.settings.yml`
-and add the following:
+To override a setting, open `./config/install/THEMENAME.settings.yml` and add the following:
 
 ```yaml
 # Settings
 
-settings:
-  SETTING_NAME: SETTING_VALUE
+SETTING_NAME: SETTING_VALUE
 ```
 
 ---
@@ -98,7 +96,7 @@ flexibility if the need ever arises.
       </div>
       <pre class=" language-yaml"><code>
 cdn_custom_css:
-'https://cdn.jsdelivr.net/bootstrap/3.3.7/css/bootstrap.css'
+'https://cdn.jsdelivr.net/npm/bootstrap@3.4.0/dist/css/bootstrap.css'
 
 </code></pre>
     </td>
@@ -114,7 +112,7 @@ used instead if site aggregation is enabled.
       </div>
       <pre class=" language-yaml"><code>
 cdn_custom_css_min:
-'https://cdn.jsdelivr.net/bootstrap/3.3.7/css/bootstrap.min.css'
+'https://cdn.jsdelivr.net/npm/bootstrap@3.4.0/dist/css/bootstrap.min.css'
 
 </code></pre>
     </td>
@@ -129,7 +127,8 @@ It is best to use <code>https</code> protocols here as it will allow more
 flexibility if the need ever arises.
       </div>
       <pre class=" language-yaml"><code>
-cdn_custom_js: 'https://cdn.jsdelivr.net/bootstrap/3.3.7/js/bootstrap.js'
+cdn_custom_js:
+'https://cdn.jsdelivr.net/npm/bootstrap@3.4.0/dist/js/bootstrap.js'
 
 </code></pre>
     </td>
@@ -145,7 +144,7 @@ used instead if site aggregation is enabled.
       </div>
       <pre class=" language-yaml"><code>
 cdn_custom_js_min:
-'https://cdn.jsdelivr.net/bootstrap/3.3.7/js/bootstrap.min.js'
+'https://cdn.jsdelivr.net/npm/bootstrap@3.4.0/dist/js/bootstrap.min.js'
 
 </code></pre>
     </td>
@@ -159,7 +158,7 @@ cdn_jsdelivr_version
 Choose the Bootstrap version from jsdelivr
       </div>
       <pre class=" language-yaml"><code>
-cdn_jsdelivr_version: 3.3.7
+cdn_jsdelivr_version: 3.4.0
 
 </code></pre>
     </td>
@@ -660,11 +659,27 @@ modal_enabled
     </td>
     <td>
       <div class="help-block">
-Enabling this will replace core's jQuery UI Dialog implementations with
-modals from the Bootstrap Framework.
+
       </div>
       <pre class=" language-yaml"><code>
 modal_enabled: 1
+
+</code></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="col-xs-3">
+modal_jquery_ui_bridge
+    </td>
+    <td>
+      <div class="help-block">
+Enabling this replaces the core/jquery.ui.dialog dependency in the
+core/drupal.dialog library with a jQuery UI Dialog widget bridge. This
+bridge adds support to Bootstrap Modals so that it may interpret jQuery UI
+Dialog functionality.
+      </div>
+      <pre class=" language-yaml"><code>
+modal_jquery_ui_bridge: 1
 
 </code></pre>
     </td>
@@ -700,6 +715,22 @@ modal_backdrop: 'true'
   </tr>
   <tr>
     <td class="col-xs-3">
+modal_focus_input
+    </td>
+    <td>
+      <div class="help-block">
+Enabling this focuses on the first available and visible input found in the
+modal after it's opened. If no element is found, the close button (if
+visible) is focused instead.
+      </div>
+      <pre class=" language-yaml"><code>
+modal_focus_input: 1
+
+</code></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="col-xs-3">
 modal_keyboard
     </td>
     <td>
@@ -708,6 +739,21 @@ Closes the modal when escape key is pressed.
       </div>
       <pre class=" language-yaml"><code>
 modal_keyboard: 1
+
+</code></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="col-xs-3">
+modal_select_text
+    </td>
+    <td>
+      <div class="help-block">
+Enabling this selects the text of the first available and visible input
+found after it has been focused.
+      </div>
+      <pre class=" language-yaml"><code>
+modal_select_text: 1
 
 </code></pre>
     </td>
@@ -783,6 +829,22 @@ Apply a CSS fade transition to the popover.
       </div>
       <pre class=" language-yaml"><code>
 popover_animation: 1
+
+</code></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="col-xs-3">
+popover_auto_close
+    </td>
+    <td>
+      <div class="help-block">
+If enabled, the active popover will automatically close when it loses
+focus, when a click occurs anywhere in the DOM (outside the popover), the
+escape key (ESC) is pressed or when another popover is opened.
+      </div>
+      <pre class=" language-yaml"><code>
+popover_auto_close: 1
 
 </code></pre>
     </td>
@@ -1069,4 +1131,4 @@ tooltip_trigger: hover
 </table>
 
 [Drupal Bootstrap]: https://www.drupal.org/project/bootstrap
-[Bootstrap Framework]: https://getbootstrap.com/docs/3.3/
+[Bootstrap Framework]: https://getbootstrap.com/docs/3.4/

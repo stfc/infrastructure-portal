@@ -11,6 +11,7 @@ use Drupal\Component\Utility\Xss;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Entity\Entity;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -113,6 +114,8 @@ class ScheduleController extends ControllerBase implements ContainerInjectionInt
       ->get('plugin.manager.business_rules.reacts_on')
       ->getDefinition('cron_runs');
 
+
+    $task_event   = $task->getEvent();
     $loop_control = time();
     $dummy        = new \stdClass();
     $variables    = new VariablesSet();
@@ -127,11 +130,33 @@ class ScheduleController extends ControllerBase implements ContainerInjectionInt
       'loop_control'     => $loop_control,
     ]);
 
+    $event = $task_event instanceof BusinessRulesEvent ? $task_event : $dummy_event;
+    /** @var \Drupal\Core\Entity\Entity $entity */
+    $entity = $task_event->getSubject() instanceof Entity ? $task_event->getSubject() : FALSE;
+    if ($entity) {
+      $entity = \Drupal::entityTypeManager()
+        ->getStorage($entity->getEntityTypeId())
+        ->load($entity->id());
+      $task_event->setArgument('entity', $entity);
+      $event = new BusinessRulesEvent($entity, $task_event->getArguments());
+    }
+
     try {
       foreach ($items as $item) {
         $action_item = Action::load($item['id']);
-        $action_item->execute($dummy_event);
+        $action_item->execute($event);
       }
+
+      $entity = $event->getSubject() instanceof Entity ? $event->getSubject() : FALSE;
+      if ($entity && $task->getUpdateEntity()) {
+        $entity_exists = \Drupal::entityTypeManager()
+          ->getStorage($entity->getEntityTypeId())
+          ->load($entity->id());
+        if ($entity_exists instanceof Entity) {
+          $entity->save();
+        }
+      }
+
       $task->setExecuted(1);
       $task->save();
       $util->logger->notice(t('Scheduled task id: @id, name: "@name", triggered by: "@by" has been executed at: @time', [
@@ -146,7 +171,7 @@ class ScheduleController extends ControllerBase implements ContainerInjectionInt
       $util->logger->error($e->getMessage());
     }
 
-    return new RedirectResponse('/admin/config/workflow/business_rules/schedule');
+    return new RedirectResponse('/admin/config/workflow/business_rules/schedule/collection');
   }
 
   /**

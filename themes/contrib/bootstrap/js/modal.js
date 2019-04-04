@@ -27,7 +27,7 @@
    *   be used.
    */
   Bootstrap.modalFindFocusableElement = function (modal) {
-    return modal.$dialogBody.find(':input,:button,.btn');
+    return modal.$dialogBody.find(':input,:button,.btn').not('.visually-hidden,.sr-only');
   };
 
   $document.on('shown.bs.modal', function (e) {
@@ -44,6 +44,9 @@
         if (modal.options.selectText && $input.is(':text')) {
           $input[0].setSelectionRange(0, $input[0].value.length)
         }
+      }
+      else if (modal.$close.is(':visible')) {
+        modal.$close.focus();
       }
     }
   });
@@ -63,7 +66,6 @@
 
       // Override the Modal constructor.
       var Modal = function (element, options) {
-        this.options             = options;
         this.$body               = $(document.body);
         this.$element            = $(element);
         this.$dialog             = this.$element.find('.modal-dialog');
@@ -77,6 +79,7 @@
         this.originalBodyPad     = null;
         this.scrollbarWidth      = 0;
         this.ignoreBackdropClick = false;
+        this.options             = this.mapDialogOptions(options);
       };
 
       // Extend defaults to take into account for theme settings.
@@ -86,6 +89,7 @@
         focusInput: !!settings.modal_focus_input,
         selectText: !!settings.modal_select_text,
         keyboard: !!settings.modal_keyboard,
+        remote: null,
         show: !!settings.modal_show,
         size: settings.modal_size
       });
@@ -113,13 +117,28 @@
         }
       };
 
+      /**
+       * Map dialog options.
+       *
+       * Note: this is primarily for use in modal.jquery.ui.bridge.js.
+       *
+       * @param {Object} options
+       *   The passed options.
+       */
+      Modal.prototype.mapDialogOptions = function (options) {
+        return options || {};
+      }
+
       // Modal jQuery Plugin Definition.
       var Plugin = function () {
         // Extract the arguments.
         var args = Array.prototype.slice.call(arguments);
-        var method = args.shift();
-        var options = {};
+        var method = args[0];
+        var options = args[1] || {};
+        var relatedTarget = args[2] || null;
+        // Move arguments down if no method was passed.
         if ($.isPlainObject(method)) {
+          relatedTarget = options || null;
           options = method;
           method = null;
         }
@@ -130,35 +149,29 @@
           var initialize = false;
 
           // Immediately return if there's no instance to invoke a valid method.
-          if (!data && method && method !== 'open') {
+          var showMethods = ['open', 'show', 'toggle'];
+          if (!data && method && showMethods.indexOf(method) === -1) {
             return;
           }
 
-          options = $.extend({}, Modal.DEFAULTS, data && data.options, $this.data(), options);
-          if (!data) {
-            // When initializing the Bootstrap Modal, only pass the "supported"
-            // options by intersecting the default options. This allows plugins
-            // like the jQuery UI bridge to properly detect when options have
-            // changed when they're set below as a global "option" method.
-            $this.data('bs.modal', (data = new Modal(this, Bootstrap.intersectObjects(options, Modal.DEFAULTS))));
-            initialize = true;
-          }
+          options = Bootstrap.normalizeObject($.extend({}, Modal.DEFAULTS, data && data.options, $this.data(), options));
+          delete options['bs.modal'];
 
-          // If no method or arguments, treat it like it's initializing the modal.
-          if (!method && !args.length) {
-            data.option(options);
+          if (!data) {
+            $this.data('bs.modal', (data = new Modal(this, options)));
             initialize = true;
           }
 
           // Initialize the modal.
-          if (initialize) {
+          if (initialize || (!method && !args.length)) {
             data.init();
           }
 
+          // Explicit method passed.
           if (method) {
             if (typeof data[method] === 'function') {
               try {
-                ret = data[method].apply(data, args);
+                ret = data[method].apply(data, args.slice(1));
               }
               catch (e) {
                 Drupal.throwError(e);
@@ -166,6 +179,13 @@
             }
             else {
               Bootstrap.unsupported('method', method);
+            }
+          }
+          // No method, set options and open if necessary.
+          else {
+            data.option(options);
+            if (options.show && !data.isShown) {
+              data.show(relatedTarget);
             }
           }
         });
@@ -188,7 +208,7 @@
           var href    = $this.attr('href');
           var target  = $this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, '')); // strip for ie7
           var $target = $document.find(target);
-          var option  = $target.data('bs.modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data());
+          var options  = $target.data('bs.modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data());
 
           if ($this.is('a')) e.preventDefault();
 
@@ -199,7 +219,7 @@
               $this.is(':visible') && $this.trigger('focus');
             });
           });
-          $target.modal(option, this);
+          $target.modal(options, this);
         });
 
       return Plugin;

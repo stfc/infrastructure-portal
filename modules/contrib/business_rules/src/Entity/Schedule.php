@@ -4,6 +4,7 @@ namespace Drupal\business_rules\Entity;
 
 use Drupal\business_rules\Events\BusinessRulesEvent;
 use Drupal\business_rules\Util\BusinessRulesUtil;
+use Drupal\Core\Entity\Entity;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
@@ -120,10 +121,10 @@ class Schedule extends RevisionableContentEntityBase implements ScheduleInterfac
    * {@inheritdoc}
    */
   public function getTriggeredBy() {
-    $a = $this->get('triggered_by');
-    $e = $a->entity;
+    $action = $this->get('triggered_by');
+    $entity = $action->entity;
 
-    return $e;
+    return $entity;
   }
 
   /**
@@ -213,6 +214,43 @@ class Schedule extends RevisionableContentEntityBase implements ScheduleInterfac
     $this->set('executed', $timestamp);
 
     return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getEvent() {
+    $value = $this->get('event')->getValue();
+    $event = isset($value[0]) ? $value[0] : FALSE;
+
+    return $event;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setEvent(BusinessRulesEvent $event) {
+    $stored_event = new BusinessRulesEvent($event->getSubject(), $event->getArguments());
+    $stored_event = serialize($stored_event);
+    $this->set('event', $stored_event);
+
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUpdateEntity(bool $update) {
+    $this->set('update_entity', $update);
+
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getUpdateEntity() {
+    return $this->get('update_entity')->value;
   }
 
   /**
@@ -339,6 +377,14 @@ class Schedule extends RevisionableContentEntityBase implements ScheduleInterfac
       ->setDescription(t('Business Rule Action which has triggered this schedule.'))
       ->setSetting('target_type', 'business_rules_action');
 
+    $fields['update_entity'] = BaseFieldDefinition::create('boolean')
+      ->setLabel('Save entity as the last action of the task')
+      ->setDescription('It the task will save the entity in the end of the process.');
+
+    $fields['event'] = BaseFieldDefinition::create('map')
+      ->setLabel(t('Event.'))
+      ->setDescription(t('The event that has created the schedule.'));
+
     return $fields;
   }
 
@@ -370,12 +416,33 @@ class Schedule extends RevisionableContentEntityBase implements ScheduleInterfac
           /** @var \Drupal\business_rules\Entity\Action $action */
           $action = $task->getTriggeredBy();
           $items = $action->getSettings('items');
+          $task_event = $task->getEvent();
 
           try {
+            /** @var \Drupal\Core\Entity\Entity $entity */
+            $entity = $task_event->getSubject() instanceof Entity ? $task_event->getSubject() : FALSE;
+            if ($entity) {
+              $entity = \Drupal::entityTypeManager()
+                ->getStorage($entity->getEntityTypeId())
+                ->load($entity->id());
+              $task_event->setArgument('entity', $entity);
+              $task_event = new BusinessRulesEvent($entity, $task_event->getArguments());
+            }
+
             foreach ($items as $item) {
               $action_item = Action::load($item['id']);
-              $action_item->execute($event);
+              $action_item->execute($task_event);
             }
+
+            if ($entity && $task->getUpdateEntity()) {
+              $entity_exists = \Drupal::entityTypeManager()
+                ->getStorage($entity->getEntityTypeId())
+                ->load($entity->id());
+              if ($entity_exists instanceof Entity) {
+                $entity->save();
+              }
+            }
+
             $task->setExecuted(1);
             $task->save();
             $util->logger->notice(t('Scheduled task id: @id, name: "@name", triggered by: "@by" has been executed at: @time', [

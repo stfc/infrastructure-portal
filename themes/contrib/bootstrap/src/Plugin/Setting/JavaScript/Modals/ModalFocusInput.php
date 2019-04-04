@@ -15,7 +15,7 @@ use Drupal\Core\Form\FormStateInterface;
  *   id = "modal_focus_input",
  *   type = "checkbox",
  *   title = @Translation("focusInput"),
- *   description = @Translation("Enabling this focuses on the first available and visible input found in the modal after it's opened."),
+ *   description = @Translation("Enabling this focuses on the first available and visible input found in the modal after it's opened. If no element is found, the close button (if visible) is focused instead."),
  *   defaultValue = 1,
  *   groups = {
  *     "javascript" = @Translation("JavaScript"),
