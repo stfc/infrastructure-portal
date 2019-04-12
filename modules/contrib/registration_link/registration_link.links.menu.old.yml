@@ -1,5 +1,0 @@
-registration_link.userregister:
-  title: 'Register an Account'
-  route_name: registration_link.register
-  weight: 10
-  menu_name: account

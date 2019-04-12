@@ -1,9 +1,0 @@
-name: 'Registration'
-description: 'The module provides a registration link for non logged users in the Drupal User Meu'
-# core: 8.x
-type: module
-# Information added by Drupal.org packaging script on 2016-09-14
-version: '8.x-1.0'
-core: '8.x'
-project: 'registration_link'
-datestamp: 1473842047
