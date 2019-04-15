@@ -427,3 +427,6 @@ a:focus {
 .view.view-homepage-search-text-block .views-row {
 	border-bottom:0px !important;
 }
+
+/*Make Create an Account link appear only to logged out users (and admins for some reason)*/
+.user-logged-in .menu.menu--account a[href="/user/register"] { display: none; }
