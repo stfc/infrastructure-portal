@@ -27,7 +27,8 @@ class Http extends Configurable implements AdapterInterface
     public function execute($request, $endpoint)
     {
         $context = $this->createContext($request, $endpoint);
-        $uri = $endpoint->getBaseUri().$request->getUri();
+        $baseUri = $request->getIsServerRequest() ? $endpoint->getServerUri() : $endpoint->getCoreBaseUri();
+        $uri = $baseUri.$request->getUri();
 
         list($data, $headers) = $this->getData($uri, $context);
 
@@ -110,6 +111,17 @@ class Http extends Configurable implements AdapterInterface
 
                     $request->addHeader('Content-Type: text/xml; charset=UTF-8');
                 }
+            }
+        } elseif (Request::METHOD_PUT == $method) {
+            $data = $request->getRawData();
+            if (null !== $data) {
+                stream_context_set_option(
+                    $context,
+                    'http',
+                    'content',
+                    $data
+                );
+                $request->addHeader('Content-Type: application/json; charset=UTF-8');
             }
         }
 

@@ -1,0 +1,14 @@
+name: 'Scheduled Publish'
+type: module
+description: 'This module allows the user to create a scheduler for content moderation'
+package: 'Content'
+dependencies:
+  - drupal:content_moderation
+  - drupal:workflows
+# project: 'scheduled_publish'
+# core: 8.x
+# Information added by Drupal.org packaging script on 2019-04-10
+version: '8.x-2.12'
+core: '8.x'
+project: 'scheduled_publish'
+datestamp: 1554880085

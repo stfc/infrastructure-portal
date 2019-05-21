@@ -1,0 +1,42 @@
+<?php
+
+/*This function implements the node_presave hook, which essentially means
+that it will be called before a node is saved*/
+function rii_schedule_node_presave(Drupal\node\NodeInterface $node) {
+  if ($node->bundle() == "rii") {  //If content type is RII
+    $current_time = \Drupal::time()->getCurrentTime();
+    $drupal_time = \Drupal\Core\Datetime\DrupalDateTime::createFromTimestamp($current_time); //Create DrupalDateTime object
+    $plus_one_month = clone $drupal_time;
+    $plus_one_month->add(new DateInterval('P1M'));
+    $plus_one_year = clone $drupal_time;
+    $plus_one_year->add(new DateInterval('P1Y'));
+    $format_str = "Y\-m\-d\T02:00:00";
+
+    //Sets the field provided by the scheduled publish module so that the node transitions to the next state at the appropriate time
+    switch ($node->get("moderation_state")->value) {
+      case "published":
+        $node->set("field_rii_expiry", array("value"=>$plus_one_year->format($format_str), "moderation_state"=>"12_months_update_request"));
+        break;
+      case "12_months_update_request":
+        $node->set("field_rii_expiry", array("value"=>$plus_one_month->format($format_str), "moderation_state"=>"13_month_update_request"));
+        break;
+      case "13_month_update_request":
+        $node->set("field_rii_expiry", array("value"=>$plus_one_month->format($format_str), "moderation_state"=>"14_month_notification"));
+        break;
+      case "14_month_notification":
+        $node->set("field_rii_expiry", array("value"=>$plus_one_year->format($format_str), "moderation_state"=>"24_month_update_request"));
+        break;
+      case "24_month_update_request":
+        $node->set("field_rii_expiry", array("value"=>$plus_one_month->format($format_str), "moderation_state"=>"25_month_update_request"));
+        break;
+      case "25_month_update_request":
+        $node->set("field_rii_expiry", array("value"=>$plus_one_month->format($format_str), "moderation_state"=>"26_month_update_request"));
+        break;
+      case "26_month_notification":
+        $node->set("field_rii_expiry", array("value"=>$plus_one_year->format($format_str), "moderation_state"=>"out_of_date_needs_updating"));
+        break;
+    }
+  }
+}
+
+

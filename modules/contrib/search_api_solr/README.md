@@ -79,22 +79,17 @@ If you create a new index, such processors won't be offered anymore since
 But the remaining processors are useful and should be activated. For example the
 HTML filter or the Highlighting processor.
 
+By default the Highlighting processor provided by Search API uses PHP to create
+highlighted snippets or an excerpt based on the entities loaded from the
+database. Solr itself can do that much better, especially for different
+languages. If you check `Retrieve result data from Solr` and `Highlight
+retrieved data` on the server edit page, the Highlighting processor will use
+this data directly and bypass it's own logic. To do the highlighting, Solr will
+use the configuration of the Highlighting processor.
+
 Hidden variables
 ----------------
 
-- search_api_solr.settings.index_prefix (default: '')
-  By default, the index ID in the Solr server is the same as the index's machine
-  name in Drupal. This setting will let you specify a prefix for the index IDs
-  on this Drupal installation. Only use alphanumeric characters and underscores.
-  Since changing the prefix makes the currently indexed data inaccessible, you
-  should change this variable only when no indexes are currently on any Solr
-  servers.
-- search_api_solr.settings.index_prefix_INDEX_ID (default: '')
-  Same as above, but a per-index prefix. Use the index's machine name as
-  INDEX_ID in the variable name. Per-index prefixing is done before the global
-  prefix is added, so the global prefix will come first in the final name:
-  (GLOBAL_PREFIX)(INDEX_PREFIX)(INDEX_ID)
-  The same rules as above apply for setting the prefix.
 - search_api_solr.settings.cron_action (default: "spellcheck")
   The Search API Solr Search module can automatically execute some upkeep
   operations daily during cron runs. This variable determines what particular

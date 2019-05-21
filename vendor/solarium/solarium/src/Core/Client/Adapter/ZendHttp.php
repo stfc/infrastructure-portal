@@ -159,12 +159,25 @@ class ZendHttp extends Configurable implements AdapterInterface
                 $client->setMethod(\Zend_Http_Client::DELETE);
                 $client->setParameterGet($request->getParams());
                 break;
+            case Request::METHOD_PUT:
+                $client->setMethod(\Zend_Http_Client::PUT);
+                $client->setParameterGet($request->getParams());
+                if ($request->getFileUpload()) {
+                    $this->prepareFileUpload($client, $request);
+                } else {
+                    $client->setParameterGet($request->getParams());
+                    $client->setRawData($request->getRawData());
+                    $request->addHeader('Content-Type: application/json; charset=UTF-8');
+                }
+                break;
             default:
                 throw new OutOfBoundsException('Unsupported method: '.$request->getMethod());
                 break;
         }
 
-        $client->setUri($endpoint->getBaseUri().$request->getHandler());
+        $baseUri = $request->getIsServerRequest() ? $endpoint->getServerUri() : $endpoint->getCoreBaseUri();
+        $uri = $baseUri.$request->getUri();
+        $client->setUri($uri);
         $client->setHeaders($request->getHeaders());
         $this->timeout = $endpoint->getTimeout();
 

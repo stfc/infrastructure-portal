@@ -63,7 +63,8 @@ class PeclHttp extends Configurable implements AdapterInterface
      */
     public function toHttpRequest($request, $endpoint)
     {
-        $url = $endpoint->getBaseUri().$request->getUri();
+        $baseUri = $request->getIsServerRequest() ? $endpoint->getServerUri() : $endpoint->getCoreBaseUri();
+        $url = $baseUri.$request->getUri();
         $httpRequest = new \HttpRequest($url);
 
         $headers = [];
@@ -108,6 +109,21 @@ class PeclHttp extends Configurable implements AdapterInterface
                 break;
             case Request::METHOD_DELETE:
                 $method = HTTP_METH_DELETE;
+                break;
+            case Request::METHOD_PUT:
+                $method = HTTP_METH_PUT;
+                if ($request->getFileUpload()) {
+                    $httpRequest->addPostFile(
+                        'content',
+                        $request->getFileUpload(),
+                        'application/octet-stream; charset=binary'
+                    );
+                } else {
+                    $httpRequest->setBody($request->getRawData());
+                    if (!isset($headers['Content-Type'])) {
+                        $headers['Content-Type'] = 'application/json; charset=utf-8';
+                    }
+                }
                 break;
             default:
                 throw new InvalidArgumentException(

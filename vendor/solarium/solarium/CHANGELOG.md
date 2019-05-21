@@ -4,10 +4,46 @@ All notable changes to the solarium library will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.2.0]
+### Fixed
+- If a term contains a space, the space needs to be quoted by Helper::escapeTerm()
+- Typos
+
+
+## [4.2.0-rc.1]
+### Added
+- Support for managed resources
+- Support for add-distinct and removeregex modifiers
+
+## [4.2.0-beta.1]
+### Added
+- Basic support for PUT requests in the HttpAdapter layer
+- Support for managed resources
+- Core Admin Queries
+- Endpoint::getServerUri
+- Endpoint::getCoreBaseUri
+- Expression::indent
+- BufferedAdd::setCommitWithin
+- BufferedAdd::setOverwrite
+- Set erroneous expression on StreamException
+- Managed resources, stopwords and synonyms query types
+
+### Deprecated
+- Endpoint::getBaseUri is deprecated. Please use getServerUri or getCoreBaseUri now.
+
+### Fixed
+- Allow multiple Field Facets for the same field by dynamically using local facet params if required
+
+
 ## [4.1.0]
 ### Added
 - Method AbstractQuery::removeParam() to remove a custom parameter or to reset a required but modified parameter
 - Basic support for DELETE requests in the HttpAdapter layer
+- Introduced an AdapterHelper class to start unifying implementations across all HTTP adapters
+
+### Changed
+- To unify the file extraction across all HTTP Adapters, the filename is now always reduced to its basepath
+
 
 ### Fixed
 - Guzzle Integration tests

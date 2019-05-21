@@ -35,6 +35,11 @@ class Request extends Configurable implements RequestParamsInterface
     const METHOD_DELETE = 'DELETE';
 
     /**
+     * Request PUT method.
+     */
+    const METHOD_PUT = 'PUT';
+
+    /**
      * Default options.
      *
      * @var array
@@ -283,6 +288,27 @@ class Request extends Configurable implements RequestParamsInterface
             'username' => $this->getOption('username'),
             'password' => $this->getOption('password'),
         ];
+    }
+
+    /**
+     * Execute a request outside of the core context in the global solr context.
+     *
+     * @param bool $isServerRequest
+     */
+    public function setIsServerRequest($isServerRequest = false)
+    {
+        $this->setOption('isserverrequest', $isServerRequest);
+    }
+
+    /**
+     * Indicates if a request is core independent and could be executed outside a core context.
+     * By default a Request is not core independent and must be executed in the context of a core.
+     *
+     * @return bool
+     */
+    public function getIsServerRequest(): bool
+    {
+        return $this->getOption('isserverrequest') ?? false;
     }
 
     /**

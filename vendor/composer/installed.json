@@ -3482,6 +3482,64 @@
         }
     },
     {
+        "name": "drupal/scheduled_publish",
+        "version": "2.12.0",
+        "version_normalized": "2.12.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://git.drupalcode.org/project/scheduled_publish.git",
+            "reference": "8.x-2.12"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://ftp.drupal.org/files/projects/scheduled_publish-8.x-2.12.zip",
+            "reference": "8.x-2.12",
+            "shasum": "9ff42f30dc77b7b219d11e1936c1d940370ebf17"
+        },
+        "require": {
+            "drupal/core": "*"
+        },
+        "type": "drupal-module",
+        "extra": {
+            "branch-alias": {
+                "dev-2.x": "2.x-dev"
+            },
+            "drupal": {
+                "version": "8.x-2.12",
+                "datestamp": "1554880081",
+                "security-coverage": {
+                    "status": "covered",
+                    "message": "Covered by Drupal's security advisory policy"
+                }
+            },
+            "drush": {
+                "services": {
+                    "drush.services.yml": "^9"
+                }
+            }
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packages.drupal.org/8/downloads",
+        "license": [
+            "GPL-2.0-or-later"
+        ],
+        "authors": [
+            {
+                "name": "Peter Majmesku",
+                "homepage": "https://www.drupal.org/user/786132"
+            },
+            {
+                "name": "SaschaHannes",
+                "homepage": "https://www.drupal.org/user/3536189"
+            }
+        ],
+        "description": "A simple module for scheduled content moderation",
+        "homepage": "https://www.drupal.org/project/scheduled_publish",
+        "support": {
+            "source": "https://git.drupalcode.org/project/scheduled_publish"
+        }
+    },
+    {
         "name": "drupal/scheduler",
         "version": "1.0.0",
         "version_normalized": "1.0.0.0",
@@ -3755,6 +3813,99 @@
             "source": "http://git.drupal.org/project/search_api_location.git",
             "issues": "https://www.drupal.org/project/issues/search_api_location",
             "irc": "irc://irc.freenode.org/drupal-search-api"
+        }
+    },
+    {
+        "name": "drupal/search_api_solr",
+        "version": "2.7.0",
+        "version_normalized": "2.7.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://git.drupalcode.org/project/search_api_solr.git",
+            "reference": "8.x-2.7"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://ftp.drupal.org/files/projects/search_api_solr-8.x-2.7.zip",
+            "reference": "8.x-2.7",
+            "shasum": "e1c22328bcb4fb74ca84384fb4ac8af75dc7a618"
+        },
+        "require": {
+            "drupal/core": "^8.5",
+            "drupal/search_api": "~1.11",
+            "ext-json": "*",
+            "maennchen/zipstream-php": "0.4.*",
+            "php": "^7.0",
+            "solarium/solarium": "~4.2.0"
+        },
+        "conflict": {
+            "drupal/core": "<8.5",
+            "drupal/search_api_solr_multilingual": "*"
+        },
+        "require-dev": {
+            "drupal/devel": "*",
+            "drupal/facets": "1.x-dev",
+            "drupal/geofield": "1.x-dev",
+            "drupal/search_api_autocomplete": "1.x-dev",
+            "drupal/search_api_location": "1.x-dev",
+            "phayes/geophp": "^1.2"
+        },
+        "suggest": {
+            "drupal/facets": "Provides facetted search.",
+            "drupal/search_api_autocomplete": "Provides auto complete for search boxes.",
+            "drupal/search_api_location": "Provides location searches."
+        },
+        "type": "drupal-module",
+        "extra": {
+            "branch-alias": {
+                "dev-2.x": "2.x-dev"
+            },
+            "drupal": {
+                "version": "8.x-2.7",
+                "datestamp": "1553881385",
+                "security-coverage": {
+                    "status": "covered",
+                    "message": "Covered by Drupal's security advisory policy"
+                }
+            }
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packages.drupal.org/8/downloads",
+        "license": [
+            "GPL-2.0+"
+        ],
+        "authors": [
+            {
+                "name": "Markus Kalkbrenner",
+                "homepage": "https://www.drupal.org/u/mkalkbrenner"
+            },
+            {
+                "name": "Other contributors",
+                "homepage": "https://www.drupal.org/node/982682/committers"
+            },
+            {
+                "name": "amateescu",
+                "homepage": "https://www.drupal.org/user/729614"
+            },
+            {
+                "name": "cspitzlay",
+                "homepage": "https://www.drupal.org/user/419305"
+            },
+            {
+                "name": "drunken monkey",
+                "homepage": "https://www.drupal.org/user/205582"
+            },
+            {
+                "name": "mkalkbrenner",
+                "homepage": "https://www.drupal.org/user/124705"
+            }
+        ],
+        "description": "Offers an implementation of the Search API that uses an Apache Solr server for indexing content.",
+        "homepage": "https://www.drupal.org/project/search_api_solr",
+        "support": {
+            "source": "http://git.drupal.org/project/search_api_solr.git",
+            "issues": "https://www.drupal.org/project/issues/search_api_solr",
+            "irc": "https://drupalchat.me/channel/search"
         }
     },
     {
@@ -4079,6 +4230,79 @@
         "homepage": "https://www.drupal.org/project/view_unpublished",
         "support": {
             "source": "http://cgit.drupalcode.org/view_unpublished"
+        }
+    },
+    {
+        "name": "drupal/workbench",
+        "version": "1.1.0",
+        "version_normalized": "1.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://git.drupalcode.org/project/workbench.git",
+            "reference": "8.x-1.1"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://ftp.drupal.org/files/projects/workbench-8.x-1.1.zip",
+            "reference": "8.x-1.1",
+            "shasum": "c25bbd77a8fcd8cdfc8b53a52fb83870862cfdd1"
+        },
+        "require": {
+            "drupal/core": "*"
+        },
+        "type": "drupal-module",
+        "extra": {
+            "branch-alias": {
+                "dev-1.x": "1.x-dev"
+            },
+            "drupal": {
+                "version": "8.x-1.1",
+                "datestamp": "1536675780",
+                "security-coverage": {
+                    "status": "covered",
+                    "message": "Covered by Drupal's security advisory policy"
+                }
+            }
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packages.drupal.org/8/downloads",
+        "license": [
+            "GPL-2.0-or-later"
+        ],
+        "authors": [
+            {
+                "name": "Dave Reid",
+                "homepage": "https://www.drupal.org/user/53892"
+            },
+            {
+                "name": "agentrickard",
+                "homepage": "https://www.drupal.org/user/20975"
+            },
+            {
+                "name": "bbinkovitz",
+                "homepage": "https://www.drupal.org/user/161263"
+            },
+            {
+                "name": "becw",
+                "homepage": "https://www.drupal.org/user/81067"
+            },
+            {
+                "name": "caroltron",
+                "homepage": "https://www.drupal.org/user/171342"
+            },
+            {
+                "name": "robeano",
+                "homepage": "https://www.drupal.org/user/67660"
+            },
+            {
+                "name": "stevector",
+                "homepage": "https://www.drupal.org/user/179805"
+            }
+        ],
+        "description": "Provides convenient dashboards and shortcuts for editors.",
+        "homepage": "https://www.drupal.org/project/workbench",
+        "support": {
+            "source": "https://git.drupalcode.org/project/workbench"
         }
     },
     {
@@ -5367,6 +5591,60 @@
             "oauth",
             "oauth2",
             "single sign on"
+        ]
+    },
+    {
+        "name": "maennchen/zipstream-php",
+        "version": "v0.4.1",
+        "version_normalized": "0.4.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/maennchen/ZipStream-PHP.git",
+            "reference": "89e0cdb3c9ecabef4da988852003781a7802afb7"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/maennchen/ZipStream-PHP/zipball/89e0cdb3c9ecabef4da988852003781a7802afb7",
+            "reference": "89e0cdb3c9ecabef4da988852003781a7802afb7",
+            "shasum": ""
+        },
+        "require": {
+            "ext-mbstring": "*",
+            "php": ">= 5.6"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "4.3.*"
+        },
+        "time": "2016-09-13T10:29:17+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "ZipStream\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Paul Duncan",
+                "email": "pabs@pablotron.org"
+            },
+            {
+                "name": "Jesse Donat",
+                "email": "donatj@gmail.com"
+            },
+            {
+                "name": "Jonatan Männchen",
+                "email": "jonatan@maennchen.ch"
+            }
+        ],
+        "description": "ZipStream is a library for dynamically streaming dynamic zip files from PHP without writing to the disk at all on the server.",
+        "keywords": [
+            "stream",
+            "zip"
         ]
     },
     {
@@ -7312,6 +7590,66 @@
         ],
         "description": "Library that helps with managing the version number of Git-hosted PHP projects",
         "homepage": "https://github.com/sebastianbergmann/version"
+    },
+    {
+        "name": "solarium/solarium",
+        "version": "4.2.0",
+        "version_normalized": "4.2.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/solariumphp/solarium.git",
+            "reference": "20cf9e906a4e8e4a29c1ff48a2b145fa31d1064d"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/solariumphp/solarium/zipball/20cf9e906a4e8e4a29c1ff48a2b145fa31d1064d",
+            "reference": "20cf9e906a4e8e4a29c1ff48a2b145fa31d1064d",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^7.0",
+            "symfony/event-dispatcher": "^2.7 || ^3.0 || ^4.0"
+        },
+        "require-dev": {
+            "guzzlehttp/guzzle": "^3.8 || ^6.2",
+            "php-coveralls/php-coveralls": "^1.0",
+            "phpunit/phpunit": "^6.5",
+            "squizlabs/php_codesniffer": "^1.4",
+            "zendframework/zendframework": "^3.0"
+        },
+        "suggest": {
+            "minimalcode/search": "Query builder compatible with Solarium, allows simplified solr-query handling"
+        },
+        "time": "2018-11-24T09:20:30+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "4.1.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Solarium\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "See GitHub contributors",
+                "homepage": "https://github.com/basdenooijer/solarium/contributors"
+            }
+        ],
+        "description": "PHP Solr client",
+        "homepage": "http://www.solarium-project.org",
+        "keywords": [
+            "php",
+            "search",
+            "solr"
+        ]
     },
     {
         "name": "squizlabs/php_codesniffer",

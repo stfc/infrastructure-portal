@@ -25,7 +25,7 @@
         "drupal/view_unpublished": "^1.0@alpha",
         "drupal/workflow": "^1.1",
         "drupal/scheduler": "^1.0",
-        "drupal/business_rules": "^1.0@beta",
+        "drupal/business_rules": "1.0-beta7",
         "drupal/age_field_formatter": "^2.1",
         "drupal/bootstrap": "3.17",
         "drupal/core": "8.6.13",
@@ -37,7 +37,10 @@
         "twig/twig": "1.38.2",
         "drupal/social_api": "2.0-beta5",
         "drupal/mailsystem": "^4.1",
-        "drupal/smtp": "^1.0"
+        "drupal/smtp": "^1.0",
+        "drupal/workbench": "1.1",
+        "drupal/scheduled_publish": "2.*",
+        "drupal/search_api_solr": "^2.7"
     },    
     "minimum-stability": "dev",
     "prefer-stable": true,
