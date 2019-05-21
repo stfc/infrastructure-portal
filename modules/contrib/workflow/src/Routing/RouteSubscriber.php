@@ -47,11 +47,11 @@ class RouteSubscriber extends RouteSubscriberBase {
        */
 
       // Only 1 field. Workflow is redirect to workflow/{field_name}.
-      if (count($fields) < 2) {
+      //if (count($fields) < 2) {
         $path = "/$entityTypeId/{{$entityTypeId}}/workflow";
         $route = $this->getEntityLoadRoute($entityTypeId, $path);
         $collection->add("entity.$entityTypeId.workflow_history", $route);
-      }
+      //}
 
       // Generate one route for each workflow field.
       foreach ($fields as $field_name => $field) {
