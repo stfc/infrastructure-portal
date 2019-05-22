@@ -188,36 +188,4 @@ interface ScheduleInterface extends ContentEntityInterface, RevisionLogInterface
    */
   public static function executeSchedule(BusinessRulesEvent $event);
 
-  /**
-   * Set the event.
-   *
-   * @param \Drupal\business_rules\Events\BusinessRulesEvent $event
-   *   The event that has created the schedule.
-   */
-  public function setEvent(BusinessRulesEvent $event);
-
-  /**
-   * Get the event.
-   *
-   * @return \Drupal\business_rules\Events\BusinessRulesEvent
-   *   The event that has created the schedule.
-   */
-  public function getEvent();
-
-  /**
-   * Set if it's to update the entity at the end of the task.
-   *
-   * @param bool $update
-   *   True or False.
-   */
-  public function setUpdateEntity(bool $update);
-
-  /**
-   * Get is it's to update the entity at the end of the task.
-   *
-   * @return bool
-   *   True or false.
-   */
-  public function getUpdateEntity();
-
 }

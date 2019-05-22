@@ -89,19 +89,13 @@ class ChangeFormDisplay extends BusinessRulesActionPlugin {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    /** @var \Drupal\business_rules\ItemInterface $item */
-    $item = $form_state->get('business_rules_item');
-
-    // We only can validate the form if the item is not new.
-    if (!empty($item) && !$item->isNew()) {
-      if ($form_state->getValue('selection_mode') == 'fixed') {
-        if (!$form_state->getValue('fixed')) {
-          $form_state->setErrorByName('fixed', t('Select the form mode'));
-        }
+    if ($form_state->getValue('selection_mode') == 'fixed') {
+      if (!$form_state->getValue('fixed')) {
+        $form_state->setErrorByName('fixed', t('Select the form mode'));
       }
-      elseif (!$form_state->getValue('variable')) {
-        $form_state->setErrorByName('variable', t('Fill the variable/token'));
-      }
+    }
+    elseif (!$form_state->getValue('variable')) {
+      $form_state->setErrorByName('variable', t('Fill the variable/token'));
     }
   }
 

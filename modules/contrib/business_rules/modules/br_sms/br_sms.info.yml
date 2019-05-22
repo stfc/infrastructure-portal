@@ -8,8 +8,8 @@ dependencies:
   - business_rules:business_rules
   - sms:sms
 
-# Information added by Drupal.org packaging script on 2019-03-26
-version: '8.x-1.0-beta7'
+# Information added by Drupal.org packaging script on 2018-10-11
+version: '8.x-1.0-beta4'
 core: '8.x'
 project: 'business_rules'
-datestamp: 1553628488
+datestamp: 1539274984

@@ -56,6 +56,7 @@ class ScheduleRevisionRevertForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
+    $a = 1;
     return new static(
       $container->get('entity.manager')->getStorage('business_rules_schedule'),
       $container->get('date.formatter')

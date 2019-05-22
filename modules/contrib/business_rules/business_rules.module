@@ -400,9 +400,6 @@ function business_rules_user_logout($account) {
 function business_rules_cache_flush() {
   $key_value = \Drupal::keyValueExpirable('business_rules.debug');
   $key_value->deleteAll();
-
-  $key_value = \Drupal::keyValueExpirable('business_rules.token_tree');
-  $key_value->deleteAll();
 }
 
 /**
@@ -410,9 +407,6 @@ function business_rules_cache_flush() {
  */
 function business_rules_mail($key, &$message, $params) {
   if ($key == 'business_rules_mail') {
-    if (isset($params['headers'])) {
-      $message['headers'] = $params['headers'];
-    }
     $message['from']    = \Drupal::config('system.site')->get('mail');
     $message['subject'] = $params['subject'];
     $message['body'][]  = $params['message'];

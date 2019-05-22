@@ -100,30 +100,27 @@ class SaveEntityVariableAction extends BusinessRulesActionPlugin {
     $variables = $event->getArgument('variables');
     $key_value = $this->util->getKeyValueExpirable('save_entity_variable');
     if ($variables->count()) {
-      $variable = $variables->getVariable($action->getSettings('variable'));
-      $entity = $variable ? $variable->getValue() : FALSE;
+      $entity = $variables->getVariable($action->getSettings('variable'))
+        ->getValue();
 
-      if ($entity instanceof Entity) {
+      // Prevent infinite calls regarding the dispatched entity events such as
+      // save / presave, etc.
+      $uuid       = $entity->uuid->value;
+      $saved_uuid = $key_value->get($uuid);
 
-        // Prevent infinite calls regarding the dispatched entity events such as
-        // save / presave, etc.
-        $uuid = $entity->uuid->value;
-        $saved_uuid = $key_value->get($uuid);
+      if ($entity instanceof Entity && $entity->uuid->getValue() !== $saved_uuid) {
+        $key_value->set($uuid, $uuid);
+        $entity->save();
 
-        if ($entity->uuid->getValue() !== $saved_uuid) {
-          $key_value->set($uuid, $uuid);
-          $entity->save();
+        $result = [
+          '#type'   => 'markup',
+          '#markup' => t('Entity: %entity on variable: %variable saved.', [
+            '%entity'   => $entity->getEntityTypeId(),
+            '%variable' => $action->getSettings('variable'),
+          ]),
+        ];
 
-          $result = [
-            '#type' => 'markup',
-            '#markup' => t('Entity: %entity on variable: %variable saved.', [
-              '%entity' => $entity->getEntityTypeId(),
-              '%variable' => $action->getSettings('variable'),
-            ]),
-          ];
-
-          return $result;
-        }
+        return $result;
       }
     }
   }

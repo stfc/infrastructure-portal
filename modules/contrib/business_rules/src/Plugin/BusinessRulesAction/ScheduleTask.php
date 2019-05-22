@@ -118,13 +118,6 @@ class ScheduleTask extends BusinessRulesActionPlugin {
       }
     }
 
-    $settings['update_entity'] = [
-      '#type'          => 'checkbox',
-      '#title'         => t('Save entity as the last action of the task.'),
-      '#description'   => t('Check this option if you are changing values on the entity and you want to persist those changes on the database.'),
-      '#default_value' => $item->getSettings('update_entity'),
-    ];
-
     $form['settings']['field']['#description'] = t('Entity changed, created, timestamp or datetime field.');
 
     // The items to process.
@@ -395,14 +388,11 @@ class ScheduleTask extends BusinessRulesActionPlugin {
    */
   public function execute(ActionInterface $action, BusinessRulesEvent $event) {
     $time_offset = $action->getSettings('time_offset');
-    $time_unit = $action->getSettings('time_unit');
-    $update_entity = $action->getSettings('update_entity');
-
+    $time_unit   = $action->getSettings('time_unit');
     /** @var \Drupal\Core\Entity\Entity $entity */
     $entity = $event->getSubject();
     $field = $entity->get($action->getSettings('field'))->value;
 
-    $scheduled_date = FALSE;
     if (is_int($field)) {
       // Add number of seconds to timestamp data type.
       switch ($time_unit) {
@@ -438,13 +428,9 @@ class ScheduleTask extends BusinessRulesActionPlugin {
     $schedule = Schedule::loadByNameAndTriggeredBy($action->getSettings('identifier'), $action->id());
     $schedule->setName($action->getSettings('identifier'));
     $schedule->setDescription($action->getSettings('description'));
-    if ($scheduled_date) {
-      $schedule->setScheduled($scheduled_date);
-    }
+    $schedule->setScheduled($scheduled_date);
     $schedule->setExecuted(0);
     $schedule->setTriggeredBy($action);
-    $schedule->setUpdateEntity($update_entity);
-    $schedule->setEvent($event);
 
     $schedule->save();
   }

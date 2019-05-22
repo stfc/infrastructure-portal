@@ -171,19 +171,9 @@ business_rules.action.type.send_email:
     subject:
       type: text
       label: 'Subject'
-    format:
-      type: string
-      label: 'Mail format'
     body:
-      type: mapping
+      type: text
       label: 'Message body'
-      mapping:
-        format:
-          type: string
-          label: 'Email body format'
-        value:
-          type: text
-          label: 'Email body value'
 
 # Set field value Action.
 business_rules.action.type.set_field_value:

@@ -140,7 +140,7 @@ interface BusinessRulesItemPluginInterface extends PluginInspectionInterface {
   public function processTokens(ItemInterface &$item, BusinessRulesEvent $event);
 
   /**
-   * Process the item replacing the variables by it's values.
+   * Process the item replacing the variables for it's values.
    *
    * @param mixed $content
    *   The item to be replaced by the variable value.

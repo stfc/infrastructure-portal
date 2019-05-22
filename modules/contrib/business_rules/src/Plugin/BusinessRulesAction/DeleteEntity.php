@@ -54,20 +54,18 @@ class DeleteEntity extends BusinessRulesActionPlugin {
     $value       = $this->processVariables($value, $event->getArgument('variables'));
 
     // Load entities ids to delete.
-    /** @var \Drupal\Core\Entity\Query\QueryInterface $query */
-    $query = \Drupal::getContainer()->get('entity_type.manager')->getStorage($entity_type)->getQuery()
-      ->condition($field, $value);
+    /** @var \Drupal\Core\Entity\Query\QueryInterface $query_service */
+    /** @var \Drupal\Core\Entity\Query\Sql\Query $query */
+    $query_service = \Drupal::getContainer()->get('entity.query');
+    $query         = $query_service->get($entity_type);
+    $query->condition('type', $bundle);
+    $query->condition($field, $value);
     $ids = $query->execute();
 
     // Delete entities.
     /** @var \Drupal\Core\Entity\EntityStorageInterface $entityManager */
     $entityManager = \Drupal::entityTypeManager()->getStorage($entity_type);
     $entities      = $entityManager->loadMultiple($ids);
-    foreach ($entities as $key => $entity) {
-      if ($entity->bundle() !=  $bundle) {
-        unset($entities[$key]);
-      }
-    }
     $entityManager->delete($entities);
 
     $result = [

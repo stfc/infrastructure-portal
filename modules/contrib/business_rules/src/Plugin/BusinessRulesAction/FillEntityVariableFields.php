@@ -331,22 +331,9 @@ class FillEntityVariableFields extends BusinessRulesActionPlugin {
             }
             ksort($arr);
 
-            // Remove empty values.
-            if (is_array($arr) && count($arr)) {
-              foreach ($arr as $key => $item) {
-                if (empty($item) || is_null($item) || (is_string($item) && strlen(trim($item)) == 0)) {
-                  $arr[$key] = NULL;
-                }
-              }
-            }
-
             $value = $arr;
-          }
 
-          if (empty($value) || is_null($value) || (is_string($value) && strlen(trim($value)) === 0)) {
-            $value = NULL;
           }
-
           $entity->set($field_value['entity_field'], $value);
 
           $result[$field_value['entity_field']] = [
@@ -363,6 +350,7 @@ class FillEntityVariableFields extends BusinessRulesActionPlugin {
     }
 
     return $result;
+
   }
 
   /**
@@ -375,16 +363,12 @@ class FillEntityVariableFields extends BusinessRulesActionPlugin {
 
     $fields_values_variables = $item->getSettings('fields_values');
 
-    if (is_array($fields_values_variables)) {
-      foreach ($fields_values_variables as $fields_values_variable) {
-        $field_value = $fields_values_variable['field_value'];
-        $variable_names = $this->pregMatch($field_value);
-        if (is_array($variable_names)) {
-          foreach ($variable_names as $variable_name) {
-            $variable = new VariableObject($variable_name);
-            $variableSet->append($variable);
-          }
-        }
+    foreach ($fields_values_variables as $fields_values_variable) {
+      $field_value    = $fields_values_variable['field_value'];
+      $variable_names = $this->pregMatch($field_value);
+      foreach ($variable_names as $variable_name) {
+        $variable = new VariableObject($variable_name);
+        $variableSet->append($variable);
       }
     }
 

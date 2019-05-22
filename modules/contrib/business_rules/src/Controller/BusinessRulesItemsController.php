@@ -289,13 +289,6 @@ class BusinessRulesItemsController extends ControllerBase {
   public function init($item_type) {
     $this->item = $item_type;
 
-    try {
-      $destination = stristr($this->util->getPreviousUri()->toString(), '/ajax/') ? [] : ['destination' => $this->util->getPreviousUri()->toString()];
-    }
-    catch (\Exception $e) {
-      $destination = [];
-    }
-
     switch ($this->item) {
       case 'condition':
         $this->label         = $this->t('Condition');
@@ -305,7 +298,7 @@ class BusinessRulesItemsController extends ControllerBase {
         $this->itemType      = 'condition';
         $this->newItemButton = Link::createFromRoute($this->t('Add Condition'),
           'entity.business_rules_condition.add_form',
-          $destination,
+          ['destination' => $this->util->getPreviousUri()->toString()],
           [
             'attributes' => [
               'class' => [
@@ -327,7 +320,7 @@ class BusinessRulesItemsController extends ControllerBase {
         $this->itemType      = 'action';
         $this->newItemButton = Link::createFromRoute($this->t('Add Action'),
           'entity.business_rules_action.add_form',
-          $destination,
+          ['destination' => $this->util->getPreviousUri()->toString()],
           [
             'attributes' => [
               'class' => [

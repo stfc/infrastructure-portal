@@ -7,7 +7,6 @@ use Drupal\business_rules\Events\BusinessRulesEvent;
 use Drupal\business_rules\ItemInterface;
 use Drupal\business_rules\Plugin\BusinessRulesActionPlugin;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Mail\MailFormatHelper;
 use Drupal\language\ConfigurableLanguageManagerInterface;
 
 /**
@@ -106,25 +105,12 @@ class SendEmail extends BusinessRulesActionPlugin {
       '#description'   => t('You can use variables on this field.'),
     ];
 
-    $settings['format'] = [
-      '#type'          => 'select',
-      '#title'         => t('Mail format'),
-      '#options'       => [
-        'html' => t('HTML'),
-        'text' => t('Text'),
-      ],
-      '#required'      => TRUE,
-      '#default_value' => $item->getSettings('format') ? $item->getSettings('format') : 'text',
-      '#description'   => t('Email body format.'),
-    ];
-
     $settings['body'] = [
-      '#type'          => 'text_format',
+      '#type'          => 'textarea',
       '#title'         => t('Message'),
       '#required'      => TRUE,
-      '#default_value' => $item->getSettings('body')['value'],
+      '#default_value' => $item->getSettings('body'),
       '#description'   => t('You can use variables on this field.'),
-      '#format' => ($item->getSettings('body') && isset($item->getSettings('body')['format'])) ? $item->getSettings('body')['format'] : 'full_html',
     ];
 
     return $settings;
@@ -152,7 +138,6 @@ class SendEmail extends BusinessRulesActionPlugin {
     $to              = $this->processVariables($action->getSettings('to'), $event_variables);
     $arr_to          = explode(';', $to);
     $result          = [];
-    $email_validator = \Drupal::getContainer()->get('email.validator');
 
     if ($action->getSettings('use_site_mail_as_sender')) {
       $from = \Drupal::config('system.site')->get('mail');
@@ -164,7 +149,9 @@ class SendEmail extends BusinessRulesActionPlugin {
 
     foreach ($arr_to as $to) {
       // Check if it's a valid email address.
-      if (!$email_validator->isValid($to)) {
+      $pattern = "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^";
+      $email = (preg_match($pattern, $to)) ? TRUE : FALSE;
+      if (!$email) {
         continue;
       }
 
@@ -199,22 +186,11 @@ class SendEmail extends BusinessRulesActionPlugin {
       }
 
       $subject = isset($settings_translated['subject']) ? $settings_translated['subject'] : $action->getSettings('subject');
-      $message = isset($settings_translated['body']) ? $settings_translated['body'] : $action->getSettings('body')['value'];
+      $message = isset($settings_translated['body']) ? $settings_translated['body'] : $action->getSettings('body');
       $subject = $this->processVariables($subject, $event_variables);
       $message = $this->processVariables($message, $event_variables);
 
-      // Check if body is on html format.
-      if ($action->getSettings('format') == 'html') {
-        $headers = ['Content-Type' => 'text/html; charset=UTF-8'];
-        $message = html_entity_decode($message);
-      }
-      else {
-        $headers = ['Content-Type' => 'text/plain; charset=UTF-8'];
-        $message = MailFormatHelper::htmlToText($message);
-      }
-
       $params = [
-        'headers' => $headers,
         'from'    => $from,
         'subject' => $subject,
         'message' => $message,
