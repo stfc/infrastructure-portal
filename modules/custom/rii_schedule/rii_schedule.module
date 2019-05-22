@@ -7,12 +7,10 @@ function rii_schedule_node_presave(Drupal\node\NodeInterface $node) {
     $current_time = \Drupal::time()->getCurrentTime();
     $drupal_time = \Drupal\Core\Datetime\DrupalDateTime::createFromTimestamp($current_time); //Create DrupalDateTime object
     $plus_one_month = clone $drupal_time;
-    $plus_one_month->sub(new DateInterval('PT1H'));
-    $plus_one_month->add(new DateInterval('PT1M'));
+    $plus_one_month->add(new DateInterval('P1M'));
     $plus_one_year = clone $drupal_time;
-    $plus_one_year->sub(new DateInterval('PT1H'));
-    $plus_one_year->add(new DateInterval('PT2M'));
-    $format_str = "Y\-m\-d\TH:i:s";
+    $plus_one_year->add(new DateInterval('P1Y'));
+    $format_str = "Y\-m\-d\T02:00:00";
 
     //Sets the field provided by the scheduled publish module so that the node transitions to the next state at the appropriate time
     switch ($node->get("moderation_state")->value) {
