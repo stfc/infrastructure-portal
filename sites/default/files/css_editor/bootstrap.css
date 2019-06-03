@@ -428,5 +428,12 @@ a:focus {
 	border-bottom:0px !important;
 }
 
-/*Make Create an Account link appear only to logged out users (and admins for some reason)*/
-.user-logged-in .menu.menu--account a[href="/user/register"] { display: none; }
+/*Make Create an Account link appear only to logged out users)*/
+.user-logged-in .menu.menu--account a[href="/RegisterMyInfrastructure"] { display: none; }
+
+/*Make text format hints on content edit page for RII not appear (to declutter interface)*/
+div[data-drupal-selector="edit-field-q-3a-0-format"] { display: none; }
+div[data-drupal-selector="edit-field-q-9-0-format"] { display: none; }
+
+/*Hide as much of the schedulded moderation left over nub as possible*/
+div[class="form-item js-form-item form-type-vertical-tabs js-form-type-vertical-tabs form-item- js-form-item- form-no-label form-group"] { display: none; }
