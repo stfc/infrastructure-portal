@@ -437,3 +437,6 @@ div[data-drupal-selector="edit-field-q-9-0-format"] { display: none; }
 
 /*Hide as much of the schedulded moderation left over nub as possible*/
 div[class="form-item js-form-item form-type-vertical-tabs js-form-type-vertical-tabs form-item- js-form-item- form-no-label form-group"] { display: none; }
+
+/*Hide show row weights button for UK postcode field*/
+button[class="tabledrag-toggle-weight btn-sm btn btn-default"] { display: none; }
