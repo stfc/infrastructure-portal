@@ -2862,6 +2862,64 @@
         }
     },
     {
+        "name": "drupal/form_mode_manager",
+        "version": "1.3.0",
+        "version_normalized": "1.3.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://git.drupalcode.org/project/form_mode_manager.git",
+            "reference": "8.x-1.3"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://ftp.drupal.org/files/projects/form_mode_manager-8.x-1.3.zip",
+            "reference": "8.x-1.3",
+            "shasum": "833e9130176eb14ac4286dcf454c5ef9cada0cae"
+        },
+        "require": {
+            "drupal/core": "*"
+        },
+        "type": "drupal-module",
+        "extra": {
+            "branch-alias": {
+                "dev-1.x": "1.x-dev"
+            },
+            "drupal": {
+                "version": "8.x-1.3",
+                "datestamp": "1513953485",
+                "security-coverage": {
+                    "status": "covered",
+                    "message": "Covered by Drupal's security advisory policy"
+                }
+            }
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packages.drupal.org/8/downloads",
+        "license": [
+            "GPL-2.0+"
+        ],
+        "authors": [
+            {
+                "name": "Alexandre Mallet",
+                "homepage": "https://github.com/woprrr",
+                "role": "Maintainer"
+            }
+        ],
+        "description": "Allow use of form mode in all Content entities",
+        "homepage": "https://www.drupal.org/project/image_widget_crop",
+        "keywords": [
+            "Drupal",
+            "Drupal Display modes",
+            "Field Ui",
+            "Form modes"
+        ],
+        "support": {
+            "source": "https://www.drupal.org/project/form_mode_manager",
+            "issues": "https://www.drupal.org/project/issues/form_mode_manager",
+            "irc": "irc://irc.freenode.org/drupal-contribute"
+        }
+    },
+    {
         "name": "drupal/geocoder",
         "version": "2.1.0",
         "version_normalized": "2.1.0.0",
