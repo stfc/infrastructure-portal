@@ -1,0 +1,126 @@
+<?php
+/*Implements hook_node_presave, which means that this function will be called whenever an entity
+is updated. This function will send an email on workflow state change of an RII content item,
+the content of which depends on wht the new state is.*/
+function rii_mail_node_presave(Drupal\node\NodeInterface $node) {
+  if ($node->bundle() == "rii") {  //if content type is RII
+    $rii_title = $node->get("title")->value;
+    $rii_reason = $node->get("field_reason_for_info_request_re")->value; //get reason for submission rejection field
+
+    $author = $node->getOwner();    
+    $author_name = $author->getDisplayName();
+    $author_email = $author->getEmail();
+ 
+    $current_user = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
+    $current_user_email = $current_user->getEmail();
+
+    $from = NULL; //pass NULL so that from field will be set to site email
+    $UKRI_DM_email = "adam.laverack@stfc.ac.uk";  //Mailing list address for all UKRI data managers
+ 
+    switch ($node->get("moderation_state")->value) {
+      case "draft":
+        $to = $UKRI_DM_email;
+        $subject = "Approval request: " . $rii_title;
+        $body = 
+"<p>Dear data manager,</p>
+
+<p>A new research infrastructure has been submitted for approval to the infrastructure portal titled '" . $rii_title . "'. You can review the submitted infrastructure at: https://infraportal.stfc.ac.uk/admin/content.</p>";
+        simple_mail_send($from, $to, $subject, $body);
+        break;
+
+      case "more_info_needed":
+        $to = $author_email;
+        $subject = "Submission information request: " . $rii_title;
+        $body = 
+"<p>Dear ".$author_name.",</p>
+
+<p>More information has been requested about your infrastructure submission titled '".$rii_title."'</p>
+
+<p>Reason given: '".$rii_reason."'</p>
+
+<p>If you have queries about this request, you can email the data manager who responded to your submission at ".$current_user_email."</p>
+
+<p>You can view your managed infrastructures at https://infraportal.stfc.ac.uk/manage-infrastructures</p>
+
+<p>Kind regards,<br>
+The UKRI Infrastructure Portal Team</p>";
+        simple_mail_send($from, $to, $subject, $body);
+        break;
+
+      case "denied_delete_":
+        $to = $author_email;
+        $subject = "Submission denied: " . $rii_title;
+        $body = 
+"<p>Dear ".$author_name.",</p>
+
+<p>Your infrastructure submission titled '".$rii_title."' has been denied.</p>
+
+<p>Reason given: '".$rii_reason."'</p>
+
+<p>If you have queries about this request, you can email the data manager who responded to your submission at ".$current_user_email."</p>
+
+<p>Kind regards,<br>
+The UKRI Infrastructure Portal Team</p>";
+        simple_mail_send($from, $to, $subject, $body);
+        break;
+      
+      case "published":
+        $to = $author_email;
+        $subject = "Submission approved: " . $rii_title;
+        $body = 
+"<p>Dear ".$author_name.",</p>
+
+<p>Your submission of '".$rii_title."' has been approved. You can view your managed infrastructures at https://infraportal.stfc.ac.uk/manage-infrastructures</p>
+
+<p>Kind Regards,<br>
+The UKRI Infrastructure Portal Team</p>";
+        simple_mail_send($from, $to, $subject, $body);
+        break;
+
+      case "12_months_update_request":
+      case "13_month_update_request":
+      case "24_month_update_request":
+      case "25_month_update_request":
+        $to = $author_email;
+        $subject = "Update request: " . $rii_title;
+        $body = 
+"<p>Dear ".$author_name.",</p>
+
+<p>To ensure the infrastructure portal is not displaying incorrect information, we ask that infrastructure managers check the details of their infrastructures and update them if neccesary once every year.</p>
+
+<p>Your infrastructure titled '".$rii_title."' has been published for over a year now and requires such an update. Please check the infrastructure at https://infraportal.stfc.ac.uk/manage-infrastructures and see if the details are still correct. To change details and mark the infrastructure as up to date, you can click edit on the manage infrastructure page and make any neccesary changes, before changing the state to 'Approved and published' in the drop-down box at the bottom of the page and clicking save.</p>
+
+<p>If the infrastructure has not been updated for 3 years, it will be removed from display and may be deleted. If you are no longer the manager of this infrastructure or want it to be removed from the portal, please contact us at ".$UKRI_DM_email.".</p>
+
+<p>Kind regards,<br>
+The UKRI Infrastructure Portal Team</p>";
+        simple_mail_send($from, $to, $subject, $body);
+        break;
+
+      case "14_month_notification":
+      case "26_month_notification":
+        $to = $UKRI_DM_email;
+        $subject = "Notification: ".$rii_title." not updated";
+        $body = 
+"<p>Dear data manager,</p>
+
+<p>The research infrastructure titled '".$rii_title."' has not been updated after 2 consecutive requests to the author to update it. No action will be taken yet but you may want to investigate this. You can administer infrastructures at https://infraportal.stfc.ac.uk/admin/content.</p>
+
+<p>To ensure the infrastructure portal is not displaying incorrect information, we require the authors of infrastructures to periodically check and update the details of their infrastructures. The author will be sent update requests at 12 months and 13 months after their infrastructure was last updated, then again at 24 and 25 months. Data managers will be notified at 14 months and then 26 months after the infrastructure was last updated. After 36 months, the infrastructure will be unpublished and an urgent notification sent to the data managers.</p>";
+        simple_mail_send($from, $to, $subject, $body);
+        break;
+
+      case "out_of_date_needs_updating":
+        $to = $UKRI_DM_email;
+        $subject = "URGENT notification: ".$rii_title." unpublished";
+        $body = 
+"<p>Dear data manager,</p>
+
+<p>The research infrastructure titled '".$rii_title."' is 36 months out of date and has been unpublished. The author has failed to respond to 4 requests. Please review and investigate this and consider whether the infrastructure should be deleted. You can administer infrastructures at https://infraportal.stfc.ac.uk/admin/content.</p>";
+        simple_mail_send($from, $to, $subject, $body);
+        break;
+    }  
+  }
+}
+
+
