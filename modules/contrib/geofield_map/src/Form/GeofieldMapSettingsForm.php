@@ -7,7 +7,6 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Url;
-use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Utility\LinkGeneratorInterface;
 use Drupal\Core\Site\Settings;
 
@@ -212,7 +211,7 @@ Hint: To accomplish configuration sync management among your different deploy en
     $config->save();
 
     // Confirmation on form submission.
-    drupal_set_message($this->t('The Geofield Map configurations have been saved.'));
+    $this->messenger()->addMessage($this->t('The Geofield Map configurations have been saved.'));
   }
 
 }

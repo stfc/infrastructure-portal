@@ -117,13 +117,9 @@
       }
     },
 
-    place_feature: function(feature, icon_image, mapid) {
+    place_feature: function(feature, mapid) {
       var self = this;
-
-      // If the features are object of geofield map theming then remove custom url Icon Image
-      if (feature.geojsonProperties.theming) {
-        icon_image = null;
-      }
+      var icon_image = null;
 
       // Override and set icon image with geojsonProperties.icon, if set as not null/empty.
       if (feature.geojsonProperties.icon && feature.geojsonProperties.icon.length > 0) {
@@ -383,20 +379,17 @@
             }
           });
 
-          // Define the icon_image, if set.
-          var icon_image = map_settings.map_marker_and_infowindow.icon_image_path.length > 0 ? map_settings.map_marker_and_infowindow.icon_image_path : null;
-
           if (features.setMap) {
-            self.place_feature(features, icon_image, mapid);
+            self.place_feature(features, mapid);
           }
           else {
             for (var i in features) {
               if (features[i].setMap) {
-                self.place_feature(features[i], icon_image, mapid);
+                self.place_feature(features[i], mapid);
               } else {
                 for (var j in features[i]) {
                   if (features[i][j].setMap) {
-                    self.place_feature(features[i][j], icon_image, mapid);
+                    self.place_feature(features[i][j], mapid);
                   }
                 }
               }
@@ -424,7 +417,7 @@
         }
 
         // If the Map Initial State is defined by MapBounds.
-        if (!self.mapBoundsAreNull(self.map_data[mapid].map_bounds) && !self.map_data[mapid].center_force) {
+        if (self.map_data[mapid].markers.constructor === Object && Object.keys(self.map_data[mapid].markers).length > 0 && !self.mapBoundsAreNull(self.map_data[mapid].map_bounds) && !self.map_data[mapid].center_force) {
           map.fitBounds(self.map_data[mapid].map_bounds);
         }
         // else if the Map Initial State is defined by just One marker.

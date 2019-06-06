@@ -81,7 +81,7 @@ class LeafletService {
       $attached_libraries[] = 'leaflet_markercluster/leaflet-markercluster-drupal';
     }
     $settings[$map_id] = [
-      'mapId' => $map_id,
+      'mapid' => $map_id,
       'map' => $map,
       // JS only works with arrays, make sure we have one with numeric keys.
       'features' => array_values($features),
@@ -222,6 +222,7 @@ class LeafletService {
       case 'multilinestring':
         if ($datum['type'] == 'multilinestring') {
           $datum['type'] = 'multipolyline';
+          $datum['multipolyline'] = TRUE;
         }
         /* @var \GeometryCollection $geom */
         $components = $geom->getComponents();

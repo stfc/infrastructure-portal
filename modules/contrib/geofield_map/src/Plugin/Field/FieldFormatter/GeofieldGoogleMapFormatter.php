@@ -540,7 +540,7 @@ class GeofieldGoogleMapFormatter extends FormatterBase implements ContainerFacto
       'force_open' => [
         '#type' => 'html_tag',
         '#tag' => 'div',
-        '#value' => $this->t('Open Infowindow on Load: @state', ['@state' => $settings['map_marker_and_infowindow']['force_open'] ? $this->t('Yes') : $this->t('No')]),
+        '#value' => $this->t('Open Infowindow on Load: @state', ['@state' => !empty($settings['map_marker_and_infowindow']['force_open']) ? $this->t('Yes') : $this->t('No')]),
         '#weight' => 3,
       ],
     ];
