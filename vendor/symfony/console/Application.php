@@ -202,6 +202,13 @@ class Application
             return 0;
         }
 
+        try {
+            // Makes ArgvInput::getFirstArgument() able to distinguish an option from an argument.
+            $input->bind($this->getDefinition());
+        } catch (ExceptionInterface $e) {
+            // Errors must be ignored, full binding/validation happens later when the command is known.
+        }
+
         $name = $this->getCommandName($input);
         if (true === $input->hasParameterOption(['--help', '-h'], true)) {
             if (!$name) {
@@ -589,6 +596,15 @@ class Application
         $this->init();
 
         $aliases = [];
+
+        foreach ($this->commands as $command) {
+            foreach ($command->getAliases() as $alias) {
+                if (!$this->has($alias)) {
+                    $this->commands[$alias] = $command;
+                }
+            }
+        }
+
         $allCommands = $this->commandLoader ? array_merge($this->commandLoader->getNames(), array_keys($this->commands)) : array_keys($this->commands);
         $expr = preg_replace_callback('{([^:]+|)}', function ($matches) { return preg_quote($matches[1]).'[^:]*'; }, $name);
         $commands = preg_grep('{^'.$expr.'}', $allCommands);

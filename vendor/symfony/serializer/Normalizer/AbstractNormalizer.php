@@ -330,9 +330,15 @@ abstract class AbstractNormalizer extends SerializerAwareNormalizer implements N
 
             return $object;
         }
+        // clean up even if no match
+        unset($context[static::OBJECT_TO_POPULATE]);
 
         $constructor = $this->getConstructor($data, $class, $context, $reflectionClass, $allowedAttributes);
         if ($constructor) {
+            if (true !== $constructor->isPublic()) {
+                return $reflectionClass->newInstanceWithoutConstructor();
+            }
+
             $constructorParameters = $constructor->getParameters();
 
             $params = [];
@@ -343,14 +349,20 @@ abstract class AbstractNormalizer extends SerializerAwareNormalizer implements N
                 $allowed = false === $allowedAttributes || \in_array($paramName, $allowedAttributes);
                 $ignored = !$this->isAllowedAttribute($class, $paramName, $format, $context);
                 if (method_exists($constructorParameter, 'isVariadic') && $constructorParameter->isVariadic()) {
-                    if ($allowed && !$ignored && (isset($data[$key]) || array_key_exists($key, $data))) {
+                    if ($allowed && !$ignored && (isset($data[$key]) || \array_key_exists($key, $data))) {
                         if (!\is_array($data[$paramName])) {
                             throw new RuntimeException(sprintf('Cannot create an instance of %s from serialized data because the variadic parameter %s can only accept an array.', $class, $constructorParameter->name));
                         }
 
-                        $params = array_merge($params, $data[$paramName]);
+                        $variadicParameters = [];
+                        foreach ($data[$paramName] as $parameterData) {
+                            $variadicParameters[] = $this->denormalizeParameter($reflectionClass, $constructorParameter, $paramName, $parameterData, $context, $format);
+                        }
+
+                        $params = array_merge($params, $variadicParameters);
+                        unset($data[$key]);
                     }
-                } elseif ($allowed && !$ignored && (isset($data[$key]) || array_key_exists($key, $data))) {
+                } elseif ($allowed && !$ignored && (isset($data[$key]) || \array_key_exists($key, $data))) {
                     $parameterData = $data[$key];
                     if (null === $parameterData && $constructorParameter->allowsNull()) {
                         $params[] = null;
@@ -391,7 +403,7 @@ abstract class AbstractNormalizer extends SerializerAwareNormalizer implements N
                 }
                 $parameterClass = $parameter->getClass()->getName();
 
-                return $this->serializer->denormalize($parameterData, $parameterClass, $format, $this->createChildContext($context, $parameterName));
+                return $this->serializer->denormalize($parameterData, $parameterClass, $format, $this->createChildContext($context, $parameterName, $format));
             }
 
             return $parameterData;
@@ -401,14 +413,15 @@ abstract class AbstractNormalizer extends SerializerAwareNormalizer implements N
     }
 
     /**
-     * @param array  $parentContext
-     * @param string $attribute
+     * @param array       $parentContext
+     * @param string      $attribute     Attribute name
+     * @param string|null $format
      *
      * @return array
      *
      * @internal
      */
-    protected function createChildContext(array $parentContext, $attribute)
+    protected function createChildContext(array $parentContext, $attribute/*, string $format = null */)
     {
         if (isset($parentContext[self::ATTRIBUTES][$attribute])) {
             $parentContext[self::ATTRIBUTES] = $parentContext[self::ATTRIBUTES][$attribute];
