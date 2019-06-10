@@ -40,7 +40,7 @@ class CountryName extends TypedData {
     parent::__construct($definition, $name, $parent);
 
     if ($definition->getSetting('property source') === NULL) {
-      throw new \InvalidArgumentException("The definition's 'property source' key has to specify the code f the address property to be processed.");
+      throw new \InvalidArgumentException("The definition's 'property source' key has to specify the code of the address property to be processed.");
     }
 
     // Set the country respository.
