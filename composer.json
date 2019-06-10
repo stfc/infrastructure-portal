@@ -11,7 +11,7 @@
         "drupal/address_map_link": "^1.0",
         "drupal/geofield_map": "2.40",
         "drupal/geocoder": "2.2",
-        "drupal/search_api": "^1.10",
+        "drupal/search_api": "1.13",
         "drupal/search_api_autocomplete": "^1.1",
         "drupal/leaflet": "1.10",
         "drupal/contentimport": "^4.1",
