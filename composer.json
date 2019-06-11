@@ -28,7 +28,7 @@
         "drupal/business_rules": "1.0-beta4",
         "drupal/age_field_formatter": "^2.1",
         "drupal/bootstrap": "3.19",
-        "drupal/core": "8.6.16",
+        "drupal/core": "8.7.3",
         "drupal/geophp": "^1.0@beta",
         "drupal/textarea_widget_for_text": "^1.1",
         "drupal/nagios": "^1.4",
