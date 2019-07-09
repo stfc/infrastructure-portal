@@ -1,0 +1,10 @@
+name: RII Region Lookup 
+description: Custom module (made by Adam Laverack). Looks up the region of a submitted RII based on the postcode and enters it into the address field. 
+package: Custom
+
+type: module
+core: 8.x
+
+dependencies:
+  - address:address
+
