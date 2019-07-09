@@ -123,6 +123,7 @@ class ComposerStaticInitDrupal8
         ),
         'J' => 
         array (
+            'JsonSchema\\' => 11,
             'JakubOnderka\\PhpConsoleHighlighter\\' => 35,
             'JakubOnderka\\PhpConsoleColor\\' => 29,
         ),
@@ -151,6 +152,7 @@ class ComposerStaticInitDrupal8
             'Drupal\\Driver\\' => 14,
             'Drupal\\Core\\Composer\\' => 21,
             'Drupal\\Core\\' => 12,
+            'Drupal\\Component\\Version\\' => 25,
             'Drupal\\Component\\Uuid\\' => 22,
             'Drupal\\Component\\Utility\\' => 25,
             'Drupal\\Component\\Transliteration\\' => 33,
@@ -429,6 +431,10 @@ class ComposerStaticInitDrupal8
         array (
             0 => __DIR__ . '/..' . '/league/commonmark/src',
         ),
+        'JsonSchema\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/justinrainbow/json-schema/src/JsonSchema',
+        ),
         'JakubOnderka\\PhpConsoleHighlighter\\' => 
         array (
             0 => __DIR__ . '/..' . '/jakub-onderka/php-console-highlighter/src',
@@ -494,6 +500,10 @@ class ComposerStaticInitDrupal8
         array (
             0 => __DIR__ . '/../..' . '/core/lib/Drupal/Core',
             1 => __DIR__ . '/../..' . '/core/lib/Drupal/Core',
+        ),
+        'Drupal\\Component\\Version\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/core/lib/Drupal/Component/Version',
         ),
         'Drupal\\Component\\Uuid\\' => 
         array (
