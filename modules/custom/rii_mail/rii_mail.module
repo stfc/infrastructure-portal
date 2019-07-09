@@ -1,8 +1,16 @@
 <?php
-/*Implements hook_node_presave, which means that this function will be called whenever an entity
-is updated. This function will send an email on workflow state change of an RII content item,
-the content of which depends on wht the new state is.*/
-function rii_mail_node_presave(Drupal\node\NodeInterface $node) {
+/**
+ * Implements hook_ENTITY_TYPE_update().
+ *
+ * When a node is updated, this function will be called. This uses the Simple Mail
+ * module to send a variety of emails, depending on the new moderation state. 
+ * The reason the update hook and not the presave hook has been used is that the
+ * Group module updates group nodes immediately after they have been created,
+ * meaning that the submission approval request would be sent twice, first after
+ * actually creating the new node and then after Group updates it. Using the
+ * update hook means that only one email is sent, which is after the Group update.
+ */
+function rii_mail_node_update(Drupal\node\NodeInterface $node) {
   if ($node->bundle() == "rii") {  //if content type is RII
     $rii_title = $node->get("title")->value;
     $rii_reason = $node->get("field_reason_for_info_request_re")->value; //get reason for submission rejection field
@@ -41,7 +49,7 @@ function rii_mail_node_presave(Drupal\node\NodeInterface $node) {
 
 	<p>If you have queries about this request, you can email the data manager who responded to your submission at ".$current_user_email."</p>
 
-	<p>You can view your managed infrastructures at https://infraportal.stfc.ac.uk/manage-infrastructures</p>
+	<p>You can view your group's managed infrastructures at https://infraportal.stfc.ac.uk/manage-groups</p>
 
 	<p>Kind regards,<br>
 	The UKRI Infrastructure Portal Team</p>";
@@ -58,7 +66,7 @@ function rii_mail_node_presave(Drupal\node\NodeInterface $node) {
 
 	<p>Reason given: '".$rii_reason."'</p>
 
-	<p>If you have queries about this request, you can email the data manager who responded to your submission at ".$current_user_email."</p>
+	<p>If you have queries about this or would like to appeal this decision, you can email the data manager who responded to your submission at ".$current_user_email."</p>
 
 	<p>Kind regards,<br>
 	The UKRI Infrastructure Portal Team</p>";
@@ -71,7 +79,7 @@ function rii_mail_node_presave(Drupal\node\NodeInterface $node) {
         $body = 
 	"<p>Dear ".$author_name.",</p>
 
-	<p>Your submission of '".$rii_title."' has been approved. You can view your managed infrastructures at https://infraportal.stfc.ac.uk/manage-infrastructures</p>
+	<p>Your submission of '".$rii_title."' has been approved. You can view your group's managed infrastructures at https://infraportal.stfc.ac.uk/manage-groups</p>
 
 	<p>Kind Regards,<br>
 	The UKRI Infrastructure Portal Team</p>";
@@ -90,8 +98,8 @@ function rii_mail_node_presave(Drupal\node\NodeInterface $node) {
 	<p>To ensure the infrastructure portal is not displaying incorrect information, we ask that infrastructure managers check the details of their infrastructures 
 	and update them if neccesary once every year.</p>
 
-	<p>Your infrastructure titled '".$rii_title."' has been published for over a year now and requires such an update. Please check the infrastructure at 
-	https://infraportal.stfc.ac.uk/manage-infrastructures and see if the details are still correct. To change details and mark the infrastructure as up to date, 
+	<p>Your infrastructure titled '".$rii_title."' has been published for over a year now and requires such an update. Please check the infrastructure via your group's page at 
+	https://infraportal.stfc.ac.uk/manage-groups and see if the details are still correct. To change details and mark the infrastructure as up to date, 
 	you can click edit on the manage infrastructure page and make any neccesary changes, before changing the state to 'Approved and published' in the drop-down 
 	box at the bottom of the page and clicking save.</p>
 
