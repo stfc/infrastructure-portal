@@ -167,7 +167,6 @@ class PagesIntegrationTest extends IntegrationTestBase {
 
     $elements = $this->getAutocompleteSuggestions();
     $suggestions = [];
-    $suggestion_elements = [];
     foreach ($elements as $element) {
       $label = $this->getElementText($element, '.autocomplete-suggestion-label');
       $user_input = $this->getElementText($element, '.autocomplete-suggestion-user-input');
@@ -178,27 +177,26 @@ class PagesIntegrationTest extends IntegrationTestBase {
         'keys' => $keys,
         'count' => $count,
       ];
-      $suggestion_elements[$keys] = $element;
     }
     $expected = [
       [
-        'keys' => 'test-suggester-1',
+        'keys' => 'TÃ©st-suggester-1',
         'count' => 1,
       ],
       [
-        'keys' => 'test-suggester-2',
+        'keys' => 'TÃ©st-suggester-2',
         'count' => 2,
       ],
       [
-        'keys' => 'test-suggester-url',
+        'keys' => 'TÃ©st-suggester-url',
         'count' => NULL,
       ],
       [
-        'keys' => 'test-backend-1',
+        'keys' => 'TÃ©st-backend-1',
         'count' => 1,
       ],
       [
-        'keys' => 'test-backend-2',
+        'keys' => 'TÃ©st-backend-2',
         'count' => 2,
       ],
     ];

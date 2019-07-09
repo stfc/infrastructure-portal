@@ -232,23 +232,23 @@ class IntegrationTest extends IntegrationTestBase {
     }
     $expected = [
       [
-        'keys' => 'test-suggester-1',
+        'keys' => 'TÃ©st-suggester-1',
         'count' => 1,
       ],
       [
-        'keys' => 'test-suggester-2',
+        'keys' => 'TÃ©st-suggester-2',
         'count' => 2,
       ],
       [
-        'keys' => 'test-suggester-url',
+        'keys' => 'TÃ©st-suggester-url',
         'count' => NULL,
       ],
       [
-        'keys' => 'test-backend-1',
+        'keys' => 'TÃ©st-backend-1',
         'count' => 1,
       ],
       [
-        'keys' => 'test-backend-2',
+        'keys' => 'TÃ©st-backend-2',
         'count' => 2,
       ],
     ];
@@ -264,17 +264,19 @@ class IntegrationTest extends IntegrationTestBase {
     if ($click_url_suggestion) {
       // Click the URL suggestion and verify it correctly redirects the browser
       // to that URL.
-      $suggestion_elements['test-suggester-url']->click();
+      $suggestion_elements['TÃ©st-suggester-url']->click();
       $this->logPageChange();
       $assert_session->addressEquals("/user/{$this->adminUser->id()}");
       return;
     }
 
     // Click one of the search key suggestions. The form should now auto-submit.
-    $suggestion_elements['test-suggester-1']->click();
+    $keys = 'TÃ©st-suggester-1';
+    $suggestion_elements[$keys]->click();
     $this->logPageChange();
     $assert_session->addressEquals('/search-api-autocomplete-test');
-    $this->assertRegExp('#[?&]keys=test-suggester-1#', $this->getUrl());
+    $keys = urlencode($keys);
+    $this->assertRegExp("#[?&]keys=$keys#", $this->getUrl());
 
     // Check that autocomplete in the "Name" filter works, too, and that it sets
     // the correct fields on the query.
@@ -328,7 +330,7 @@ class IntegrationTest extends IntegrationTestBase {
     $this->assertEquals(0, $query->getOption('offset'));
     $this->assertEquals(5, $query->getOption('limit'));
     $this->assertEquals(['body'], $query->getFulltextFields());
-    $this->assertEquals('test', $query->getOriginalKeys());
+    $this->assertEquals('TÃ©st', $query->getOriginalKeys());
 
     // Click on one of the suggestions and verify it takes us to the expected
     // page.
@@ -336,33 +338,6 @@ class IntegrationTest extends IntegrationTestBase {
     $this->logPageChange();
     $path = $this->entities[3]->toUrl()->getInternalPath();
     $assert_session->addressEquals('/' . $path);
-  }
-
-  /**
-   * Retrieves autocomplete suggestions from a field on the current page.
-   *
-   * @param string $field_html_id
-   *   (optional) The HTML ID of the field.
-   * @param string $input
-   *   (optional) The input to write into the field.
-   *
-   * @return \Behat\Mink\Element\NodeElement[]
-   *   The suggestion elements from the page.
-   */
-  protected function getAutocompleteSuggestions($field_html_id = 'edit-keys', $input = 'test') {
-    $assert_session = $this->assertSession();
-    $field = $assert_session->elementExists('css', "input[data-drupal-selector=\"$field_html_id\"]");
-    $field->setValue(substr($input, 0, -1));
-    $this->getSession()->getDriver()->keyDown($field->getXpath(), substr($input, -1));
-
-    $element = $assert_session->waitOnAutocomplete();
-    $this->assertTrue($element && $element->isVisible());
-    $this->logPageChange();
-
-    // Contrary to documentation, this can also return NULL. Therefore, we need
-    // to make sure to return an array even in this case.
-    $page = $this->getSession()->getPage();
-    return $page->findAll('css', '.ui-autocomplete .ui-menu-item') ?: [];
   }
 
   /**
@@ -404,7 +379,7 @@ class IntegrationTest extends IntegrationTestBase {
     $expected = [
       'display: page',
       'filter: keys',
-      'q: test',
+      'q: TÃ©st',
       "search_api_autocomplete_search: {$this->searchId}",
     ];
     $this->assertEquals($expected, $suggestions, 'Unexpected suggestions returned by custom script.');

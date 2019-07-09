@@ -27,12 +27,14 @@ abstract class IntegrationTestBase extends JavascriptTestBase {
    * @param string $field_html_id
    *   (optional) The HTML ID of the field.
    * @param string $input
-   *   (optional) The input to write into the field.
+   *   (optional) The input to write into the field. The default contains
+   *   uppercase characters and accents to verify input is properly
+   *   preprocessed.
    *
    * @return \Behat\Mink\Element\NodeElement[]
    *   The suggestion elements from the page.
    */
-  protected function getAutocompleteSuggestions($field_html_id = 'edit-keys', $input = 'test') {
+  protected function getAutocompleteSuggestions($field_html_id = 'edit-keys', $input = 'TÃ©st') {
     $page = $this->getSession()->getPage();
     $assert_session = $this->assertSession();
     $field = $assert_session->elementExists('css', "input[data-drupal-selector=\"$field_html_id\"]");
