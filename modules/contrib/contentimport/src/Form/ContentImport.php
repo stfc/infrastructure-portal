@@ -362,7 +362,7 @@ class ContentImport extends ConfigFormBase {
                 $logVariationFields .= "Importing Content (" . $fieldNames[$f] . ") :: ";
                 $nodeArray[$fieldNames[$f]] = [
                   'value' => $data[$keyIndex[$fieldNames[$f]]],
-                  'format' => 'full_html',
+                  'format' => 'html_headers',
                 ];
                 $logVariationFields .= " Success \n";
                 break;
@@ -373,7 +373,7 @@ class ContentImport extends ConfigFormBase {
                 $nodeArray[$fieldNames[$f]] = [
                   'summary' => substr(strip_tags($data[$keyIndex[$fieldNames[$f]]]), 0, 100),
                   'value' => $data[$keyIndex[$fieldNames[$f]]],
-                  'format' => 'full_html',
+                  'format' => 'html_headers',
                 ];
                 $logVariationFields .= " Success \n";
 
@@ -446,6 +446,21 @@ class ContentImport extends ConfigFormBase {
                 /* In Progress */
                 break;
 
+              case 'list_string':
+                $logVariationFields .= "Importing Content (" . $fieldNames[$f] . ") :: ";
+                $listArray = explode(",", $data[$keyIndex[$fieldNames[$f]]]);
+                // Trim whitespace.
+                array_walk($listArray, 'trim');
+                $nodeArray[$fieldNames[$f]] = $listArray;
+                $logVariationFields .= " Success \n";
+                break;
+
+              case 'address':
+                $logVariationFields .= "Importing Content (" . $fieldNames[$f] . ") :: ";
+                $post_code = explode(",", $data[$keyIndex[$fieldNames[$f]]]);
+                array_walk($post_code, 'trim');
+                $logVariationFields .= " Success \n";
+
               default:
                 $nodeArray[$fieldNames[$f]] = $data[$keyIndex[$fieldNames[$f]]];
                 break;
@@ -462,6 +477,15 @@ class ContentImport extends ConfigFormBase {
           $nodeArray['sticky'] = 0;
           if ($nodeArray['title']['value'] != '') {
             $node = Node::create($nodeArray);
+            if (count($post_code) == 1) {
+              $node->field_q_6a->country_code = 'GB';
+              $node->field_q_6a->postal_code = $post_code[0];
+            }
+            else {
+              foreach ($post_code as $value) {
+                $node->field_q_6a[] = ['country_code' => 'GB', 'postal_code' => $value];
+              }
+            }
             $node->save();
             $logVariationFields .= "********************* Node Imported successfully ********************* \n\n";
             fwrite($logFile, $logVariationFields);
