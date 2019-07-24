@@ -23,7 +23,7 @@ function rii_mail_node_update(Drupal\node\NodeInterface $node) {
     $current_user_email = $current_user->getEmail();
 
     $from = NULL; //pass NULL so that from field will be set to site email
-    $UKRI_DM_email = "adam.laverack@stfc.ac.uk";  //Mailing list address for all UKRI data managers
+    $UKRI_DM_email = "infraportal@ukri.org";  //Mailing list address for all UKRI data managers
  
     switch ($node->get("moderation_state")->value) {
       case "draft":
