@@ -1,0 +1,13 @@
+rii_invitation.invite_page:
+  path: '/invite'
+  defaults:
+    _form: '\Drupal\rii_invitation\Form\InviteForm'
+  requirements:
+    _role: 'admin'
+
+rii_invitation.send_page:
+  path: '/send'
+  defaults:
+    _form: '\Drupal\rii_invitation\Form\SendForm'
+  requirements:
+    _role: 'admin'

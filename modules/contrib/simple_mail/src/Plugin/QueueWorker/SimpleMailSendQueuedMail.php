@@ -12,7 +12,6 @@ use Drupal\Core\Queue\QueueWorkerBase;
  * @QueueWorker(
  *   id = "simple_mail_queue",
  *   title = @Translation("Simple Mail Send Queued Email"),
- *   cron = {"time" = 60}
  * )
  */
 class SimpleMailSendQueuedMail extends QueueWorkerBase {
@@ -25,3 +24,4 @@ class SimpleMailSendQueuedMail extends QueueWorkerBase {
   }
 
 }
+
