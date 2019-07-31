@@ -45,7 +45,8 @@
         "drupal/simple_mail": "^1.1",
         "drupal/group": "^1.0@RC",
         "drupal/queue_ui": "^2.0",
-        "drupal/sharedemail": "^2.0"
+        "drupal/sharedemail": "^2.0",
+        "drupal/userprotect": "^1.0"
     },    
     "minimum-stability": "dev",
     "prefer-stable": true,
