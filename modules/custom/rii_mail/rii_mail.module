@@ -18,9 +18,6 @@ function rii_mail_node_update(Drupal\node\NodeInterface $node) {
     $author = $node->getOwner();    
     $author_name = $author->getDisplayName();
     $author_email = $author->getEmail();
- 
-    $current_user = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
-    $current_user_email = $current_user->getEmail();
 
     $from = NULL; //pass NULL so that from field will be set to site email
     $UKRI_DM_email = "infraportal@ukri.org";  //Mailing list address for all UKRI data managers
@@ -47,7 +44,7 @@ function rii_mail_node_update(Drupal\node\NodeInterface $node) {
 
 	<p>Reason given: '".$rii_reason."'</p>
 
-	<p>If you have queries about this request, you can email the data manager who responded to your submission at ".$current_user_email."</p>
+	<p>If you have queries about this request, please respond to this email.</p>
 
 	<p>You can view your group's managed infrastructures at https://infraportal.stfc.ac.uk/manage-groups</p>
 
@@ -66,7 +63,7 @@ function rii_mail_node_update(Drupal\node\NodeInterface $node) {
 
 	<p>Reason given: '".$rii_reason."'</p>
 
-	<p>If you have queries about this or would like to appeal this decision, you can email the data manager who responded to your submission at ".$current_user_email."</p>
+	<p>If you have queries about this or would like to appeal this decision, please respond to this email.</p>
 
 	<p>Kind regards,<br>
 	The UKRI Infrastructure Portal Team</p>";
