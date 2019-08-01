@@ -1,0 +1,6 @@
+name: RII cache disable
+description: Disable cache on manage infrastructure groups page; seems to cause problems with groups a user has been added to not showing up
+package: Custom
+
+type: module
+core: 8.x
