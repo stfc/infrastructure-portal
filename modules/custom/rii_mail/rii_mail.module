@@ -30,7 +30,7 @@ function rii_mail_node_update(Drupal\node\NodeInterface $node) {
 	"<p>Dear data manager,</p>
 
 	<p>A new research infrastructure has been submitted for approval to the infrastructure portal titled '" . $rii_title . "'. You can review the submitted 
-	infrastructure at: https://infraportal.stfc.ac.uk/admin/content.</p>";
+	infrastructure at: https://www.infraportal.co.uk/admin/content.</p>";
         simple_mail_send($from, $to, $subject, $body);
         break;
 
@@ -46,7 +46,7 @@ function rii_mail_node_update(Drupal\node\NodeInterface $node) {
 
 	<p>If you have queries about this request, please respond to this email.</p>
 
-	<p>You can view your group's managed infrastructures at https://infraportal.stfc.ac.uk/manage-groups</p>
+	<p>You can view your group's managed infrastructures at https://www.infraportal.co.uk/manage-groups</p>
 
 	<p>Kind regards,<br>
 	The UKRI Infrastructure Portal Team</p>";
@@ -76,7 +76,7 @@ function rii_mail_node_update(Drupal\node\NodeInterface $node) {
         $body = 
 	"<p>Dear ".$author_name.",</p>
 
-	<p>Your submission of '".$rii_title."' has been approved. You can view your group's managed infrastructures at https://infraportal.stfc.ac.uk/manage-groups</p>
+	<p>Your submission of '".$rii_title."' has been approved. You can view your group's managed infrastructures at https://www.infraportal.co.uk/manage-groups</p>
 
 	<p>Kind Regards,<br>
 	The UKRI Infrastructure Portal Team</p>";
@@ -96,7 +96,7 @@ function rii_mail_node_update(Drupal\node\NodeInterface $node) {
 	and update them if neccesary once every year.</p>
 
 	<p>Your infrastructure titled '".$rii_title."' has been published for over a year now and requires such an update. Please check the infrastructure via your group's page at 
-	https://infraportal.stfc.ac.uk/manage-groups and see if the details are still correct. To change details and mark the infrastructure as up to date, 
+	https://www.infraportal.co.uk/manage-groups and see if the details are still correct. To change details and mark the infrastructure as up to date, 
 	you can click edit on the manage infrastructure page and make any neccesary changes, before changing the state to 'Approved and published' in the drop-down 
 	box at the bottom of the page and clicking save.</p>
 
@@ -116,7 +116,7 @@ function rii_mail_node_update(Drupal\node\NodeInterface $node) {
 	"<p>Dear data manager,</p>
 
 	<p>The research infrastructure titled '".$rii_title."' has not been updated after 2 consecutive requests to the author to update it. No action will be taken
-	 yet but you may want to investigate this. You can administer infrastructures at https://infraportal.stfc.ac.uk/admin/content.</p>
+	 yet but you may want to investigate this. You can administer infrastructures at https://www.infraportal.co.uk/admin/content.</p>
 
 	<p>To ensure the infrastructure portal is not displaying incorrect information, we require the authors of infrastructures to periodically check and update the 
 	details of their infrastructures. The author will be sent update requests at 12 months and 13 months after their infrastructure was last updated, then again at 
@@ -133,7 +133,7 @@ function rii_mail_node_update(Drupal\node\NodeInterface $node) {
 
 	<p>The research infrastructure titled '".$rii_title."' is 36 months out of date and has been unpublished. The author has failed to respond to 4 requests. Please 
 	review and investigate this and consider whether the infrastructure should be deleted. You can administer infrastructures at 
-	https://infraportal.stfc.ac.uk/admin/content.</p>";
+	https://www.infraportal.co.uk/admin/content.</p>";
         simple_mail_send($from, $to, $subject, $body);
         break;
     }  
