@@ -15,9 +15,9 @@ function rii_mail_node_update(Drupal\node\NodeInterface $node) {
     $rii_title = $node->get("title")->value;
     $rii_reason = $node->get("field_reason_for_info_request_re")->value; //get reason for submission rejection field
 
-    $author = $node->getOwner();    
-    $author_name = $author->getDisplayName();
-    $author_email = $author->getEmail();
+    #$author = $node->getOwner();    
+    $author_name = "Infrastructure Manager";
+    $author_email = $node->get("field_entry_manager_email")->value;
 
     $from = NULL; //pass NULL so that from field will be set to site email
     $UKRI_DM_email = "infraportal@ukri.org";  //Mailing list address for all UKRI data managers
@@ -92,7 +92,7 @@ function rii_mail_node_update(Drupal\node\NodeInterface $node) {
         $body = 
 	"<p>Dear ".$author_name.",</p>
 
-	<p>To ensure the infrastructure portal is not displaying incorrect information, we ask that infrastructure managers check the details of their infrastructures 
+	<p>To ensure the infrastructure portal is not displaying incorrect information, we ask that infrastructure managers check the details of their infrastructure entries 
 	and update them if neccesary once every year.</p>
 
 	<p>Your infrastructure titled '".$rii_title."' has been published for over a year now and requires such an update. Please check the infrastructure via your group's page at 
@@ -115,11 +115,12 @@ function rii_mail_node_update(Drupal\node\NodeInterface $node) {
         $body = 
 	"<p>Dear data manager,</p>
 
-	<p>The research infrastructure titled '".$rii_title."' has not been updated after 2 consecutive requests to the author to update it. No action will be taken
-	 yet but you may want to investigate this. You can administer infrastructures at https://www.infraportal.co.uk/admin/content.</p>
+	<p>The research infrastructure titled '".$rii_title."' has not been updated after 2 consecutive requests to the entry manager to update it. No action will be taken
+	 yet but you may want to investigate this. You can administer infrastructures at https://www.infraportal.co.uk/admin/content. You can see the current entry manager email
+         by editing the infrastructure and looking at the 'Entry manager email' field.</p>
 
-	<p>To ensure the infrastructure portal is not displaying incorrect information, we require the authors of infrastructures to periodically check and update the 
-	details of their infrastructures. The author will be sent update requests at 12 months and 13 months after their infrastructure was last updated, then again at 
+	<p>To ensure the infrastructure portal is not displaying incorrect information, we require the entry managers of infrastructures to periodically check and update the 
+	details of their infrastructures. The entry manager will be sent update requests at 12 months and 13 months after their infrastructure was last updated, then again at 
 	24 and 25 months. Data managers will be notified at 14 months and then 26 months after the infrastructure was last updated. After 36 months, the infrastructure 
 	will be unpublished and an urgent notification sent to the data managers.</p>";
         simple_mail_send($from, $to, $subject, $body);
@@ -131,9 +132,9 @@ function rii_mail_node_update(Drupal\node\NodeInterface $node) {
         $body = 
 	"<p>Dear data manager,</p>
 
-	<p>The research infrastructure titled '".$rii_title."' is 36 months out of date and has been unpublished. The author has failed to respond to 4 requests. Please 
-	review and investigate this and consider whether the infrastructure should be deleted. You can administer infrastructures at 
-	https://www.infraportal.co.uk/admin/content.</p>";
+	<p>The research infrastructure titled '".$rii_title."' is 36 months out of date and has been unpublished. The entry manager has failed to respond to 4 requests. Please 
+	review and investigate this and consider whether the infrastructure should be deleted. You can administer infrastructures at https://www.infraportal.co.uk/admin/content
+        The current entry manager email can be found by editing the infrastructur and looking at the 'Entry manager email' field.</p>";
         simple_mail_send($from, $to, $subject, $body);
         break;
     }  
