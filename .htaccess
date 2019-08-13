@@ -3,7 +3,7 @@
         RewriteBase /
 
 	RewriteCond %{SERVER_PORT} 80 
-	RewriteRule ^(.*)$ https://infraportal.stfc.ac.uk/$1 [R,L]
+	RewriteRule ^(.*)$ https://www.infraportal.co.uk/$1 [R,L]
 
         # Removes index.php from ExpressionEngine URLs
         RewriteCond %{THE_REQUEST} ^GET.*index\.php [NC]
@@ -15,3 +15,4 @@
         RewriteCond %{REQUEST_FILENAME} !-d
         RewriteRule ^(.*)$ /index.php/$1 [L]
 </IfModule>
+
