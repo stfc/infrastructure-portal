@@ -1,5 +1,0 @@
-workbench.settings:
-  title: 'Workbench settings'
-  base_route_name: workbench.admin
-  names:
-    - workbench.settings

@@ -41,7 +41,6 @@ class ComposerStaticInitDrupal8
         array (
             'Zumba\\Mink\\Driver\\' => 18,
             'Zumba\\GastonJS\\' => 15,
-            'ZipStream\\' => 10,
             'Zend\\Stdlib\\' => 12,
             'Zend\\Feed\\' => 10,
             'Zend\\Escaper\\' => 13,
@@ -95,7 +94,6 @@ class ComposerStaticInitDrupal8
             'Symfony\\Cmf\\Component\\Routing\\' => 30,
             'Symfony\\Bridge\\PsrHttpMessage\\' => 30,
             'Symfony\\Bridge\\PhpUnit\\' => 23,
-            'Solarium\\' => 9,
             'SelfUpdate\\' => 11,
         ),
         'R' => 
@@ -222,10 +220,6 @@ class ComposerStaticInitDrupal8
         'Zumba\\GastonJS\\' => 
         array (
             0 => __DIR__ . '/..' . '/jcalderonzumba/gastonjs/src',
-        ),
-        'ZipStream\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/maennchen/zipstream-php/src',
         ),
         'Zend\\Stdlib\\' => 
         array (
@@ -378,10 +372,6 @@ class ComposerStaticInitDrupal8
         'Symfony\\Bridge\\PhpUnit\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/phpunit-bridge',
-        ),
-        'Solarium\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/solarium/solarium/src',
         ),
         'SelfUpdate\\' => 
         array (
