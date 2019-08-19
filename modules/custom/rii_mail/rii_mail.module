@@ -46,7 +46,7 @@ function rii_mail_node_update(Drupal\node\NodeInterface $node) {
 
 	<p>If you have queries about this request, please respond to this email.</p>
 
-	<p>You can view your group's managed infrastructures at https://www.infraportal.co.uk/manage-groups</p>
+	<p>You can view your group's managed infrastructures at https://www.infraportal.co.uk/admin/group</p>
 
 	<p>Kind regards,<br>
 	The UKRI Infrastructure Portal Team</p>";
@@ -76,7 +76,7 @@ function rii_mail_node_update(Drupal\node\NodeInterface $node) {
         $body = 
 	"<p>Dear ".$author_name.",</p>
 
-	<p>Your submission of '".$rii_title."' has been approved. You can view your group's managed infrastructures at https://www.infraportal.co.uk/manage-groups</p>
+	<p>Your submission of '".$rii_title."' has been approved. You can view your group's managed infrastructures at https://www.infraportal.co.uk/admin/group</p>
 
 	<p>Kind Regards,<br>
 	The UKRI Infrastructure Portal Team</p>";
@@ -96,7 +96,7 @@ function rii_mail_node_update(Drupal\node\NodeInterface $node) {
 	and update them if neccesary once every year.</p>
 
 	<p>Your infrastructure titled '".$rii_title."' has been published for over a year now and requires such an update. Please check the infrastructure via your group's page at 
-	https://www.infraportal.co.uk/manage-groups and see if the details are still correct. To change details and mark the infrastructure as up to date, 
+	https://www.infraportal.co.uk/admin/group and see if the details are still correct. To change details and mark the infrastructure as up to date, 
 	you can click edit on the manage infrastructure page and make any neccesary changes, before changing the state to 'Approved and published' in the drop-down 
 	box at the bottom of the page and clicking save.</p>
 
