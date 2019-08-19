@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "42b2271a2c37f5b1c98a249297a1e396",
+    "content-hash": "321fd95e7995b1dcff9403514703ce2a",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -3478,73 +3478,6 @@
             "support": {
                 "source": "https://git.drupalcode.org/project/smtp",
                 "issues": "https://www.drupal.org/project/issues/smtp"
-            }
-        },
-        {
-            "name": "drupal/social_api",
-            "version": "2.0.0-beta5",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/social_api.git",
-                "reference": "8.x-2.0-beta5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/social_api-8.x-2.0-beta5.zip",
-                "reference": "8.x-2.0-beta5",
-                "shasum": "9fa586e009fcf036c881d562b79938fba74fc789"
-            },
-            "require": {
-                "drupal/core": "~8.0",
-                "league/oauth2-client": "~2.0"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "branch-alias": {
-                    "dev-2.x": "2.x-dev"
-                },
-                "drupal": {
-                    "version": "8.x-2.0-beta5",
-                    "datestamp": "1549435380",
-                    "security-coverage": {
-                        "status": "not-covered",
-                        "message": "Beta releases are not covered by Drupal security advisories."
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "authors": [
-                {
-                    "name": "Getulio Sánchez (gvso)",
-                    "homepage": "https://www.drupal.org/u/gvso",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "Himansh Dixit (himanshu-dixit)",
-                    "homepage": "https://www.drupal.org/user/3510098",
-                    "email": "hudixt@gmail.com"
-                },
-                {
-                    "name": "e0ipso",
-                    "homepage": "https://www.drupal.org/user/550110"
-                },
-                {
-                    "name": "gvso",
-                    "homepage": "https://www.drupal.org/user/3101285"
-                },
-                {
-                    "name": "himanshu-dixit",
-                    "homepage": "https://www.drupal.org/user/3513954"
-                }
-            ],
-            "description": "Harmonizes social networking services in Drupal",
-            "homepage": "https://www.drupal.org/project/social_api",
-            "support": {
-                "source": "http://cgit.drupalcode.org/social_api",
-                "issues": "https://www.drupal.org/project/issues/social_api"
             }
         },
         {
