@@ -130,8 +130,9 @@ function gnode_update_8006() {
         $cache_metadata = $view->get($cache_metadata_key);
 
         // Remove the deleted cache context and add the updated metadata.
-        if ($key = array_search('group_membership.roles.permissions', $cache_metadata['contexts'])) {
-          unset($cache_metadata['tags'][$key]);
+        $key = array_search('group_membership.roles.permissions', $cache_metadata['contexts'], TRUE);
+        if ($key !== FALSE) {
+          unset($cache_metadata['contexts'][$key]);
         }
         $cache_metadata['max-age'] = -1;
         $cache_metadata['contexts'][] = 'route.group';

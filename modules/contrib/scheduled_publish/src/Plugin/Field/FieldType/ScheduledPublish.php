@@ -2,10 +2,11 @@
 
 namespace Drupal\scheduled_publish\Plugin\Field\FieldType;
 
+use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\TypedData\DataDefinition;
-use Drupal\datetime\Plugin\Field\FieldType\DateTimeItem;
+use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 
 /**
  * Plugin implementation of the 'scheduled_publish_type' field type.
@@ -15,10 +16,10 @@ use Drupal\datetime\Plugin\Field\FieldType\DateTimeItem;
  *   label = @Translation("Scheduled publish"),
  *   description = @Translation("Scheduled publish"),
  *   default_widget = "scheduled_publish",
- *   default_formatter = "datetime_default"
+ *   default_formatter = "scheduled_publish_generic_formatter"
  * )
  */
-class ScheduledPublish extends DateTimeItem {
+class ScheduledPublish extends FieldItemBase implements DateTimeItemInterface {
 
   /**
    * {@inheritdoc}
@@ -38,7 +39,18 @@ class ScheduledPublish extends DateTimeItem {
    * {@inheritdoc}
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
-    $properties = parent::propertyDefinitions($field_definition);
+
+    $properties['value'] = DataDefinition::create('datetime_iso8601')
+      ->setLabel(t('Date value'))
+      ->setRequired(TRUE);
+
+    $properties['date'] = DataDefinition::create('any')
+      ->setLabel(t('Computed date'))
+      ->setDescription(t('The computed DateTime object.'))
+      ->setComputed(TRUE)
+      ->setClass('\Drupal\datetime\DateTimeComputed')
+      ->setSetting('date source', 'value');
+
     $properties['moderation_state'] = DataDefinition::create('string')
       ->setLabel(t('The moderation state.'));
 
@@ -48,12 +60,35 @@ class ScheduledPublish extends DateTimeItem {
   /**
    * {@inheritdoc}
    */
-  public static function schema(FieldStorageDefinitionInterface $field_definition) {
-    $schema = parent::schema($field_definition);
-    $schema['columns']['moderation_state'] = [
-      'type'   => 'varchar',
-      'length' => 32,
-    ];
+  public function onChange($property_name, $notify = TRUE) {
+    // Enforce that the computed date is recalculated.
+    if ($property_name === 'value') {
+      $this->date = NULL;
+    }
+    parent::onChange($property_name, $notify);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function schema(FieldStorageDefinitionInterface $field_definition): array {
+    $schema =
+      [
+        'columns' => [
+          'moderation_state' => [
+            'type' => 'varchar',
+            'length' => 32,
+          ],
+          'value' => [
+            'description' => 'The date value.',
+            'type' => 'varchar',
+            'length' => 20,
+          ],
+        ],
+        'indexes' => [
+          'value' => ['value'],
+        ],
+      ];
 
     return $schema;
   }

@@ -1,7 +1,7 @@
 status: true
 dependencies:
   module:
-  - scheduled_publish
+    - scheduled_publish
 title: 'Default cron handler'
 id: scheduled_publish_cron
 weight: 0
@@ -11,7 +11,7 @@ scheduler:
   id: simple
   configuration:
     rules:
-    - '* * * * *'
+      - '* * * * *'
 launcher:
   id: serial
   configuration:

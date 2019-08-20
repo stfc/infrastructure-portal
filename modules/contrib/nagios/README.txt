@@ -177,10 +177,10 @@ This hook is used to provide a way to enabled/disable a certain module from
 being included in Nagios reports and alerts.
 
 function yourmodule_nagios_info() {
-  return array(
+  return [
     'name'   => 'Your module name',
     'id'     => 'IDENTIFIER',
-  );
+  ];
 }
 
 
@@ -191,16 +191,16 @@ of checking something and reporting back a status and some info.
 
 The data returned is an associative array as follows:
 
-array(
+[
   'key'  => 'IDENTIFIER',
-  'data' => array(
+  'data' => [
     'status' => STATUS_CODE,
     'type'   => 'state', // Can be a 'state' for OK, Warning, Critical, Unknown)
                          // or can be 'perf', which does cause an alert, but
                          // can be processed later by custom programs.
     'text'   => 'Text description for the problem',
-  ),
-);
+  ],
+];
 
 STATUS_CODE must be one of the following, defined in nagios.module:
 
@@ -212,30 +212,30 @@ STATUS_CODE must be one of the following, defined in nagios.module:
 Here is an example:
 
 function yourmodule_nagios() {
-  $data = array();
+  $data = [];
 
   // Check something ...
   $count = ...
   if (!$count) {
-    $data = array(
+    $data = [
       'status' => NAGIOS_STATUS_WARNING,
       'type'   => 'state',
       'text'   => t('A very brief description of the warning'),
-    );
+    ];
   }
   else {
-    $data = array(
+    $data = [
       'status' => NAGIOS_STATUS_OK,
       'type'   => 'state',
       'text'   => '',
-    );
+    ];
   }
 
-  return array(
+  return [
     'key' => 'IDENTIFIER', // This identifier will appear on Nagios' monitoring
                            // pages and alerts.
     'data' => $data,
-  );
+  ];
 }
 
 For a real life example on how to use this API, check the performance.module in

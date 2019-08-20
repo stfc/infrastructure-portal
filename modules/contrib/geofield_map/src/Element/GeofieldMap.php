@@ -82,7 +82,7 @@ class GeofieldMap extends GeofieldElementBase {
 
     if (strlen($element['#gmap_api_key']) > 0) {
       $element['map']['geocode'] = [
-        '#prefix' => '<label>' . t("Geocode address") . '</label>',
+        '#title' => t("Geocode address"),
         '#type' => 'textfield',
         '#description' => t("Use this to geocode your search location."),
         '#size' => 60,
@@ -266,7 +266,6 @@ class GeofieldMap extends GeofieldElementBase {
     $element['#attached']['drupalSettings'] = [
       'geofield_map' => $settings,
     ];
-
 
     return $element;
   }

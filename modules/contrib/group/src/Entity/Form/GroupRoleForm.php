@@ -119,10 +119,10 @@ class GroupRoleForm extends EntityForm {
     $t_args = ['%label' => $group_role->label()];
 
     if ($status == SAVED_UPDATED) {
-      drupal_set_message($this->t('The group role %label has been updated.', $t_args));
+      $this->messenger()->addStatus($this->t('The group role %label has been updated.', $t_args));
     }
     elseif ($status == SAVED_NEW) {
-      drupal_set_message($this->t('The group role %label has been added.', $t_args));
+      $this->messenger()->addStatus($this->t('The group role %label has been added.', $t_args));
 
       $context = array_merge($t_args, ['link' => $group_role->toLink($this->t('View'), 'collection')->toString()]);
       $this->logger('group')->notice('Added group role %label.', $context);

@@ -34,8 +34,8 @@ class GroupTokenReplaceTest extends GroupTokenReplaceKernelTestBase {
     $tests['[group:type-name]'] = 'Default label';
     $tests['[group:title]'] = Html::escape($group->label());
     $tests['[group:langcode]'] = $group->language()->getId();
-    $tests['[group:url]'] = $group->url('canonical', $url_options);
-    $tests['[group:edit-url]'] = $group->url('edit-form', $url_options);
+    $tests['[group:url]'] = $group->toUrl('canonical', $url_options)->toString();
+    $tests['[group:edit-url]'] = $group->toUrl('edit-form', $url_options)->toString();
     $tests['[group:author]'] = $account->getAccountName();
     $tests['[group:author:uid]'] = $group->getOwnerId();
     $tests['[group:author:name]'] = $account->getAccountName();

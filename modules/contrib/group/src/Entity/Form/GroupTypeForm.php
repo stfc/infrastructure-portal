@@ -212,10 +212,10 @@ class GroupTypeForm extends BundleEntityFormBase {
     }
 
     if ($status == SAVED_UPDATED) {
-      drupal_set_message($this->t('The group type %label has been updated.', $t_args));
+      $this->messenger()->addStatus($this->t('The group type %label has been updated.', $t_args));
     }
     elseif ($status == SAVED_NEW) {
-      drupal_set_message($this->t('The group type %label has been added. You may now configure which roles a group creator will receive by editing the group type.', $t_args));
+      $this->messenger()->addStatus($this->t('The group type %label has been added. You may now configure which roles a group creator will receive by editing the group type.', $t_args));
       $context = array_merge($t_args, ['link' => $type->toLink($this->t('View'), 'collection')->toString()]);
       $this->logger('group')->notice('Added group type %label.', $context);
 

@@ -36,7 +36,7 @@ pipelines:
       - step:
           name: Push dev to drupal.org
           script:
-            - git remote add drupal DerH4NNES@git.drupal.org:project/scheduled_publish.git
+            - git remote add drupal git@git.drupal.org:project/scheduled_publish.git
             - git config --global push.default matching
             - git config --global user.name "SaschaHannes"
             - git push drupal $BITBUCKET_BRANCH
@@ -45,7 +45,7 @@ pipelines:
       - step:
           name: Pushing tags to drupal.org
           script:
-            - git remote add drupal DerH4NNES@git.drupal.org:project/scheduled_publish.git
+            - git remote add drupal git@git.drupal.org:project/scheduled_publish.git
             - git config --global push.default matching
             - git config --global user.name "SaschaHannes"
             - git push drupal $BITBUCKET_BRANCH --tags

@@ -3,6 +3,7 @@
 namespace Drupal\Tests\nagios\Kernel;
 
 use Drupal\Core\Access\AccessResultNeutral;
+use Drupal\Core\Database\Database;
 use Drupal\KernelTests\Core\Entity\EntityKernelTestBase;
 use Drupal\nagios\Controller\StatuspageController;
 
@@ -27,6 +28,19 @@ class NagiosCheckTest extends EntityKernelTestBase {
     parent::setUp();
     $this->installConfig('nagios');
     StatuspageController::setNagiosStatusConstants();
+  }
+
+  public function testElysiaCronCheck() {
+    $conn = Database::getConnection();
+    $conn->query('CREATE TABLE {elysia_cron} (last_aborted int(11), name varchar(8), last_abort_function varchar(8))');
+    $status = nagios_check_elysia_cron()['data']['status'];
+    self::assertEquals(NAGIOS_STATUS_OK, $status);
+
+    $conn->query("INSERT INTO {elysia_cron} VALUES (1, 'toad', 'toadcron')");
+    $status = nagios_check_elysia_cron()['data']['status'];
+    self::assertEquals(NAGIOS_STATUS_CRITICAL, $status);
+
+    $conn->query('DROP TABLE {elysia_cron}');
   }
 
   public function testCronCheck() {

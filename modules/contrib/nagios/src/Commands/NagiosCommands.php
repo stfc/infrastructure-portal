@@ -2,6 +2,7 @@
 
 namespace Drupal\nagios\Commands;
 
+use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\nagios\Controller\StatuspageController;
 use Drush\Commands\DrushCommands;
 
@@ -38,8 +39,10 @@ class NagiosCommands extends DrushCommands {
         $nagios_data[$check] = $result;
       }
       else {
-        $this->logger()->error($check . ' is not a valid nagios check.');
-        $this->displayValidChecks();
+        $logger = $this->logger();
+        $logger->error($check . ' is not a valid nagios check.');
+        $logger->error(dt('Run `drush nagios-list` for valid checks.'));
+
         return 1;
       }
     }
@@ -52,15 +55,42 @@ class NagiosCommands extends DrushCommands {
     return $severity;
   }
 
-  private function displayValidChecks() {
-    $valid_functions = array_keys(nagios_functions());
+  /**
+   * Prints valid checks for `drush nagios`.
+   *
+   * @command nagios-list
+   * @table-style default
+   * @field-labels
+   *   check: Check
+   *   description: Description
+   *   module: Module
+   * @default-fields check,description
+   * @filter-output
+   * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+   */
+  public function nagios_list() {
+    $valid_checks = nagios_functions();
+    $rows = [];
+    foreach ($valid_checks as $check => $description) {
+      $rows[$check] = [
+        'check' => $check,
+        'description' => $description,
+        'module' => 'nagios',
+      ];
+    }
+
     $moduleHandler = \Drupal::moduleHandler();
     $module_names = $moduleHandler->getImplementations('nagios');
-    $valid_checks = array_merge($valid_functions, $module_names);
-    $text = join(', ', $valid_checks);
-    echo "Valid checks are $text.\n";
-    echo "
-      To implement your own check within a Drupal module, please read 
-      the section 'API' section within README.txt.\n";
+    foreach ($module_names as $name) {
+      $info = $moduleHandler->invoke($name, 'nagios_info');
+      $description = !empty($info['name']) && is_string($info['name']) ? $info['name'] : '';
+      $rows[$name] = [
+        'check' => $name,
+        'description' => $description,
+        'module' => $name,
+      ];
+    }
+    ksort($rows);
+    return new RowsOfFields($rows);
   }
 }

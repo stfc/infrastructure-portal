@@ -8,10 +8,10 @@ configure: 'group.settings'
 dependencies:
   - 'drupal:options'
   - 'drupal:system (>=8.6.0)'
-  - 'entity:entity (>=8.x-1.0-rc1)'
+  - 'entity:entity'
 
-# Information added by Drupal.org packaging script on 2019-06-12
-version: '8.x-1.0-rc3'
+# Information added by Drupal.org packaging script on 2019-07-18
+version: '8.x-1.0-rc4'
 core: '8.x'
 project: 'group'
-datestamp: 1560345805
+datestamp: 1563460136

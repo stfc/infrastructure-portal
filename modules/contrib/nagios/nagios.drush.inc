@@ -5,7 +5,6 @@
  * Provides drush integration for the Nagios module.
  */
 
-use Drupal\Component\Utility\Unicode;
 use Drupal\update\UpdateManagerInterface;
 
 /**
@@ -242,7 +241,7 @@ function nagios_updates($data) {
         }
       }
 
-      $row_key = Unicode::strtolower($project['name']);
+      $row_key = mb_strtolower($project['name']);
       if (!isset($updates[$row_key])) {
         $updates[$row_key] = [];
       }

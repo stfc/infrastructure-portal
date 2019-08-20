@@ -5,6 +5,7 @@
  * Main file for Nagios service monitoring.
  */
 
+use Drupal\Core\Database\Database;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
@@ -23,9 +24,9 @@ if (class_exists(StatuspageController::class)) {
 function nagios_status() {
   return [
     NAGIOS_STATUS_OK => 'OK',
-    NAGIOS_STATUS_UNKNOWN => 'UNKNOWN',
     NAGIOS_STATUS_WARNING => 'WARNING',
     NAGIOS_STATUS_CRITICAL => 'CRITICAL',
+    NAGIOS_STATUS_UNKNOWN => 'UNKNOWN',
   ];
 }
 
@@ -42,7 +43,7 @@ function nagios_functions() {
     'modules' => t('Check the number of modules for nagios performance data'),
     'themes' => t('Check the number of themes for nagios performance data'),
   ];
-  $moduleHandler = \Drupal::moduleHandler();
+  $moduleHandler = Drupal::moduleHandler();
   if ($moduleHandler->moduleExists('update')) {
     $functions['requirements'] = t('Checking of hook_requirements. This includes the following: module updates, database schema, files directory writability, update.php protected, Lots of other good stuff ...');
   }
@@ -66,8 +67,8 @@ function nagios_functions() {
 function nagios_invoke_all($hook = 'nagios') {
   $return = [];
   $args = func_get_args();
-  $moduleHandler = \Drupal::moduleHandler();
-  $config = \Drupal::config('nagios.settings');
+  $moduleHandler = Drupal::moduleHandler();
+  $config = Drupal::config('nagios.settings');
   foreach ($moduleHandler->getImplementations($hook) as $module) {
     // If we're running the checks, see if the checks for that module
     // are enabled, otherwise just continue:
@@ -95,8 +96,8 @@ function nagios_nagios_info() {
  * Implements hook_nagios_settings().
  */
 function nagios_nagios_settings() {
-  $config = \Drupal::config('nagios.settings');
-  $moduleHandler = \Drupal::moduleHandler();
+  $config = Drupal::config('nagios.settings');
+  $moduleHandler = Drupal::moduleHandler();
 
   foreach (nagios_functions() as $function => $description) {
     $var = 'nagios_func_' . $function;
@@ -165,7 +166,7 @@ function nagios_nagios_settings() {
  * @param FormStateInterface $form_state
  */
 function nagios_form_system_theme_settings_alter(&$form, FormStateInterface $form_state) {
-  if (isset($form['confirm']) || !\Drupal::currentUser()
+  if (isset($form['confirm']) || !Drupal::currentUser()
       ->hasPermission('administer nagios ignore')) {
     return;
   }
@@ -175,11 +176,11 @@ function nagios_form_system_theme_settings_alter(&$form, FormStateInterface $for
   if (isset($buildinfo['args'][0]) && !empty($buildinfo['args'][0])) {
     $theme_name = \Drupal\Component\Utility\Html::escape($buildinfo['args'][0]);
 
-    $config = \Drupal::config('nagios.settings');
+    $config = Drupal::config('nagios.settings');
     $nagios_ignored_themes = $config->get('nagios.ignored_themes') ?: [];
 
     // Check to see if the theme is provided by core, or if it's contrib/custom.
-    $projects_data = \Drupal::service('update.manager')->getProjects();
+    $projects_data = Drupal::service('update.manager')->getProjects();
     if (array_key_exists($theme_name, $projects_data)) {
       // This is a settings page for a non-core theme, so add the checkbox.
       $form['nagios'] = [
@@ -214,7 +215,7 @@ function nagios_system_theme_settings_form_submit(/** @noinspection PhpUnusedPar
   // Grab the name of the theme.
   if (isset($buildinfo['args'][0]) && !empty($buildinfo['args'][0])) {
     $theme_name = \Drupal\Component\Utility\Html::escape($buildinfo['args'][0]);
-    $config = \Drupal::config('nagios.settings');
+    $config = Drupal::config('nagios.settings');
     $nagios_ignored_themes = $config->get('nagios.ignored_themes') ?: [];
 
     if ($form_state->getValue('nagios_ignore')) {
@@ -224,7 +225,7 @@ function nagios_system_theme_settings_form_submit(/** @noinspection PhpUnusedPar
       unset($nagios_ignored_themes[$theme_name]);
     }
 
-    \Drupal::configFactory()->getEditable('nagios.settings')
+    Drupal::configFactory()->getEditable('nagios.settings')
       ->set('nagios.ignored_themes', $nagios_ignored_themes)
       ->save();
   }
@@ -234,7 +235,7 @@ function nagios_system_theme_settings_form_submit(/** @noinspection PhpUnusedPar
  * Implements hook_nagios().
  */
 function nagios_nagios() {
-  $config = \Drupal::config('nagios.settings');
+  $config = Drupal::config('nagios.settings');
 
   $status = [];
   foreach (nagios_functions() as $function => $description) {
@@ -257,14 +258,14 @@ function nagios_nagios() {
  *   Array containing state data
  */
 function nagios_check_requirements() {
-  $config = \Drupal::config('nagios.settings');
+  $config = Drupal::config('nagios.settings');
   // Load .install files:
   include_once DRUPAL_ROOT . '/core/includes/install.inc';
   module_load_include('inc', 'update', 'update.compare');
 
   drupal_load_updates();
 
-  $project_data = \Drupal::service('update.manager')->getProjects();
+  $project_data = Drupal::service('update.manager')->getProjects();
   $nagios_ignored_modules = $config->get('nagios.ignored_modules') ?: [];
   $nagios_ignored_themes = $config->get('nagios.ignored_themes') ?: [];
   $nagios_ignored_projects = $nagios_ignored_modules + $nagios_ignored_themes;
@@ -300,10 +301,11 @@ function nagios_check_requirements() {
   // data from other ctools sub-modules that we want to still monitor.
   // The only safe way is to use module_invoke, calling each module in turn.
   /** @var \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler */
-  $moduleHandler = \Drupal::service('module_handler');
+  $moduleHandler = Drupal::service('module_handler');
 
   // Cycle through enabled modules for requirements checks.
   $reqs = [];
+  $module_data = [];
   foreach ($enabled_modules as $module_name) {
 
     $requirements_data = $moduleHandler->invoke($module_name, 'requirements', ['runtime']);
@@ -425,8 +427,8 @@ function nagios_check_watchdog() {
   // @TODO Allow datetime ranges
 
   // Constuct base select query.
-  /** @noinspection PhpDeprecationInspection */
-  $query = db_select('watchdog', 'w');
+  $conn = Database::getConnection();
+  $query = $conn->select('watchdog', 'w');
   $query->fields('w', [
     'wid',
     'uid',
@@ -442,8 +444,8 @@ function nagios_check_watchdog() {
   $query->orderBy('timestamp', 'DESC');
   $query->orderBy('severity');
 
-  $state = \Drupal::state();
-  $config = \Drupal::config('nagios.settings');
+  $state = Drupal::state();
+  $config = Drupal::config('nagios.settings');
 
   $query->range(0, 10);
 
@@ -525,6 +527,7 @@ function nagios_check_watchdog() {
     // @TODO Untangle l(truncate_utf8(_dblog_format_message($dblog), 56, TRUE, TRUE), 'admin/reports/event/'. $dblog->wid, array('html' => TRUE)) and use it here
 
     try {
+      /** @noinspection SuspiciousBinaryOperationInspection */
       if (PHP_VERSION_ID >= 70000) {
         /* graceful approach which supports older versions of PHP */
         $variables = unserialize($row['variables'], ['allowed_classes' => [TranslatableMarkup::class]]);
@@ -533,15 +536,16 @@ function nagios_check_watchdog() {
         /** @noinspection UnserializeExploitsInspection */
         $variables = unserialize($row['variables']);
       }
-    } catch (\Throwable $exception) {
+    } catch (Throwable $exception) {
       // ignore "Object of class __PHP_Incomplete_Class could not be converted to string"
       $variables = FALSE;
     }
 
     if (is_array($variables)) {
       foreach ($variables as $key => $value) {
-        if ($value instanceof __PHP_Incomplete_Class)
+        if ($value instanceof __PHP_Incomplete_Class) {
           continue;
+        }
         $message = str_replace((string) $key, $value, $message);
       }
     }
@@ -583,16 +587,16 @@ function nagios_check_watchdog() {
  *   Array containing state data
  */
 function nagios_check_cron() {
-  $config = \Drupal::config('nagios.settings');
+  $config = Drupal::config('nagios.settings');
   // Determine when cron last ran.
-  $cron_last = \Drupal::state()->get('system.cron_last');
+  $cron_last = Drupal::state()->get('system.cron_last');
   if (!is_numeric($cron_last)) {
-    $cron_last = \Drupal::state()->get('install_time', 0);
+    $cron_last = Drupal::state()->get('install_time', 0);
   }
   $mins = $config->get('nagios.cron_duration') ?: 60;
 
   $next_expected_cron_run = $cron_last + $mins * 60;
-  $request_time = \Drupal::time()->getRequestTime();
+  $request_time = Drupal::time()->getRequestTime();
   if ($request_time > $next_expected_cron_run) {
     $data = [
       'status' => NAGIOS_STATUS_CRITICAL,
@@ -620,8 +624,8 @@ function nagios_check_cron() {
  * @return array
  */
 function nagios_check_elysia_cron() {
-  /** @noinspection PhpDeprecationInspection */
-  $result = db_query('select * from elysia_cron where last_aborted <> 0');
+  $conn = Database::getConnection();
+  $result = $conn->query('SELECT * FROM {elysia_cron} WHERE last_aborted <> 0');
   $err_crons = [];
   foreach ($result as $blocked_cron) {
     $err_crons[] = $blocked_cron;
@@ -660,7 +664,7 @@ function nagios_check_elysia_cron() {
  * @return array
  */
 function nagios_check_session_anon() {
-  $interval = \Drupal::time()->getRequestTime() - 900; // Last 15 minutes
+  $interval = Drupal::time()->getRequestTime() - 900; // Last 15 minutes
   $count = nagios_session_count($interval, TRUE);
 
   $data = [
@@ -681,7 +685,7 @@ function nagios_check_session_anon() {
  * @return array with performance data
  */
 function nagios_check_session_auth() {
-  $interval = \Drupal::time()->getRequestTime() - 900; // Last 15 minutes
+  $interval = Drupal::time()->getRequestTime() - 900; // Last 15 minutes
   $count = nagios_session_count($interval, FALSE);
 
   $data = [
@@ -703,7 +707,7 @@ function nagios_check_session_auth() {
  */
 function nagios_check_nodes() {
   // Include number of active nodes in the report.
-  $connection = \Drupal::database();
+  $connection = Drupal::database();
   $count = (int) $connection->query("SELECT COUNT(*) FROM {node_field_data} WHERE status = 1")
     ->fetchField();
   $data = [
@@ -725,7 +729,7 @@ function nagios_check_nodes() {
  */
 function nagios_check_users() {
   // Include number of active users in the report.
-  $connection = \Drupal::database();
+  $connection = Drupal::database();
   $count = (int) $connection->query("SELECT COUNT(*) FROM {users_field_data} WHERE status = 1")
     ->fetchField();
   $data = [
@@ -741,7 +745,7 @@ function nagios_check_users() {
 }
 
 function nagios_check_modules() {
-  $config = \Drupal::config('core.extension');
+  $config = Drupal::config('core.extension');
   $modules = $config->get('module');
   $count = count($modules);
   $data = [
@@ -785,7 +789,7 @@ function nagios_nagios_check($function) {
  * @return array with performance information
  */
 function nagios_check_themes() {
-  $config = \Drupal::config('core.extension');
+  $config = Drupal::config('core.extension');
   $themes = $config->get('theme');
   $count = count($themes);
   $data = [
@@ -820,8 +824,8 @@ function nagios_check_themes() {
  *   separate module providing proper user statistics.
  */
 function nagios_session_count($timestamp = 0, $anonymous = TRUE) {
-  /** @noinspection PhpDeprecationInspection */
-  $query = db_select('sessions');
+  $conn = Drupal::database();
+  $query = $conn->select('sessions');
   $query->addExpression('COUNT(sid)', 'count');
   $query->condition('timestamp', $timestamp, '>=');
   $query->condition('uid', 0, $anonymous ? '=' : '>');

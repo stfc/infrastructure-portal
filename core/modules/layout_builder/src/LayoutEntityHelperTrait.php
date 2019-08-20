@@ -63,14 +63,12 @@ trait LayoutEntityHelperTrait {
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The entity.
-   * @param string $view_mode
-   *   A view mode identifier.
    *
    * @return \Drupal\layout_builder\Section[]
    *   The entity layout sections if available.
    */
-  protected function getEntitySections(EntityInterface $entity, $view_mode = 'full') {
-    $section_storage = $this->getSectionStorageForEntity($entity, $view_mode);
+  protected function getEntitySections(EntityInterface $entity) {
+    $section_storage = $this->getSectionStorageForEntity($entity);
     return $section_storage ? $section_storage->getSections() : [];
   }
 
@@ -101,13 +99,14 @@ trait LayoutEntityHelperTrait {
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The entity.
-   * @param string $view_mode
-   *   A view mode identifier.
    *
    * @return \Drupal\layout_builder\SectionStorageInterface|null
-   *   The section storage or NULL if its context requirements are not met.
+   *   The section storage if found otherwise NULL.
    */
-  protected function getSectionStorageForEntity(EntityInterface $entity, $view_mode = 'full') {
+  protected function getSectionStorageForEntity(EntityInterface $entity) {
+    // @todo Take into account other view modes in
+    //   https://www.drupal.org/node/3008924.
+    $view_mode = 'full';
     if ($entity instanceof LayoutEntityDisplayInterface) {
       $contexts['display'] = EntityContext::fromEntity($entity);
     }

@@ -6,7 +6,7 @@ use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
+use Drupal\scheduled_publish\Plugin\Field\FieldType\ScheduledPublish;
 
 /**
  * Plugin implementation of the 'scheduled_publish_widget' widget.
@@ -26,7 +26,7 @@ class ScheduledPublishWidget extends WidgetBase {
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state): array {
 
-    if($form_state->getBuildInfo()['base_form_id'] !== 'field_config_form') {
+    if ($form_state->getBuildInfo()['base_form_id'] !== 'field_config_form') {
       $element['moderation_state'] = [
         '#type' => 'select',
         '#title' => $this->t('Moderation state'),
@@ -39,14 +39,14 @@ class ScheduledPublishWidget extends WidgetBase {
     }
 
     $element['value'] = [
-      '#type'           => 'datetime',
-      '#title'          => $this->t('Scheduled date'),
-      '#description'    => $this->t('The datetime of the scheduled publish'),
-      '#weight'         => '0',
-      '#default_value'  => NULL,
+      '#type' => 'datetime',
+      '#title' => $this->t('Scheduled date'),
+      '#description' => $this->t('The datetime of the scheduled publish'),
+      '#weight' => '0',
+      '#default_value' => NULL,
       '#date_increment' => 1,
-      '#date_timezone'  => drupal_get_user_timezone(),
-      '#required'       => $element['#required'],
+      '#date_timezone' => drupal_get_user_timezone(),
+      '#required' => $element['#required'],
     ];
 
     if ($items[$delta]->moderation_state) {
@@ -70,9 +70,9 @@ class ScheduledPublishWidget extends WidgetBase {
     foreach ($values as &$item) {
       if (!empty($item['value']) && $item['value'] instanceof DrupalDateTime) {
         $date = $item['value'];
-        $format = DateTimeItemInterface::DATETIME_STORAGE_FORMAT;
+        $format = ScheduledPublish::DATETIME_STORAGE_FORMAT;
         // Adjust the date for storage.
-        $date->setTimezone(new \DateTimezone(DateTimeItemInterface::STORAGE_TIMEZONE));
+        $date->setTimezone(new \DateTimezone(ScheduledPublish::STORAGE_TIMEZONE));
         $item['value'] = $date->format($format);
       }
     }
@@ -80,6 +80,14 @@ class ScheduledPublishWidget extends WidgetBase {
     return $values;
   }
 
+  /**
+   * Creates default datetime object
+   *
+   * @param \Drupal\Core\Datetime\DrupalDateTime $date
+   * @param string $timezone
+   *
+   * @return \Drupal\Core\Datetime\DrupalDateTime
+   */
   private function createDefaultValue(DrupalDateTime $date, string $timezone): DrupalDateTime {
     $date->setTimezone(new \DateTimeZone($timezone));
 
