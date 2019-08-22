@@ -1,0 +1,9 @@
+name: RII Mass Mail 
+description: Custom module (made by Adam Laverack) to allow sending of emails to all users who have not logged in yet. 
+package: Custom
+
+type: module
+core: 8.x
+
+dependencies:
+  - simple_mail:simple_mail
