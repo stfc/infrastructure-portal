@@ -1,5 +1,5 @@
 name: RII Mass Mail 
-description: Custom module (made by Adam Laverack) to allow sending of emails to all users who have not logged in yet. 
+description: Custom module (made by Adam Laverack) to allow sending of emails to owners of all nodes that haven't been updated yet. 
 package: Custom
 
 type: module
