@@ -116,6 +116,7 @@ class ComposerStaticInitDrupal8
         'L' => 
         array (
             'League\\OAuth2\\Client\\' => 21,
+            'League\\Csv\\' => 11,
             'League\\Container\\' => 17,
             'League\\CommonMark\\' => 18,
         ),
@@ -412,6 +413,10 @@ class ComposerStaticInitDrupal8
         'League\\OAuth2\\Client\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/oauth2-client/src',
+        ),
+        'League\\Csv\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/csv/src',
         ),
         'League\\Container\\' => 
         array (

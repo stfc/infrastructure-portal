@@ -1,8 +1,16 @@
-<svg width="100%" height="11" xmlns="http://www.w3.org/2000/svg">
+<svg width="100%" height="22" xmlns="http://www.w3.org/2000/svg">
  <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
   <title>Layer 1</title>
-  <rect id="svg_1" height="11" width="25%" y="0" x="0" stroke-width="0" stroke="#000" fill="#1d4f91"/>
-  <rect id="svg_2" height="11" width="25%" y="0" x="25%" stroke-width="0" stroke="#000" fill="#8c4799"/>
-  <rect id="svg_3" height="11" width="25%" y="0" x="50%" stroke-width="0" stroke="#000" fill="#008275"/>
-  <rect id="svg_4" height="11" width="25%" y="0" x="75%" stroke-width="0" stroke="#000" fill="#c34613"/>
+  <rect id="svg_01" height="22" width="8.33%" y="0" x="0" stroke-width="0" stroke="#000" fill="#FF6900"/>
+  <rect id="svg_02" height="22" width="8.33%" y="0" x="8.33%" stroke-width="0" stroke="#000" fill="#FF9D1B"/>
+  <rect id="svg_03" height="22" width="8.34%" y="0" x="16.66%" stroke-width="0" stroke="#000" fill="#FBBB10"/>
+  <rect id="svg_04" height="22" width="8.33%" y="0" x="25%" stroke-width="0" stroke="#000" fill="#67C04D"/>
+  <rect id="svg_05" height="22" width="8.33%" y="0" x="33.33%" stroke-width="0" stroke="#000" fill="#00A788"/>
+  <rect id="svg_06" height="22" width="8.34%" y="0" x="41.66%" stroke-width="0" stroke="#000" fill="#34D5AE"/>
+  <rect id="svg_07" height="22" width="8.33%" y="0" x="50%" stroke-width="0" stroke="#000" fill="#00BED5"/>
+  <rect id="svg_08" height="22" width="8.33%" y="0" x="58.33%" stroke-width="0" stroke="#000" fill="#1E5DF8"/>
+  <rect id="svg_09" height="22" width="8.34%" y="0" x="66.66%" stroke-width="0" stroke="#000" fill="#E355EC"/>
+  <rect id="svg_10" height="22" width="8.33%" y="0" x="75%" stroke-width="0" stroke="#000" fill="#BE2BBB"/>
+  <rect id="svg_11" height="22" width="8.34%" y="0" x="83.33%" stroke-width="0" stroke="#000" fill="#FF5A5A"/>
+  <rect id="svg_12" height="22" width="8.33%" y="0" x="91.67%" stroke-width="0" stroke="#000" fill="#E94D36"/>
 </svg>

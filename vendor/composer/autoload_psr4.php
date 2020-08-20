@@ -57,6 +57,7 @@ return array(
     'Michelf\\' => array($vendorDir . '/michelf/php-markdown/Michelf'),
     'Masterminds\\' => array($vendorDir . '/masterminds/html5/src'),
     'League\\OAuth2\\Client\\' => array($vendorDir . '/league/oauth2-client/src'),
+    'League\\Csv\\' => array($vendorDir . '/league/csv/src'),
     'League\\Container\\' => array($vendorDir . '/league/container/src'),
     'League\\CommonMark\\' => array($vendorDir . '/league/commonmark/src'),
     'JsonSchema\\' => array($vendorDir . '/justinrainbow/json-schema/src/JsonSchema'),
