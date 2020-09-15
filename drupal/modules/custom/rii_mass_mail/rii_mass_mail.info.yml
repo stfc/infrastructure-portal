@@ -1,0 +1,9 @@
+name: RII Mass Mail 
+description: Custom module (made by Adam Laverack) to allow sending of emails to owners of all nodes that haven't been updated yet. 
+package: Custom
+
+type: module
+core: 8.x
+
+dependencies:
+  - simple_mail:simple_mail

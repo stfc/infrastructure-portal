@@ -2,7 +2,6 @@
 namespace Drush\Drupal\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;
-use Drupal\Core\Database\Database;
 use Drush\Commands\DrushCommands;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
@@ -25,7 +24,7 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
     }
 
     /**
-     * Sanitize usernames and passwords. This also an example of how to write a
+     * Sanitize emails and passwords. This also an example of how to write a
      * database sanitizer for sql-sync.
      *
      * @hook post-command sql-sanitize
@@ -87,10 +86,10 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
     /**
      * @hook option sql-sanitize
      * @option sanitize-email The pattern for test email addresses in the
-     *   sanitization operation, or "no" to keep email addresses unchanged. May
-     *   contain replacement patterns %uid, %mail or %name.
+     *   sanitization operation, or <info>no</info> to keep email addresses unchanged. May
+     *   contain replacement patterns <info>%uid</info>, <info>%mail</info> or <info>%name</info>.
      * @option sanitize-password
-     *   By default, passwords are randomized. Specify 'no' to disable that. Specify any other value to set all passwords
+     *   By default, passwords are randomized. Specify <info>no</info> to disable that. Specify any other value to set all passwords
      *   to that value.
      */
     public function options($options = ['sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => null])

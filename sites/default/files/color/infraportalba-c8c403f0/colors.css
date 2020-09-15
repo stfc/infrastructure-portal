@@ -1,0 +1,105 @@
+/* ---------- Color Module Styles ----------- */
+
+body {
+  color: #3b3b3b;
+  background: #292929;
+}
+
+#page,
+#main-wrapper,
+.region-primary-menu .menu-item a.is-active,
+.region-primary-menu .menu-item--active-trail a {
+  background: #ffffff;
+}
+
+.tabs ul.primary li a.is-active {
+  background-color: #ffffff;
+}
+
+.tabs ul.primary li.is-active a {
+  background-color: #ffffff;
+  border-bottom-color: #ffffff;
+}
+
+#navbar-top {
+  background-color: #ffffff;
+}
+
+#navbar-main {
+  background-color: #7bccfe;
+}
+
+a,
+.link {
+  color: #0fd4d6;
+}
+
+a:hover,
+a:focus,
+.link:hover,
+.link:focus {
+  color: #0cfcff;
+}
+
+a:active,
+.link:active {
+  color: #43fdff;
+}
+
+.page-item.active .page-link {
+  background-color: #0fd4d6;
+  border-color: #0fd4d6;
+}
+
+.page-link,
+.page-link:hover {
+  color: #0fd4d6;
+}
+
+.sidebar .block {
+  background-color: #f6f6f2;
+  border-color: #f9f9f9;
+}
+
+.btn-primary {
+  background-color: #35d222;
+  border-color: #35d222;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #08dd1d;
+}
+
+.site-footer {
+  background: #292929;
+}
+
+.region-header,
+.region-header a,
+.region-header li a.is-active,
+.region-header .site-branding__text,
+.region-header .site-branding,
+.region-header .site-branding__text a,
+.region-header .site-branding a,
+.region-secondary-menu .menu-item a,
+.region-secondary-menu .menu-item a.is-active {
+  color: #fffeff;
+}
+
+
+/* ---------- Color Form ----------- */
+
+[dir="rtl"] .color-form .color-palette {
+  margin-left: 0;
+  margin-right: 20px;
+}
+
+[dir="rtl"] .color-form .form-item label {
+  float: right;
+}
+
+[dir="rtl"] .color-form .color-palette .lock {
+  right: -20px;
+  left: 0;
+}

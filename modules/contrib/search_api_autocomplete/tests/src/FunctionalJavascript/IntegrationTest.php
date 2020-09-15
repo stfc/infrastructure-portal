@@ -100,7 +100,6 @@ class IntegrationTest extends IntegrationTestBase {
     $assert_session = $this->assertSession();
 
     $this->drupalGet($this->getAdminPath());
-    $assert_session->statusCodeEquals(200);
 
     // Check whether all expected groups and searches are present.
     $assert_session->pageTextContains('Search views');
@@ -116,7 +115,6 @@ class IntegrationTest extends IntegrationTestBase {
 
     $this->click('[data-drupal-selector="edit-actions-submit"]');
     $this->logPageChange(NULL, 'POST');
-    $assert_session->statusCodeEquals(200);
     $assert_session->pageTextContains('The settings have been saved. Please remember to set the permissions for the newly enabled searches.');
   }
 
@@ -128,7 +126,6 @@ class IntegrationTest extends IntegrationTestBase {
 
     $this->click('.dropbutton-action a[href$="/edit"]');
     $this->logPageChange();
-    $assert_session->statusCodeEquals(200);
     $assert_session->addressEquals($this->getAdminPath('edit'));
 
     // The "Server" suggester shouldn't be available at that point.
@@ -156,6 +153,10 @@ class IntegrationTest extends IntegrationTestBase {
     $this->assertNotVisible('css', 'details[data-drupal-selector="edit-suggesters-settings-server"]');
     $this->click('input[name="suggesters[enabled][server]"]');
     $this->assertVisible('css', 'details[data-drupal-selector="edit-suggesters-settings-server"]');
+
+    $page = $this->getSession()->getPage();
+    $page->findButton('Show row weights')->click();
+    $page->find('css', 'details[data-drupal-selector="edit-suggesters-settings-server"] > summary')->click();
 
     // Submit the form with some values for all fields.
     $edit = [
@@ -211,7 +212,6 @@ class IntegrationTest extends IntegrationTestBase {
     $assert_session = $this->assertSession();
 
     $this->drupalGet('search-api-autocomplete-test');
-    $assert_session->statusCodeEquals(200);
 
     $assert_session->elementAttributeContains('css', 'input[data-drupal-selector="edit-keys"]', 'data-search-api-autocomplete-search', $this->searchId);
 
@@ -232,23 +232,23 @@ class IntegrationTest extends IntegrationTestBase {
     }
     $expected = [
       [
-        'keys' => 'TÃ©st-suggester-1',
+        'keys' => 'Tést-suggester-1',
         'count' => 1,
       ],
       [
-        'keys' => 'TÃ©st-suggester-2',
+        'keys' => 'Tést-suggester-2',
         'count' => 2,
       ],
       [
-        'keys' => 'TÃ©st-suggester-url',
+        'keys' => 'Tést-suggester-url',
         'count' => NULL,
       ],
       [
-        'keys' => 'TÃ©st-backend-1',
+        'keys' => 'Tést-backend-1',
         'count' => 1,
       ],
       [
-        'keys' => 'TÃ©st-backend-2',
+        'keys' => 'Tést-backend-2',
         'count' => 2,
       ],
     ];
@@ -264,19 +264,18 @@ class IntegrationTest extends IntegrationTestBase {
     if ($click_url_suggestion) {
       // Click the URL suggestion and verify it correctly redirects the browser
       // to that URL.
-      $suggestion_elements['TÃ©st-suggester-url']->click();
+      $suggestion_elements['Tést-suggester-url']->click();
       $this->logPageChange();
       $assert_session->addressEquals("/user/{$this->adminUser->id()}");
       return;
     }
 
     // Click one of the search key suggestions. The form should now auto-submit.
-    $keys = 'TÃ©st-suggester-1';
+    $keys = 'Tést-suggester-1';
     $suggestion_elements[$keys]->click();
     $this->logPageChange();
-    $assert_session->addressEquals('/search-api-autocomplete-test');
     $keys = urlencode($keys);
-    $this->assertRegExp("#[?&]keys=$keys#", $this->getUrl());
+    $assert_session->addressMatches("#^/search-api-autocomplete-test\\?(?:.*&)?keys=$keys#");
 
     // Check that autocomplete in the "Name" filter works, too, and that it sets
     // the correct fields on the query.
@@ -292,6 +291,10 @@ class IntegrationTest extends IntegrationTestBase {
     $assert_session = $this->assertSession();
 
     // First, enable "Live results" as the only suggester.
+    $this->drupalGet($this->getAdminPath('edit'));
+    $page = $this->getSession()->getPage();
+    $this->click('input[name="suggesters[enabled][live_results]"]');
+    $page->find('css', 'details[data-drupal-selector="edit-suggesters-settings-live-results"] > summary')->click();
     $edit = [
       'suggesters[enabled][live_results]' => TRUE,
       'suggesters[enabled][search_api_autocomplete_test]' => FALSE,
@@ -299,7 +302,7 @@ class IntegrationTest extends IntegrationTestBase {
       'suggesters[settings][live_results][fields][name]' => FALSE,
       'suggesters[settings][live_results][fields][body]' => TRUE,
     ];
-    $this->drupalPostForm($this->getAdminPath('edit'), $edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, 'Save');
     $assert_session->pageTextContains('The autocompletion settings for the search have been saved.');
 
     // Then, set an appropriate search method for the test backend.
@@ -308,7 +311,6 @@ class IntegrationTest extends IntegrationTestBase {
 
     // Get the autocompletion results.
     $this->drupalGet('search-api-autocomplete-test');
-    $assert_session->statusCodeEquals(200);
     $suggestions = [];
     foreach ($this->getAutocompleteSuggestions() as $element) {
       $label = $this->getElementText($element, '.autocomplete-suggestion-label');
@@ -330,7 +332,7 @@ class IntegrationTest extends IntegrationTestBase {
     $this->assertEquals(0, $query->getOption('offset'));
     $this->assertEquals(5, $query->getOption('limit'));
     $this->assertEquals(['body'], $query->getFulltextFields());
-    $this->assertEquals('TÃ©st', $query->getOriginalKeys());
+    $this->assertEquals('Tést', $query->getOriginalKeys());
 
     // Click on one of the suggestions and verify it takes us to the expected
     // page.
@@ -357,15 +359,17 @@ class IntegrationTest extends IntegrationTestBase {
     // This gets the request path to the "tests" directory.
     $path = str_replace(DRUPAL_ROOT, '', dirname(dirname(__DIR__)));
     $path .= '/search_api_autocomplete_test/core/custom_autocomplete_script.php';
+    $this->click('input[name="suggesters[enabled][custom_script]"]');
+    $page = $this->getSession()->getPage();
+    $page->find('css', 'details[data-drupal-selector="edit-suggesters-settings-custom-script"] > summary')
+      ->click();
     $edit = [
       'suggesters[enabled][custom_script]' => TRUE,
       'suggesters[settings][custom_script][path]' => $path,
     ];
     $this->submitForm($edit, 'Save');
-    $assert_session->statusCodeEquals(200);
 
     $this->drupalGet('search-api-autocomplete-test');
-    $assert_session->statusCodeEquals(200);
 
     $assert_session->elementAttributeContains('css', 'input[data-drupal-selector="edit-keys"]', 'data-search-api-autocomplete-search', $this->searchId);
 
@@ -379,15 +383,17 @@ class IntegrationTest extends IntegrationTestBase {
     $expected = [
       'display: page',
       'filter: keys',
-      'q: TÃ©st',
+      'q: Tést',
       "search_api_autocomplete_search: {$this->searchId}",
     ];
     $this->assertEquals($expected, $suggestions, 'Unexpected suggestions returned by custom script.');
 
     $this->drupalGet($this->getAdminPath('edit'));
+    $page = $this->getSession()->getPage();
+    $page->find('css', 'details[data-drupal-selector="edit-suggesters-settings-custom-script"] > summary')->click();
     $edit = [
-      'suggesters[enabled][custom_script]' => FALSE,
       'suggesters[settings][custom_script][path]' => '',
+      'suggesters[enabled][custom_script]' => FALSE,
     ];
     $this->submitForm($edit, 'Save');
   }
@@ -413,7 +419,6 @@ class IntegrationTest extends IntegrationTestBase {
     $assert_session->pageTextNotContains('Test suggester');
 
     $this->drupalGet('search-api-autocomplete-test');
-    $assert_session->statusCodeEquals(200);
     $assert_session->pageTextContains("Creek Mary's Blood");
 
     $autocomplete_path = "search_api_autocomplete/{$this->searchId}";
@@ -473,13 +478,13 @@ class IntegrationTest extends IntegrationTestBase {
       }
 
       $this->drupalGet('search-api-autocomplete-test');
-      $assert_session->statusCodeEquals(200);
       $element = $assert_session->elementExists('css', 'input[data-drupal-selector="edit-keys"]');
       $this->assertFalse($element->hasAttribute('data-search-api-autocomplete-search'), "Autocomplete should not be enabled for $user_type user without the necessary permission.");
       $this->assertFalse($element->hasClass('form-autocomplete'), "Autocomplete should not be enabled for $user_type user without the necessary permission.");
 
       $this->drupalGet($autocomplete_path, ['query' => ['q' => 'test']]);
-      $assert_session->statusCodeEquals(403);
+      $assert_session->pageTextContains('Access denied');
+      $assert_session->pageTextContains('You are not authorized to access this page.');
 
       $rid = $account ? 'authenticated' : 'anonymous';
       $role = Role::load($rid);
@@ -487,14 +492,18 @@ class IntegrationTest extends IntegrationTestBase {
       $role->save();
 
       $this->drupalGet('search-api-autocomplete-test');
-      $assert_session->statusCodeEquals(200);
       $element = $assert_session->elementExists('css', 'input[data-drupal-selector="edit-keys"]');
       $this->assertTrue($element->hasAttribute('data-search-api-autocomplete-search'), "Autocomplete should not be enabled for $user_type user without the necessary permission.");
-      $this->assertContains($this->searchId, $element->getAttribute('data-search-api-autocomplete-search'), "Autocomplete should not be enabled for $user_type user without the necessary permission.");
+      // @todo Remove check once we depend on Drupal 9.0+.
+      if (method_exists($this, 'assertStringContainsString')) {
+        $this->assertStringContainsString($this->searchId, $element->getAttribute('data-search-api-autocomplete-search'), "Autocomplete should not be enabled for $user_type user without the necessary permission.");
+      }
+      else {
+        $this->assertContains($this->searchId, $element->getAttribute('data-search-api-autocomplete-search'), "Autocomplete should not be enabled for $user_type user without the necessary permission.");
+      }
       $this->assertTrue($element->hasClass('form-autocomplete'), "Autocomplete should not be enabled for $user_type user without the necessary permission.");
 
       $this->drupalGet($autocomplete_path, ['query' => ['q' => 'test']]);
-      $assert_session->statusCodeEquals(200);
     }
     $this->drupalLogin($this->adminUser);
   }
@@ -503,6 +512,8 @@ class IntegrationTest extends IntegrationTestBase {
    * Verifies that admin pages are properly protected.
    */
   protected function checkAdminAccess() {
+    $assert_session = $this->assertSession();
+
     // Make sure anonymous and non-admin users cannot access admin pages.
     $users = [
       'non-admin' => $this->normalUser,
@@ -520,8 +531,8 @@ class IntegrationTest extends IntegrationTestBase {
       }
       foreach ($paths as $label => $path) {
         $this->drupalGet($path);
-        $status_code = $this->getSession()->getStatusCode();
-        $this->assertEquals(403, $status_code, "The $label is accessible for $user_type users.");
+        $assert_session->pageTextContains('Access denied');
+        $assert_session->pageTextContains('You are not authorized to access this page.');
       }
     }
     $this->drupalLogin($this->adminUser);
@@ -582,38 +593,6 @@ class IntegrationTest extends IntegrationTestBase {
     $html_output .= '<hr />' . $session->getPage()->getContent();;
     $html_output .= $this->getHtmlOutputHeaders();
     $this->htmlOutput($html_output);
-  }
-
-  /**
-   * Asserts that the specified element exists and is visible.
-   *
-   * @param string $selector_type
-   *   The element selector type (CSS, XPath).
-   * @param string|array $selector
-   *   The element selector. Note: the first found element is used.
-   *
-   * @throws \Behat\Mink\Exception\ElementHtmlException
-   *   Thrown if the element doesn't exist.
-   */
-  protected function assertVisible($selector_type, $selector) {
-    $element = $this->assertSession()->elementExists($selector_type, $selector);
-    $this->assertTrue($element->isVisible(), "Element should be visible but isn't.");
-  }
-
-  /**
-   * Asserts that the specified element exists but is not visible.
-   *
-   * @param string $selector_type
-   *   The element selector type (CSS, XPath).
-   * @param string|array $selector
-   *   The element selector. Note: the first found element is used.
-   *
-   * @throws \Behat\Mink\Exception\ElementHtmlException
-   *   Thrown if the element doesn't exist.
-   */
-  protected function assertNotVisible($selector_type, $selector) {
-    $element = $this->assertSession()->elementExists($selector_type, $selector);
-    $this->assertFalse($element->isVisible(), "Element shouldn't be visible but is.");
   }
 
 }

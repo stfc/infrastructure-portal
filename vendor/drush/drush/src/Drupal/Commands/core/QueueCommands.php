@@ -5,7 +5,6 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\Core\Queue\QueueInterface;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drupal\Core\Queue\RequeueException;
 use Drupal\Core\Queue\SuspendQueueException;
@@ -57,18 +56,22 @@ class QueueCommands extends DrushCommands
      * @aliases queue-run
      * @param string $name The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.
      * @validate-queue name
-     * @option time-limit The maximum number of seconds allowed to run the queue
+     * @option time-limit The maximum number of seconds allowed to run the queue.
+     * @option items-limit The maximum number of items allowed to run the queue.
+     * @option lease-time The maximum number of seconds that an item remains claimed.
      */
-    public function run($name, $options = ['time-limit' => self::REQ])
+    public function run($name, $options = ['time-limit' => self::REQ, 'items-limit' => self::REQ, 'lease-time' => self::REQ])
     {
         $time_limit = (int) $options['time-limit'];
+        $items_limit = (int) $options['items-limit'];
         $start = microtime(true);
         $worker = $this->getWorkerManager()->createInstance($name);
         $end = time() + $time_limit;
         $queue = $this->getQueue($name);
         $count = 0;
+        $remaining = $time_limit;
 
-        while ((!$time_limit || time() < $end) && ($item = $queue->claimItem())) {
+        while ((!$time_limit || $remaining > 0) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem($options['lease_time']))) {
             try {
                 $this->logger()->info(dt('Processing item @id from @name queue.', ['@name' => $name, '@id' => $item->item_id]));
                 $worker->processItem($item->data);
@@ -82,7 +85,12 @@ class QueueCommands extends DrushCommands
                 // release the item.
                 $queue->releaseItem($item);
                 throw new \Exception($e->getMessage());
+            } catch (\Exception $e) {
+                // In case of any other kind of exception, log it and leave the
+                // item in the queue to be processed again later.
+                $this->logger()->error($e->getMessage());
             }
+            $remaining = $end - time();
         }
         $elapsed = microtime(true) - $start;
         $this->logger()->success(dt('Processed @count items from the @name queue in @elapsed sec.', ['@count' => $count, '@name' => $name, '@elapsed' => round($elapsed, 2)]));
@@ -98,6 +106,7 @@ class QueueCommands extends DrushCommands
      *   items: Items
      *   class: Class
      *
+     * @filter-default-field queue
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function qList($options = ['format' => 'table'])

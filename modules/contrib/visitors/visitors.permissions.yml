@@ -1,4 +1,0 @@
-access visitors:
-  title: 'Access visitors page'
-  description: 'Access visitors page which gives statistics on number of visitors, page hits etc.'
-  restrict access: TRUE

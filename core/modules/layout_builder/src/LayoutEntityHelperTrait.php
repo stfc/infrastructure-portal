@@ -63,12 +63,14 @@ trait LayoutEntityHelperTrait {
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The entity.
+   * @param string $view_mode
+   *   A view mode identifier.
    *
    * @return \Drupal\layout_builder\Section[]
    *   The entity layout sections if available.
    */
-  protected function getEntitySections(EntityInterface $entity) {
-    $section_storage = $this->getSectionStorageForEntity($entity);
+  protected function getEntitySections(EntityInterface $entity, $view_mode = 'full') {
+    $section_storage = $this->getSectionStorageForEntity($entity, $view_mode);
     return $section_storage ? $section_storage->getSections() : [];
   }
 
@@ -99,16 +101,16 @@ trait LayoutEntityHelperTrait {
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The entity.
+   * @param string $view_mode
+   *   A view mode identifier.
    *
    * @return \Drupal\layout_builder\SectionStorageInterface|null
-   *   The section storage if found otherwise NULL.
+   *   The section storage or NULL if its context requirements are not met.
    */
-  protected function getSectionStorageForEntity(EntityInterface $entity) {
-    // @todo Take into account other view modes in
-    //   https://www.drupal.org/node/3008924.
-    $view_mode = 'full';
+  protected function getSectionStorageForEntity(EntityInterface $entity, $view_mode = 'full') {
     if ($entity instanceof LayoutEntityDisplayInterface) {
       $contexts['display'] = EntityContext::fromEntity($entity);
+      $contexts['view_mode'] = new Context(new ContextDefinition('string'), $entity->getMode());
     }
     else {
       $contexts['entity'] = EntityContext::fromEntity($entity);
@@ -132,7 +134,7 @@ trait LayoutEntityHelperTrait {
    * @return bool
    *   TRUE if the entity is using a field for a layout override.
    *
-   * @deprecated in Drupal 8.7.0 and will be removed before Drupal 9.0.0.
+   * @deprecated in drupal:8.7.0 and is removed from drupal:9.0.0.
    *   To determine if an entity has a layout override, use
    *   \Drupal\layout_builder\LayoutEntityHelperTrait::getSectionStorageForEntity()
    *   and check whether the result is an instance of

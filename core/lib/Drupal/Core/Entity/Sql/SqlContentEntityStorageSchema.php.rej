@@ -1,0 +1,140 @@
+--- core/lib/Drupal/Core/Entity/Sql/SqlContentEntityStorageSchema.php
++++ core/lib/Drupal/Core/Entity/Sql/SqlContentEntityStorageSchema.php
+@@ -28,6 +28,9 @@
+ class SqlContentEntityStorageSchema implements DynamicallyFieldableEntityStorageSchemaInterface {
+ 
+   use DependencySerializationTrait;
++  use SqlFieldableEntityTypeListenerTrait {
++    onFieldableEntityTypeUpdate as traitOnFieldableEntityTypeUpdate;
++  }
+ 
+   /**
+    * The entity manager.
+@@ -833,8 +1012,6 @@
+    * @return array
+    *   A Schema API array describing the entity schema, excluding dedicated
+    *   field tables.
+-   *
+-   * @throws \Drupal\Core\Field\FieldException
+    */
+   protected function getEntitySchema(ContentEntityTypeInterface $entity_type, $reset = FALSE) {
+     $this->checkEntityType($entity_type);
+@@ -842,7 +1019,9 @@
+ 
+     if (!isset($this->schema[$entity_type_id]) || $reset) {
+       // Prepare basic information about the entity type.
+-      $tables = $this->getEntitySchemaTables();
++      /** @var \Drupal\Core\Entity\Sql\DefaultTableMapping $table_mapping */
++      $table_mapping = $this->storage->getCustomTableMapping($entity_type, $this->fieldStorageDefinitions);
++      $tables = $this->getEntitySchemaTables($table_mapping);
+ 
+       // Initialize the table schema.
+       $schema[$tables['base_table']] = $this->initializeBaseTable($entity_type);
+@@ -857,7 +1036,6 @@
+       }
+ 
+       // We need to act only on shared entity schema tables.
+-      $table_mapping = $this->storage->getCustomTableMapping($entity_type, $this->fieldStorageDefinitions);
+       $table_names = array_diff($table_mapping->getTableNames(), $table_mapping->getDedicatedTableNames());
+       foreach ($table_names as $table_name) {
+         if (!isset($schema[$table_name])) {
+@@ -915,15 +1093,19 @@
+   /**
+    * Gets a list of entity type tables.
+    *
++   * @param \Drupal\Core\Entity\Sql\TableMappingInterface $table_mapping
++   *   A table mapping object.
++   *
+    * @return array
+    *   A list of entity type tables, keyed by table key.
+    */
+-  protected function getEntitySchemaTables() {
++  protected function getEntitySchemaTables(TableMappingInterface $table_mapping) {
++    /** @var \Drupal\Core\Entity\Sql\DefaultTableMapping $table_mapping */
+     return array_filter([
+-      'base_table' => $this->storage->getBaseTable(),
+-      'revision_table' => $this->storage->getRevisionTable(),
+-      'data_table' => $this->storage->getDataTable(),
+-      'revision_data_table' => $this->storage->getRevisionDataTable(),
++      'base_table' => $table_mapping->getBaseTable(),
++      'revision_table' => $table_mapping->getRevisionTable(),
++      'data_table' => $table_mapping->getDataTable(),
++      'revision_data_table' => $table_mapping->getRevisionDataTable(),
+     ]);
+   }
+ 
+@@ -1469,14 +1651,22 @@
+    *
+    * @param \Drupal\Core\Field\FieldStorageDefinitionInterface $storage_definition
+    *   The storage definition of the field being created.
++   * @param bool $only_save
++   *   (optional) Whether to skip modification of database tables and only save
++   *   the schema data for future comparison. For internal use only. This is
++   *   used by postUpdateEntityTypeSchema() after it has already fully created
++   *   the dedicated tables.
+    */
+-  protected function createDedicatedTableSchema(FieldStorageDefinitionInterface $storage_definition) {
++  protected function createDedicatedTableSchema(FieldStorageDefinitionInterface $storage_definition, $only_save = FALSE) {
+     $schema = $this->getDedicatedTableSchema($storage_definition);
+-    foreach ($schema as $name => $table) {
+-      // Check if the table exists because it might already have been
+-      // created as part of the earlier entity type update event.
+-      if (!$this->database->schema()->tableExists($name)) {
+-        $this->database->schema()->createTable($name, $table);
++
++    if (!$only_save) {
++      foreach ($schema as $name => $table) {
++        // Check if the table exists because it might already have been
++        // created as part of the earlier entity type update event.
++        if (!$this->database->schema()->tableExists($name)) {
++          $this->database->schema()->createTable($name, $table);
++        }
+       }
+     }
+     $this->saveFieldSchemaData($storage_definition, $schema);
+@@ -2132,8 +2322,8 @@
+    * @param \Drupal\Core\Field\FieldStorageDefinitionInterface $storage_definition
+    *   The field storage definition.
+    * @param \Drupal\Core\Entity\ContentEntityTypeInterface $entity_type
+-   *   (optional) The entity type definition. Defaults to the one returned by
+-   *   the entity manager.
++   *   (optional) The entity type definition. Defaults to the one provided by
++   *   the entity storage.
+    *
+    * @return array
+    *   The schema definition for the table with the following keys:
+@@ -2148,10 +2338,11 @@
+    * @see hook_schema()
+    */
+   protected function getDedicatedTableSchema(FieldStorageDefinitionInterface $storage_definition, ContentEntityTypeInterface $entity_type = NULL) {
++    $entity_type = $entity_type ?: $this->entityType;
+     $description_current = "Data storage for {$storage_definition->getTargetEntityTypeId()} field {$storage_definition->getName()}.";
+     $description_revision = "Revision archive storage for {$storage_definition->getTargetEntityTypeId()} field {$storage_definition->getName()}.";
+ 
+-    $id_definition = $this->fieldStorageDefinitions[$this->entityType->getKey('id')];
++    $id_definition = $this->fieldStorageDefinitions[$entity_type->getKey('id')];
+     if ($id_definition->getType() == 'integer') {
+       $id_schema = [
+         'type' => 'int',
+@@ -2170,11 +2361,11 @@
+     }
+ 
+     // Define the revision ID schema.
+-    if (!$this->entityType->isRevisionable()) {
++    if (!$entity_type->isRevisionable()) {
+       $revision_id_schema = $id_schema;
+       $revision_id_schema['description'] = 'The entity revision id this data is attached to, which for an unversioned entity type is the same as the entity id';
+     }
+-    elseif ($this->fieldStorageDefinitions[$this->entityType->getKey('revision')]->getType() == 'integer') {
++    elseif ($this->fieldStorageDefinitions[$entity_type->getKey('revision')]->getType() == 'integer') {
+       $revision_id_schema = [
+         'type' => 'int',
+         'unsigned' => TRUE,
+@@ -2298,7 +2489,6 @@
+     $dedicated_table_schema = [$table_mapping->getDedicatedDataTableName($storage_definition) => $data_schema];
+ 
+     // If the entity type is revisionable, construct the revision table.
+-    $entity_type = $entity_type ?: $this->entityType;
+     if ($entity_type->isRevisionable()) {
+       $revision_schema = $data_schema;
+       $revision_schema['description'] = $description_revision;

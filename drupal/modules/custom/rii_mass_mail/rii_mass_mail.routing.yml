@@ -1,0 +1,13 @@
+rii_mass_mail.mass_mail_queue:
+  path: '/mass_mail_queue'
+  defaults:
+    _form: '\Drupal\rii_mass_mail\Form\MailQueueForm'
+  requirements:
+    _role: 'admin+ukri_data_manager'
+
+rii_mass_mail.mass_mail_send:
+  path: '/mass_mail_send'
+  defaults:
+    _form: '\Drupal\rii_mass_mail\Form\MailSendForm'
+  requirements:
+    _role: 'admin+ukri_data_manager'

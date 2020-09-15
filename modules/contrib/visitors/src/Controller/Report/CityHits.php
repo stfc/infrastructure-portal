@@ -181,7 +181,7 @@ class CityHits extends ControllerBase {
         ),*/
         $data->visitors_url,
         \Drupal::service('renderer')->render($username),
-        \Drupal::l($this->t('details'),\Drupal\Core\Url::fromRoute('visitors.hit_details',array("hit_id"=>$data->visitors_id)))
+        Link::fromTextAndUrl($this->t('details'),Url::fromRoute('visitors.hit_details',array("hit_id"=>$data->visitors_id)))
       );
     }
 

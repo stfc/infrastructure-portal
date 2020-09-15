@@ -350,7 +350,7 @@ class LayoutBuilderEntityViewDisplay extends BaseEntityViewDisplay implements La
    * @return \Drupal\layout_builder\Section[]
    *   The sections.
    *
-   * @deprecated in Drupal 8.7.0 and will be removed before Drupal 9.0.0.
+   * @deprecated in drupal:8.7.0 and is removed from drupal:9.0.0.
    *   \Drupal\layout_builder\SectionStorage\SectionStorageManagerInterface::findByContext()
    *   should be used instead. See https://www.drupal.org/node/3022574.
    */
@@ -527,9 +527,9 @@ class LayoutBuilderEntityViewDisplay extends BaseEntityViewDisplay implements La
       // Builder component. It follows the structure prescribed by the
       // documentation of hook_quickedit_render_field().
       if (count($parts) === 6 && $parts[0] === 'layout_builder') {
-        list(, $delta, $component_uuid, $entity_id) = QuickEditIntegration::deconstructViewModeId($original_mode);
+        list($view_mode, $delta, $component_uuid, $entity_id) = QuickEditIntegration::deconstructViewModeId($original_mode);
         $entity = $this->entityTypeManager()->getStorage($this->getTargetEntityTypeId())->load($entity_id);
-        $sections = $this->getEntitySections($entity);
+        $sections = $this->getEntitySections($entity, $view_mode);
         if (isset($sections[$delta])) {
           $component = $sections[$delta]->getComponent($component_uuid);
           $plugin = $component->getPlugin();

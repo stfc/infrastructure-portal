@@ -1,0 +1,15 @@
+name: Entity Update
+type: module
+description: 'Update Drupal 8/9 Entity schema via drush and web interface.'
+package: Development
+tags:
+  - developer
+core_version_requirement: ^8.7.7 || ^9
+
+configure: entity_update.exec
+hidden: false
+
+# Information added by Drupal.org packaging script on 2020-07-29
+version: '2.0.0-rc2'
+project: 'entity_update'
+datestamp: 1596024143

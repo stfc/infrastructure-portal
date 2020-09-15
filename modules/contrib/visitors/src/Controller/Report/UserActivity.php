@@ -156,7 +156,7 @@ class UserActivity extends ControllerBase {
     }
     $query->orderByHeader($header);
     $query->limit($items_per_page);
-  
+
     $count_query = \Drupal::database()->select('users_field_data', 'u');
     $count_query->leftJoin('visitors', 'v', 'u.uid=v.visitors_uid');
     $count_query->addExpression('COUNT(DISTINCT u.uid)');
@@ -166,7 +166,7 @@ class UserActivity extends ControllerBase {
 
     $rows = array();
 
-    $page = isset($_GET['page']) ? $_GET['page'] : '';
+    $page = isset($_GET['page']) ? $_GET['page'] : 0;
     $i = 0 + $page * $items_per_page;
 
     foreach ($results as $data) {

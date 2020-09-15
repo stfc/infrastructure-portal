@@ -11,8 +11,9 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Datetime\Date;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Form\FormBuilderInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Component\Utility\SafeMarkup;
 
 class RecentHits extends ControllerBase {
   /**
@@ -157,7 +158,7 @@ class RecentHits extends ControllerBase {
 
     $page = isset($_GET['page']) ? (int) $_GET['page'] : '';
     $i = 0 + $page * $items_per_page;
-    $timezone =  drupal_get_user_timezone();
+    $timezone =  date_default_timezone_get();
     foreach ($results as $data) {
       $user = \Drupal::entityTypeManager()->getStorage('user')->load($data->visitors_uid);
       $username = array(
@@ -171,7 +172,7 @@ class RecentHits extends ControllerBase {
         $data->visitors_path,
         $user->getAccountName(),
         //\Drupal::l(t('details'), \Drupal\Core\Url::fromUri('visitors/hits/' . $data->visitors_id))
-        \Drupal::l($this->t('details'),\Drupal\Core\Url::fromRoute('visitors.hit_details',array("hit_id"=>$data->visitors_id)))
+        Link::fromTextAndUrl($this->t('details'),Url::fromRoute('visitors.hit_details',array("hit_id"=>$data->visitors_id)))
       );
     }
 

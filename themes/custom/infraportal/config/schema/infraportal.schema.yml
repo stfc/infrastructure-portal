@@ -1,0 +1,5 @@
+# Schema for the configuration files of the RADIX_SUBTHEME_NAME theme.
+
+infraportal.settings:
+  type: theme_settings
+  label: 'infraportal settings'

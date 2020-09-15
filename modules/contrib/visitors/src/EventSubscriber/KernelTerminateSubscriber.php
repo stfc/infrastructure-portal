@@ -40,13 +40,17 @@ class KernelTerminateSubscriber implements EventSubscriberInterface {
     $this->request = $event->getRequest();
 
     $user = \Drupal::currentUser();
-    $not_admin = !in_array('administrator', $user->getRoles());
+    if(isset($user) && !is_null($user)) {
+      $not_admin = !in_array('administrator', $user->getRoles());
+    } else {
+      $not_admin = true;
+    }
     $log_admin = !\Drupal::config('visitors.config')->get('exclude_administer_users');
-
+    $visitors_uid = isset($user) ? $user->id() : '';
     if ($log_admin || $not_admin) {
       $ip_str = $this->_getIpStr();
       $fields = array(
-        'visitors_uid'        => $user->id(),
+        'visitors_uid'        => $visitors_uid,
         'visitors_ip'         => $ip_str,
         'visitors_date_time'  => time(),
         'visitors_url'        => $this->_getUrl(),
@@ -72,9 +76,13 @@ class KernelTerminateSubscriber implements EventSubscriberInterface {
         $fields['visitors_area_code']      = $geoip_data['area_code'];
       }
 
-      db_insert('visitors')
-        ->fields($fields)
-        ->execute();
+      try {
+        \Drupal::database()->insert('visitors')
+          ->fields($fields)
+          ->execute();
+      } catch (\Exception $e){
+
+      }
     }
   }
 

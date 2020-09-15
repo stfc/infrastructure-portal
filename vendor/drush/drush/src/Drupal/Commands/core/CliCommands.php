@@ -4,11 +4,11 @@ namespace Drush\Drupal\Commands\core;
 
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use Drush\Log\LogLevel;
 use Drush\Psysh\DrushCommand;
 use Drush\Psysh\DrushHelpCommand;
 use Drupal\Component\Assertion\Handle;
 use Drush\Psysh\Shell;
+use Drush\Runtime\Runtime;
 use Psy\Configuration;
 use Psy\VersionUpdater\Checker;
 use Webmozart\PathUtil\Path;
@@ -22,11 +22,11 @@ class CliCommands extends DrushCommands
      * @command docs:repl
      * @aliases docs-repl
      * @hidden
-     * @topic
+     * @topic ../../../../docs/repl.md
      */
     public function docs()
     {
-        self::printFile(DRUSH_BASE_PATH. '/docs/repl.md');
+        self::printFileTopic($this->commandData);
     }
 
     /**
@@ -35,12 +35,11 @@ class CliCommands extends DrushCommands
      * @aliases php,core:cli,core-cli
      * @option $version-history Use command history based on Drupal version
      *   (Default is per site).
-     * @option $cwd Changes the working directory of the shell
-     *   (Default is the project root directory)
+     * @option $cwd A directory to change to before launching the shell. Default is the project root directory
      * @topics docs:repl
      * @remote-tty
      */
-    public function cli(array $options = ['version-history' => false, 'cwd' => null])
+    public function cli(array $options = ['version-history' => false, 'cwd' => self::REQ])
     {
         $configuration = new Configuration();
 
@@ -68,7 +67,7 @@ class CliCommands extends DrushCommands
         // PsySH will never return control to us, but our shutdown handler will still
         // run after the user presses ^D.  Mark this command as completed to avoid a
         // spurious error message.
-        drush_set_context('DRUSH_EXECUTION_COMPLETED', true);
+        Runtime::setCompleted();
 
         // Run the terminate event before the shell is run. Otherwise, if the shell
         // is forking processes (the default), any child processes will close the
@@ -82,7 +81,7 @@ class CliCommands extends DrushCommands
         }
 
         // If the cwd option is passed, lets change the current working directory to wherever
-        // the user wants to go before we lift psysh.
+        // the user wants to go before we launch psysh.
         if ($options['cwd']) {
             chdir($options['cwd']);
         }
@@ -177,13 +176,13 @@ class CliCommands extends DrushCommands
         // @todo Could use a global file within drush?
         if (!$drupal_major_version) {
             $file_name = 'global-' . md5($this->getConfig()->cwd());
-        } // If only the Drupal version is being used for the history.
-        else if ($options['version-history']) {
+        } elseif ($options['version-history']) {
+            // If only the Drupal version is being used for the history.
             $file_name = "drupal-$drupal_major_version";
-        } // If there is an alias, use that in the site specific name. Otherwise,
-        // use a hash of the root path.
-        else {
-             $aliasRecord = Drush::aliasManager()->getSelf();
+        } else {
+            // If there is an alias, use that in the site specific name. Otherwise,
+            // use a hash of the root path.
+            $aliasRecord = Drush::aliasManager()->getSelf();
 
             if ($aliasRecord->name()) {
                 $site_suffix = ltrim($aliasRecord->name(), '@');
@@ -205,7 +204,7 @@ class CliCommands extends DrushCommands
     /**
      * Returns a list of PHP keywords.
      *
-     * This will act as a blacklist for command and alias names.
+     * This will act as a blocklist for command and alias names.
      *
      * @return array
      */

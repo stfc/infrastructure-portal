@@ -134,7 +134,7 @@ class Store implements StoreInterface
         $key = $this->getCacheKey($request);
 
         if (!$entries = $this->getMetadata($key)) {
-            return;
+            return null;
         }
 
         // find a cached entry that matches the request.
@@ -148,7 +148,7 @@ class Store implements StoreInterface
         }
 
         if (null === $match) {
-            return;
+            return null;
         }
 
         $headers = $match[1];
@@ -159,6 +159,7 @@ class Store implements StoreInterface
         // TODO the metaStore referenced an entity that doesn't exist in
         // the entityStore. We definitely want to return nil but we should
         // also purge the entry from the meta-store when this is detected.
+        return null;
     }
 
     /**
@@ -176,19 +177,15 @@ class Store implements StoreInterface
         $key = $this->getCacheKey($request);
         $storedEnv = $this->persistRequest($request);
 
-        // write the response body to the entity store if this is the original response
-        if (!$response->headers->has('X-Content-Digest')) {
-            $digest = $this->generateContentDigest($response);
+        $digest = $this->generateContentDigest($response);
+        $response->headers->set('X-Content-Digest', $digest);
 
-            if (false === $this->save($digest, $response->getContent())) {
-                throw new \RuntimeException('Unable to store the entity.');
-            }
+        if (!$this->save($digest, $response->getContent(), false)) {
+            throw new \RuntimeException('Unable to store the entity.');
+        }
 
-            $response->headers->set('X-Content-Digest', $digest);
-
-            if (!$response->headers->has('Transfer-Encoding')) {
-                $response->headers->set('Content-Length', \strlen($response->getContent()));
-            }
+        if (!$response->headers->has('Transfer-Encoding')) {
+            $response->headers->set('Content-Length', \strlen($response->getContent()));
         }
 
         // read existing cache entries, remove non-varying, and add this one to the list
@@ -209,7 +206,7 @@ class Store implements StoreInterface
 
         array_unshift($entries, [$storedEnv, $headers]);
 
-        if (false === $this->save($key, serialize($entries))) {
+        if (!$this->save($key, serialize($entries))) {
             throw new \RuntimeException('Unable to store the metadata.');
         }
 
@@ -248,7 +245,7 @@ class Store implements StoreInterface
             }
         }
 
-        if ($modified && false === $this->save($key, serialize($entries))) {
+        if ($modified && !$this->save($key, serialize($entries))) {
             throw new \RuntimeException('Unable to store the metadata.');
         }
     }
@@ -349,26 +346,31 @@ class Store implements StoreInterface
      *
      * @param string $key The store key
      *
-     * @return string The data associated with the key
+     * @return string|null The data associated with the key
      */
     private function load($key)
     {
         $path = $this->getPath($key);
 
-        return file_exists($path) ? file_get_contents($path) : false;
+        return file_exists($path) && false !== ($contents = file_get_contents($path)) ? $contents : null;
     }
 
     /**
      * Save data for the given key.
      *
-     * @param string $key  The store key
-     * @param string $data The data to store
+     * @param string $key       The store key
+     * @param string $data      The data to store
+     * @param bool   $overwrite Whether existing data should be overwritten
      *
      * @return bool
      */
-    private function save($key, $data)
+    private function save($key, $data, $overwrite = true)
     {
         $path = $this->getPath($key);
+
+        if (!$overwrite && file_exists($path)) {
+            return true;
+        }
 
         if (isset($this->locks[$key])) {
             $fp = $this->locks[$key];
@@ -408,6 +410,8 @@ class Store implements StoreInterface
         }
 
         @chmod($path, 0666 & ~umask());
+
+        return true;
     }
 
     public function getPath($key)

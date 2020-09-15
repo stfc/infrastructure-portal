@@ -4,13 +4,13 @@ namespace Drupal\Tests\search_api_autocomplete\FunctionalJavascript;
 
 use Behat\Mink\Driver\GoutteDriver;
 use Behat\Mink\Element\NodeElement;
-use Drupal\FunctionalJavascriptTests\JavascriptTestBase;
+use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\search_api_test\PluginTestTrait;
 
 /**
  * Provides a base class for integration tests of this module.
  */
-abstract class IntegrationTestBase extends JavascriptTestBase {
+abstract class IntegrationTestBase extends WebDriverTestBase {
 
   use PluginTestTrait;
 
@@ -20,6 +20,11 @@ abstract class IntegrationTestBase extends JavascriptTestBase {
    * @var string
    */
   protected $searchId;
+
+  /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
 
   /**
    * Retrieves autocomplete suggestions from a field on the current page.
@@ -34,11 +39,11 @@ abstract class IntegrationTestBase extends JavascriptTestBase {
    * @return \Behat\Mink\Element\NodeElement[]
    *   The suggestion elements from the page.
    */
-  protected function getAutocompleteSuggestions($field_html_id = 'edit-keys', $input = 'TÃ©st') {
+  protected function getAutocompleteSuggestions($field_html_id = 'edit-keys', $input = 'Tést') {
     $page = $this->getSession()->getPage();
     $assert_session = $this->assertSession();
     $field = $assert_session->elementExists('css', "input[data-drupal-selector=\"$field_html_id\"]");
-    $field->setValue(substr($input, 0, -1));
+    $field->setValue($input);
     $this->getSession()
       ->getDriver()
       ->keyDown($field->getXpath(), substr($input, -1));
@@ -133,7 +138,7 @@ abstract class IntegrationTestBase extends JavascriptTestBase {
    * @param string|array $selector
    *   The element selector. Note: the first found element is used.
    *
-   * @throws \Behat\Mink\Exception\ElementHtmlException
+   * @throws \Behat\Mink\Exception\ElementNotFoundException
    *   Thrown if the element doesn't exist.
    */
   protected function assertVisible($selector_type, $selector) {
@@ -149,7 +154,7 @@ abstract class IntegrationTestBase extends JavascriptTestBase {
    * @param string|array $selector
    *   The element selector. Note: the first found element is used.
    *
-   * @throws \Behat\Mink\Exception\ElementHtmlException
+   * @throws \Behat\Mink\Exception\ElementNotFoundException
    *   Thrown if the element doesn't exist.
    */
   protected function assertNotVisible($selector_type, $selector) {

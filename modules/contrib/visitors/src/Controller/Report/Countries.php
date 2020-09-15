@@ -132,7 +132,7 @@ class Countries extends ControllerBase {
 
     $rows = array();
 
-    $page = isset($_GET['page']) ? $_GET['page'] : '';
+    $page = isset($_GET['page']) ? $_GET['page'] : 0;
     $i = 0 + $page * $items_per_page;
 
     foreach ($results as $data) {
