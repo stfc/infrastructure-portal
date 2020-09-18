@@ -28,6 +28,8 @@
     // A FeatureGroup is required to store editable layers
     this.drawnItems = new L.LayerGroup();
     this.settings = widgetSettings;
+    this.settings.path_style = this.settings.path ? JSON.parse(this.settings.path) : {};
+
     this.container = $(map_container).parent();
     this.json_selector = this.settings.jsonElement;
     this.layers = [];
@@ -93,6 +95,7 @@
       let json_string = JSON.stringify(this.drawnItems.toGeoJSON());
       $(this.json_selector, this.container).val(json_string);
     }
+    this.container.trigger("change");
   };
 
   /**
@@ -107,7 +110,6 @@
    * Add/Set Listeners to the Drawn Map Layers.
    */
   Drupal.leaflet_widget.prototype.add_layer_listeners = function (layer) {
-    let self = this;
 
     // Listen to changes on the layer.
     layer.on('pm:edit', function(event) {
@@ -126,15 +128,15 @@
 
     // Listen to cut events on the layer.
     layer.on('pm:cut', function(event) {
-      self.drawnItems.removeLayer(event.originalLayer);
-      self.drawnItems.addLayer(event.layer);
-      self.update_text();
+      this.drawnItems.removeLayer(event.originalLayer);
+      this.drawnItems.addLayer(event.layer);
+      this.update_text();
     }, this);
 
     // Listen to remove events on the layer.
     layer.on('pm:remove', function(event) {
-      self.drawnItems.removeLayer(event.layer);
-      self.update_text();
+      this.drawnItems.removeLayer(event.layer);
+      this.update_text();
     }, this);
 
   };
@@ -143,6 +145,7 @@
    * Update the leaflet map from text.
    */
   Drupal.leaflet_widget.prototype.update_map = function () {
+    let self = this;
     let value = $(this.json_selector, this.container).val();
 
     // Nothing to do if we don't have any data.
@@ -169,7 +172,9 @@
     }, this);
 
     try {
-      let obj = L.geoJson(JSON.parse(value));
+      let obj = L.geoJson(JSON.parse(value), {style: function (feature) {
+        return self.settings.path_style;
+      }});
       // See https://github.com/Leaflet/Leaflet.draw/issues/398
       obj.eachLayer(function(layer) {
         if (typeof layer.getLayers === "function") {

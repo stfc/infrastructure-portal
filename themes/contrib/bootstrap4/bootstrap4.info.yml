@@ -12,6 +12,9 @@ libraries:
   - bootstrap4/bootstrap4-js-latest
   - bootstrap4/global-styling
 
+stylesheets-remove:
+  - '@classy/css/components/tabs.css'
+
 regions:
   header: Header
   nav_branding: 'Navigation branding region'
@@ -23,7 +26,7 @@ regions:
   sidebar_second: 'Sidebar second'
   footer: Footer
 
-# Information added by Drupal.org packaging script on 2020-06-03
-version: '2.0.1'
+# Information added by Drupal.org packaging script on 2020-09-06
+version: '2.1.0'
 project: 'bootstrap4'
-datestamp: 1591197890
+datestamp: 1599405576

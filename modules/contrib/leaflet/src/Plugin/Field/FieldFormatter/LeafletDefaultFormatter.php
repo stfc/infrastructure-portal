@@ -183,28 +183,8 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
     $elements = parent::settingsForm($form, $form_state);
     $field_name = $this->fieldDefinition->getName();
 
-    if ($this->moduleHandler->moduleExists('token')) {
-
-      $elements['replacement_patterns'] = [
-        '#type' => 'details',
-        '#title' => 'Replacement patterns',
-        '#description' => $this->t('The following replacement tokens are available for the "Popup Content and the Icon Options":'),
-      ];
-
-      $elements['replacement_patterns']['token_help'] = [
-        '#theme' => 'token_tree_link',
-        '#token_types' => [$this->fieldDefinition->getTargetEntityTypeId()],
-      ];
-    }
-    else {
-      $elements['replacement_patterns']['#description'] = $this->t('The @token_link is needed to browse and use @entity_type entity token replacements.', [
-        '@token_link' => $this->link->generate(t('Token module'), Url::fromUri('https://www.drupal.org/project/token', [
-          'absolute' => TRUE,
-          'attributes' => ['target' => 'blank'],
-        ])),
-        '@entity_type' => $this->fieldDefinition->getTargetEntityTypeId(),
-      ]);
-    }
+    // Set Replacement Patterns Element.
+    $this->setReplacementPatternsElement($elements);
 
     if ($field_cardinality !== 1) {
       $elements['multiple_map'] = [

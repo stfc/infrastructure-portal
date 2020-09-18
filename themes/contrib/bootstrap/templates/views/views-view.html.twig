@@ -62,7 +62,10 @@
       {{ attachment_before }}
     </div>
   {% endif %}
-
+  <div class="topPager">
+  {% if pager %}
+    {{ pager }}                                                                                                           {% endif %} 
+  </div>
   {% if rows %}
     <div class="view-content">
       {{ rows }}

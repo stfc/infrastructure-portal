@@ -8,6 +8,8 @@
 * Rename `SUBTHEME` instances to your theme, e.g.  if your theme called `b4theme`:
   * Rename `SUBTHEME.info` to `b4theme.info.yml` and its content
   * Rename `SUBTHEME.libraries.yml` to `b4theme.libraries.yml`
+  * Rename `SUBTHEME.breakpoints.yml` to `b4theme.breakpoints.yml`
+  * Change all occurence of `SUBTHEME` by `b4theme` in `b4theme.breakpoints.yml`
   * Rename `SUBTHEME.theme` to `b4theme.theme` and its comments
 * Update import path in `SUBTHEME/scss/style.scss` to Bootstrap 4 theme path 
     `@import "[DOCROOT]/themes/contrib/bootstrap4/scss/style";`, 

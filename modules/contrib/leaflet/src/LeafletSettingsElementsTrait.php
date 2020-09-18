@@ -603,6 +603,37 @@ trait LeafletSettingsElementsTrait {
   }
 
   /**
+   * Set Replacement Patterns Element.
+   *
+   * @param array $element
+   *   The Form element to alter.
+   */
+  protected function setReplacementPatternsElement(array &$element) {
+    if ($this->moduleHandler->moduleExists('token')) {
+
+      $element['replacement_patterns'] = [
+        '#type' => 'details',
+        '#title' => 'Replacement patterns',
+        '#description' => $this->t('The following replacement tokens are available for the "Popup Content and the Icon Options":'),
+      ];
+
+      $element['replacement_patterns']['token_help'] = [
+        '#theme' => 'token_tree_link',
+        '#token_types' => [$this->fieldDefinition->getTargetEntityTypeId()],
+      ];
+    }
+    else {
+      $element['replacement_patterns']['#description'] = $this->t('The @token_link is needed to browse and use @entity_type entity token replacements.', [
+        '@token_link' => $this->link->generate(t('Token module'), Url::fromUri('https://www.drupal.org/project/token', [
+          'absolute' => TRUE,
+          'attributes' => ['target' => 'blank'],
+        ])),
+        '@entity_type' => $this->fieldDefinition->getTargetEntityTypeId(),
+      ]);
+    }
+  }
+
+  /**
    * Set Map Geometries Options Element.
    *
    * @param array $element

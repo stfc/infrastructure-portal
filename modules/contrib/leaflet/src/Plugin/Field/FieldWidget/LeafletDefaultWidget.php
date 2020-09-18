@@ -13,6 +13,7 @@ use Drupal\leaflet\LeafletService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Utility\LinkGeneratorInterface;
+use Drupal\Core\Utility\Token;
 
 /**
  * Plugin implementation of the "leaflet_widget" widget.
@@ -52,6 +53,13 @@ class LeafletDefaultWidget extends GeofieldDefaultWidget {
   protected $link;
 
   /**
+   * The token service.
+   *
+   * @var \Drupal\core\Utility\Token
+   */
+  protected $token;
+
+  /**
    * Get maps available for use with Leaflet.
    */
   protected static function getLeafletMaps() {
@@ -85,6 +93,8 @@ class LeafletDefaultWidget extends GeofieldDefaultWidget {
    *   The module handler.
    * @param \Drupal\Core\Utility\LinkGeneratorInterface $link_generator
    *   The Link Generator service.
+   * @param \Drupal\core\Utility\Token $token
+   *   The token service.
    */
   public function __construct(
     $plugin_id,
@@ -96,7 +106,8 @@ class LeafletDefaultWidget extends GeofieldDefaultWidget {
     WktGeneratorInterface $wkt_generator,
     LeafletService $leaflet_service,
     ModuleHandlerInterface $module_handler,
-    LinkGeneratorInterface $link_generator
+    LinkGeneratorInterface $link_generator,
+    Token $token
   ) {
     parent::__construct(
       $plugin_id,
@@ -110,6 +121,7 @@ class LeafletDefaultWidget extends GeofieldDefaultWidget {
     $this->leafletService = $leaflet_service;
     $this->moduleHandler = $module_handler;
     $this->link = $link_generator;
+    $this->token = $token;
   }
 
   /**
@@ -126,7 +138,8 @@ class LeafletDefaultWidget extends GeofieldDefaultWidget {
       $container->get('geofield.wkt_generator'),
       $container->get('leaflet.service'),
       $container->get('module_handler'),
-      $container->get('link_generator')
+      $container->get('link_generator'),
+      $container->get('token')
     );
   }
 
@@ -163,6 +176,7 @@ class LeafletDefaultWidget extends GeofieldDefaultWidget {
         'removalMode' => TRUE,
       ],
       'reset_map' => self::getDefaultSettings()['reset_map'],
+      'path' => self::getDefaultSettings()['path'],
       'geocoder' => self::getDefaultSettings()['geocoder'],
     ];
   }
@@ -326,6 +340,12 @@ class LeafletDefaultWidget extends GeofieldDefaultWidget {
     // Generate the Leaflet Map Reset Control.
     $this->setResetMapControl($form, $this->getSettings());
 
+    // Set Map Geometries Options Element.
+    $this->setMapPathOptionsElement($form, $this->getSettings());
+
+    // Set Replacement Patterns Element.
+    $this->setReplacementPatternsElement($form);
+
     // Set Map Geocoder Control Element, if the Geocoder Module exists,
     // otherwise output a tip on Geocoder Module Integration.
     $this->setGeocoderMapControl($form, $this->getSettings());
@@ -356,9 +376,15 @@ class LeafletDefaultWidget extends GeofieldDefaultWidget {
     $map = leaflet_map_get_info($map_settings['leaflet_map'] ?? $default_settings['map']['leaflet_map']);
     $map['context'] = 'widget';
 
+    // Get token context.
+    $token_context = [
+      'field' => $items,
+      $this->fieldDefinition->getTargetEntityTypeId() => $items->getEntity(),
+    ];
+
     // Extend options to reset_map and geocoder to uniform with Leafket
     // Formatter and Leaflet View processing.
-    $options = array_merge($map_settings, ['reset_map' => $this->getSetting('reset_map')], ['geocoder' => $this->getSetting('geocoder')]);
+    $options = array_merge($map_settings, ['reset_map' => $this->getSetting('reset_map')], ['path' => $this->getSetting('path')], ['geocoder' => $this->getSetting('geocoder')]);
 
     // Set Map additional map Settings.
     $this->setAdditionalMapOptions($map, $options);
@@ -397,6 +423,7 @@ class LeafletDefaultWidget extends GeofieldDefaultWidget {
     $js_settings['inputReadonly'] = !empty($input_settings['readonly']);
     $js_settings['toolbarSettings'] = $this->getSetting('toolbar') ?? $default_settings['toolbar'];
     $js_settings['scrollZoomEnabled'] = !empty($map_settings['scroll_zoom_enabled']) ? $map_settings['scroll_zoom_enabled'] : FALSE;
+    $js_settings['path'] = str_replace(["\n", "\r"], "", $this->token->replace($this->getSetting('path'), $token_context));
     $js_settings['geocoder'] = $this->getSetting('geocoder');
     $js_settings['map_position'] = $map_settings['map_position'] ?? [];
 

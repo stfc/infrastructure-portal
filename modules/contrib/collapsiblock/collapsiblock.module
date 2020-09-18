@@ -5,10 +5,11 @@
  * Make blocks collapsible.
  */
 
+use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\block\Entity\Block;
 
-// Scalar (JSON) constant for php 5.*
+// Scalar (JSON) constant for php 5.*.
 define('COLLAPSIBLOCK_ACTION_OPTIONS', serialize([
   1 => t('None.'),
   2 => t('Collapsible, expanded by default.'),
@@ -61,7 +62,6 @@ function collapsiblock_form_block_form_alter(&$form, FormStateInterface $form_st
   $form['#entity_builders'][] = 'collapsiblock_block_form_form_builder';
 }
 
-
 /**
  * Entity builder for the block form with third party options.
  *
@@ -74,7 +74,7 @@ function collapsiblock_block_form_form_builder($entity_type, Block $block, &$for
 /**
  * Implements hook_block_view_alter().
  */
-function collapsiblock_block_view_alter(array &$build, \Drupal\Core\Block\BlockPluginInterface $block) {
+function collapsiblock_block_view_alter(array &$build, BlockPluginInterface $block) {
 
   if (empty($build['#block'])) {
     return;
