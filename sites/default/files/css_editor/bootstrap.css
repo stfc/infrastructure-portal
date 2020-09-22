@@ -3,7 +3,7 @@
 //pale orange:#FFEBCD;*/
 //first foreground  #587007e
 * {
- font-size: 100%;
+ font-size: 18px;
  font-family: Arial;
 }
 /*TITLE*/
@@ -14,24 +14,32 @@
     font-weight: bold;
 }
 /*main menu CSS*/
-
+h2.block-title {
+    padding-left: 3%;
+}
 
 ul.menu.menu--main.nav.navbar-nav{
   display:inline-flex;
-  width:70%;
+   width:80%;
+    gap: 20px;
+   padding-left:15%;
+   place-content:center;
 }
 ul.menu.menu--main.nav.navbar-nav>li{
   flex:1;
 }
 ul.menu.menu--account.nav.navbar-nav.navbar-right{
  display:inline-flex;
-  width:30%;
+  width:20%;
+  place-content:flex-end;
+  float:right;
 }
 ul.menu.menu--account.nav.navbar-nav.navbar-right>li{
   flex:1;
 }
 .navbar-nav>li{
   display:grid;
+  max-width: fit-content;
   place-items:center;
 }
 .navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:active {
@@ -183,7 +191,9 @@ ul.menu.menu--account.nav.navbar-nav.navbar-right{
   width:100%;
   height:50%;
   position:relative;
+  color:black;
   text-align:center;
+   font-weight: 800;
   display:grid;
   place-items: center
 }
@@ -237,6 +247,10 @@ text-align: center;
 .case-study .field--name-body>p{
  font-size:1.1em;
  padding-left: 8px;
+}
+.case-study a{
+ color:black;
+ font-weight:400;
 }
 .field--name-field-rii-referred{
  margin-top:5vh;
@@ -322,7 +336,7 @@ text-align: center;
   position:relative;
   margin-bottom:10px;
   background-color:#F5F5F5;
-  height:5em;
+  height:6em;
   text-align:center;
   place-items:center;
 }
@@ -432,6 +446,7 @@ text-align: center;
 .views-view-grid .views-row {
   gap:10px;
   display:flex;
+  height:max-content;
 }
 .view-homepage-banner .views-field{
 	display:inline !important;
@@ -445,7 +460,7 @@ text-align: center;
 .view-homepage-banner .view-content{
     white-space:nowrap;
   	height:15vw;
-    width:100vw;
+    width:100vw !important;
     width:fit-content;
 }
 
