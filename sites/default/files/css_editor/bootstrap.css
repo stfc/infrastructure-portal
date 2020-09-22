@@ -1,32 +1,419 @@
+/*skyblue:#BFEFFF;
+//blue:#0198E1;
+//pale orange:#FFEBCD;*/
+//first foreground  #587007e
 * {
  font-size: 100%;
  font-family: Arial;
 }
+/*TITLE*/
+.region-header h1>span {
+    font-size: 36px;
+    /* font-size: 1em; */
+    margin: 0.67em 0;
+    font-weight: bold;
+}
+/*main menu CSS*/
 
-.logo IMG {  	
-    max-width: 100%;
+
+ul.menu.menu--main.nav.navbar-nav{
+  display:inline-flex;
+  width:70%;
+}
+ul.menu.menu--main.nav.navbar-nav>li{
+  flex:1;
+}
+ul.menu.menu--account.nav.navbar-nav.navbar-right{
+ display:inline-flex;
+  width:30%;
+}
+ul.menu.menu--account.nav.navbar-nav.navbar-right>li{
+  flex:1;
+}
+.navbar-nav>li{
+  display:grid;
+  place-items:center;
+}
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:active {
+  color:black;
+  background-color:	#F5F5F5;
 }
 
-.logo.navbar-btn.pull-left{  
-	width:100%;
+/*USER MENU*/
+.label{
+ color:black;
+}
+@media (min-width:780px){
+.path-user:not(.user-logged-in) .region-content {
+   width:50%;
+   margin-left:25%;
+}
+}
+@media (max-width:780px){
+ .navbar-nav>li>a {
+    position: relative;
+    /* display: block; */
+    min-width: 100%;
+    padding: 10px 15px;
+}
+  ul.menu.menu--main.nav.navbar-nav{
+  display:inline-flex;
+  width:100%;
+}
+ul.menu.menu--main.nav.navbar-nav>li{
+  flex:1;
+}
+ul.menu.menu--account.nav.navbar-nav.navbar-right{
+ display:inline-flex;
+  width:100%;
+}
+.navbar-default .navbar-nav .open .dropdown-menu>li>a {
+  color: black;
+  min-width:100%
+}
+.navbar-nav{
+  display:flex;
+  flex-wrap:wrap;
+  }
+ .navbar-nav>li{
+   min-width:100%;
+   color:black;
+  }
+   .navbar-nav>li>a{
+   min-width:100%;
+   color:black;
+   display:grid;
+   place-items:center;
+  }
+}
+/*SLIDESHOW*/
+:not(.case-study)>.topPager{
+ display:none;
+}
+.views_slideshow_cycle_slide {
+    position: relative !important;
+   height: auto !important;
+}
+.views_slideshow_controls_text{
+   display:grid;
+   grid-template-areas:"1 2";
+}
+.views_slideshow_controls_text_previous {
+    grid-area:1;
+    display:inline-block;
+    padding: 1%;
+    text-align:left;
+    margin-top: 2vh;
+    position: relative;
+    background: #F5F5F5;
+}
+.views_slideshow_controls_text_pause {
+  display:none;
+}
+.views_slideshow_controls_text_next {
+    grid-area:1;
+    text-align:right;
+    padding: 1%;
+    display:inline-block;
+    margin-top: 2vh;
+    position: relative;
+    background: #F5F5F5;
+}
+
+.views_slideshow_slide span {
+    display: none;
+}
+.views_slideshow_cycle_main  .content {
+    width: 95vw;
+}
+.views_slideshow_slide .block-field-blocknodecase-studytitle>span{
+    width:100%;
+    text-align:center;
+    font-size: 2.5em;
+    font-weight: 800;
+}
+
+.views_slideshow_main{
+  position:relative;
+  display:inline-flex;
+  flex-wrap:wrap;
+}
+/*CASE STUDY NAVBARS*/
+/*grid*/
+.cs-navbar-2{
+ list-style-type:none;
+ display:grid;
+ grid-column-gap: 10px;
+ grid-row-gap: 10px;
+ grid-template-areas: "0 0 0";
+ padding:0;
+ width:100%;
+}
+.cs-navbar-2>.csnav-item{
+   width:100%;
+   height:100%;
+   max-width:100%;
+}
+/*flex*/
+.cs-navbar{
+ list-style-type:none;
+ display:inline-flex;
+ flex-wrap:wrap;
+ margin-top:10px;
+ padding:0;
+ width:100%;
+}
+/*layout normalization*/
+.footer{
+  position:relative;
+}
+
+.csnav-item{
+ text-decoration:none;
+ background:#F5F5F5;
+ max-width: 33.5vw;
+ min-width: 100px;
+ min-height: 140px;
+ border-radius:2%;
+  font-size:1em;
+  flex:1;
+  position:relative;
+}
+.csnav-item>a{
+  width:100%;
+  height:50%;
+  position:relative;
+  text-align:center;
+  display:grid;
+  place-items: center
+}
+.csnav-item:hover{
+  background-color:#E8E8E8;
+}
+.navbar-right>.first>a {
+ background-color:orange !important;
+ color: #587007e;
+ border-radius:25px;
+}
+.navbar-right>.first>a:hover {
+ background-color:darkorange !important;
+ color: #587007e;
+ border-radius:25px;
+}
+/*CASE STUDY CONTENT*/
+.views-view-grid.views-row {
+    display: inline-flex;
+    flex-wrap: wrap;
+}
+.block-views-blockcase-study-mobile-block-1>h2{
+  display:none;
+}
+.block-field-blocknodecase-studytitle{
+    display:grid;
+}
+
+.section.block.block-layout-builder.block-field-blocknodecase-studytitle.clearfix{
+    height: fit-content;
+    position: relative;
+    display:grid;
+    place-items:center;
+    width: 100%;
+    min-height: 70px;
+}
+
+.field--name-field-case-study-subtitle{
+ font-size: 1.5em;
+text-align: center;
+}
+.case-study .page-header{
+ font-size:300%;
+ font-weight:stronger;
+}
+.case-study .field--name-body>h2{
+ font-size:1.2em;
+ font-weight:800;
+ padding-left: 8px;
+}
+.case-study .field--name-body>p{
+ font-size:1.1em;
+ padding-left: 8px;
+}
+.field--name-field-rii-referred{
+ margin-top:5vh;
+  padding: 2%;
+  margin-bottom:2vh;
+  border-radius:5%;
+}
+.field--name-field-rii-referred>a{
+  text-decoration:none;
+  background-color:#DCDCDC;
+  padding: 2%;
+  border-radius:5%;
+}
+.field--name-field-case{
+ text-align:center;
+}
+/*redundant title*/
+.page-node-type-case-study .region-header>h1{
+  display:none;
+}
+.field.field--name-field-macro-domains.field--type-list-string.field--label-above{
+   padding-top:8vh;
+}
+.page-node-type-case-study .block-field-blocknodecase-studytitle{
+ text-align:center;
+}
+.page-node-type-case-study .block-field-blocknodecase-studytitle>span{
+ font-size:3em;
+ font-weight:800;
+}
+.page-node-type-case-study .field--name-field-case{
+ font-size:1.5em;
+}
+.case-study .teaser{
+   text-align:center;
+  background-color: #F5F5F5;
+}
+.layout--twocol-section{
+  position:relative;
+}
+.case-study .mobile-teaser{
+   text-align:center;
+  background-color: #F5F5F5;
+}
+.teaser .field--name-field-case-study-im{
+  height:60vh;
+  min-height:auto;
+}
+.field--name-field-case-study-im{
+  height:45em;
+  min-height:320px;
+}
+.teaser .field--name-field-case-study-im{
+  height:100%;
+}
+.mobile-teaser .field--name-field-case-study-im{
+  margin-top: 2vh;
+  width:100%;
+  padding-left:15px;
+  height:45vw;
+}
+
+.case-study.mobile-teaser>h2{
+  display:none;
+}
+.case-study.teaser>h2{
+  display:none;
+}
+.teaser .case-study .contextual-region {
+  margin-top:10px;
+}
+ .field--name-field-case{
+  padding:1%;
+ }
+.teaser .block-field-blocknodecase-studytitle>a{
+ height:100%;
+ position:absolute;
+  width:100%;
+}
+.teaser .block-field-blocknodecase-studytitle{
+  padding:5%;
+  display:grid;
+  position:relative;
+  margin-bottom:10px;
+  background-color:#F5F5F5;
+  height:5em;
+  text-align:center;
+  place-items:center;
+}
+
+.mobile-teaser .block-field-blocknodecase-studytitle{
+  padding:5%;
+  display:grid;
+  background-color:#F5F5F5;
+  place-items: center;
+  text-align:center;
+}
+
+.teaser .block-field-blocknodecase-studytitle:hover{
+  background-color:#DCDCDC;
+}
+.logo IMG {
+    max-width: 100px;
+
+}
+.field--name-field-rii-logo {
+    max-width: 250px;
+   // max-height:50px;
+}
+.img-rounded{
+  object-fit:cover;
+  width:100%;
+  height:100%;
+}
+.csnav-icon{
+  background-size:100% 100%;
+  width:100%;
+  margin-top:2%;
+  position:relative;
+  height: 50%;
+}
+.csnav-icon>a {
+    width: 100%;
+    height: 100%;
+    color:black;
+    text-decorations:none;
+    display: grid;
+    place-items:center;
+}
+.csnav-all{
+  background-image:url("/sites/default/files/2020-09/border-all-solid.svg");
+}
+.csnav-covid{
+  background-image:url("/sites/default/files/2020-09/virus-solid.svg");
+}
+.csnav-bio{
+  background-image:url("/sites/default/files/2020-09/microscope-solid.svg");
+}
+.csnav-phy{
+  background-image:url("/sites/default/files/2020-09/atom-solid.svg");
+}
+.csnav-soc{
+   background-image:url("/sites/default/files/2020-09/people-arrows-solid.svg");
+}
+.csnav-ene{
+  background-image:url("/sites/default/files/2020-09/lightbulb-regular.svg");
+}
+.csnav-env{
+  background-image:url("/sites/default/files/2020-09/globe-europe-solid.svg");
+}
+.csnav-comp{
+  background-image:url("/sites/default/files/2020-09/server-solid.svg");
+}
+.csnav-oth{
+  background-image:url("/sites/default/files/2020-09/ellipsis-h-solid.svg");
+}
+.logo.navbar-btn.pull-left{
+	width:00%;
     margin-bottom:2%;
     margin-top:0%;
 }
+/*HOMEPAGE BANNER*/
 .view-homepage-banner {
-    border-bottom:2px solid grey;
+  border-bottom:2px solid grey;
 	overflow-x:hidden;
-    margin-top:-15px;
 }
 
 .view-homepage-banner img{
     display:inline;
     border-radius:0px;
-	height:250px;
-    width:auto;
+    height:100%;
+    padding-top:10px;
+    width:16.67%;
 }
 
 .block-views-blockhomepage-banner-block-1 .form-group{
-	height:250px;
+    height:15vw;
     position:absolute;
     left:0px
 }
@@ -36,27 +423,30 @@
 }
 
 .block-views-blockhomepage-banner-block-1{
-	height:250px;
+	height:15vw;
 }
 
 .view-homepage-banner .views-row{
 	display:inline !important;
 }
-
+.views-view-grid .views-row {
+  gap:10px;
+  display:flex;
+}
 .view-homepage-banner .views-field{
 	display:inline !important;
 }
 
 .view-homepage-banner .field-content{
-	display:inline !important;	
+     display:inline !important;
     margin-right:-4px;
 }
 
 .view-homepage-banner .view-content{
     white-space:nowrap;
-  	height:250px;
+  	height:15vw;
     width:100vw;
-    width:fit-content; 	
+    width:fit-content;
 }
 
 .navbar.navbar-default.container{
@@ -65,88 +455,67 @@
 
 .col-sm-12 .form--inline.form-inline.clearfix{
 	display:flex;
-    justify-content: space-around;
+  justify-content: space-around;
 
 }
 
 .col-sm-9 .form--inline.form-inline.clearfix{
 	display:flex;
-    justify-content: flex-start;
+  justify-content: flex-start;
 
 }
 
 #navbar > div.navbar-header > div > a.name.navbar-brand{
 	font-size: 3em;
 	margin-top: -20px;
-    color:red;
 }
 
 @media (min-width:770px){
-  
-  .logo.navbar-btn.pull-left{  
-   width:35vw; 
-  } 
-    
-  .navbar.navbar-default.container{
-    margin-top:-1em;
-    
+
+  .logo.navbar-btn.pull-left{
+   width:35vw;
   }
 
-  .menu.menu--main.nav.navbar-nav{
-    margin-top:1em;
-    position: absolute;
-    margin-left: 35%;
-  }
-  
-  .menu.menu--main.nav.navbar-nav a{
-    font-size:1.2em;
-    padding-top:0.1em;
-    padding-bottom:0.1em;
+  .navbar.navbar-default.container{
+    margin-top:-1em;
+
   }
 
   .menu.menu--main.nav.navbar-nav a:not(:hover){
-    color:#63666A;
+    color:black;
   }
+  .menu.menu--main.nav.navbar-nav a:hover{
+   background-color:#F5F5F5;
+   color:black;
+}
 
-  
   #block-bootstrap-footer > .nav{
 	float:none;
 	display: flex;
   	justify-content: space-between;
   }
-  
-  .menu.menu--main.nav.navbar-nav li{
-    border-left: 1px solid #bbbebf;
-    border-right: 1px solid #bbbebf;
-  }
 
-  .menu.menu--main.nav.navbar-nav :first-child{
-    border-left: 0px;
-  }
-
-  .menu.menu--main.nav.navbar-nav :last-child{
-    border-right: 0px;
-  }
-  
   #navbar > div.navbar-header > div > a.name.navbar-brand{
     margin-top: 0px;
 	padding-top:1em;
   }
-  
+
 }
 
 .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus {
-	background-color:transparent;
-	text-decoration:underline;
-	color:#18bc9c!important;
+  background-color: #E8E8E8;
+	color:black!important;
 }
 
 .navbar-default .navbar-nav>.active>a:hover{
-	color:#18bc9c;
+	color:black;
+  background-color:#E8E8E8;
 }
 
 header#navbar.navbar-default{
-  	background-color: #fff;
+  	/*background-image: url("/sites/default/files/2020-08/bg2.jpg");*/
+         //background-size:cover;
+        background-color:white;
   	max-width:100%;
   	width:100%;
   	margin-left:0;
@@ -156,7 +525,7 @@ header#navbar.navbar-default{
   	padding-left:2%;
   	padding-bottom:0%;
 	padding-top:0%;
-  
+
 }
 
 .main-container.container.js-quickedit-main-content{
@@ -171,7 +540,8 @@ header#navbar.navbar-default{
 }
 
 .dialog-off-canvas-main-canvas{
-  	background-color: #F2F7FD;
+ /*  background-image:url("/sites/default/files/2020-08/night.jpg");*/
+   background-size: auto 150vw;
 }
 
 .well.region.region-footer .views-row{
@@ -198,7 +568,7 @@ header#navbar.navbar-default{
 }
 
 .contextual-region.view.view-website-last-updated .views-field{
-	color:white;
+    color:white;
     position:absolute;
 }
 
@@ -214,17 +584,57 @@ html.js fieldset.collapsible.collapsed span.fieldset-legend {
 
 /*SEARCH PAGE CSS START*/
 
-.layout__region--second{
-	flex:0 1 100px !important;
+
+.case-study .layout__region--second{
+	flex:1 !important;
+        min-width:256px;
+        margin-top:10px;
+        overflow: auto;
+        margin-right: 10px;
+        height:45em;
+        background-color:#F5F5F5;
+        min-height:320px;
 }
 
+.views_slideshow_cycle_teaser_section{
+  height:100% !important;
+  min-height:100%;
+  max-height:100%;
+  position:relative;
+  display:inline-flex;
+}
 .leaflet-container{
 	border-radius:3px;
 }
 
-.layout__region--first{
-	flex:1 1 80% !important;
+.rii .layout__region--first{
+	flex:1 1 40% !important;
 }
+.rii .layout__region--second{
+        flex: 1 1 40% !important;
+        margin-left:auto;
+}
+.layout--twocol-section.layout--twocol-section--75-25 >  .layout__region--second{
+	flex:0 1 100px !important;
+       backround-color:red;
+}
+
+.layout--twocol-section.layout--twocol-section--75-25 > .layout__region--first{
+	flex:1 1 80% !important;
+    height: 30vh;
+    display: grid;
+    align-items: center;
+       backround-color:red;
+}
+.case-study .layout__region--first{
+	flex:1 !important;
+    min-width: 256px;
+    min-height:320px;
+    height:100%;
+    margin-top:10px;
+    object-fit:cover;
+}
+
 
 /*Hide the sort options on the homepage*/
 .col-sm-12 .region-content #views-exposed-form-search-page-1 .form-type-select{
@@ -241,13 +651,13 @@ html.js fieldset.collapsible.collapsed span.fieldset-legend {
 
 #views-exposed-form-search-page-1 .form--inline.form-inline.clearfix{
   flex-wrap:wrap;
-  margin-top:1.1em;	
+  margin-top:1.1em;
   margin-bottom:1.1em;
 }
 
 #views-exposed-form-searchmap-page-1 .form--inline.form-inline.clearfix{
   flex-wrap:wrap;
-  margin-top:1.1em;	
+  margin-top:1.1em;
   margin-bottom:1.1em;
 }
 
@@ -306,7 +716,7 @@ html.js fieldset.collapsible.collapsed span.fieldset-legend {
 }
 
 .dialog-off-canvas-main-canvas .view-content > div{
-	border-bottom: 2px solid lightgrey;
+//	border-bottom: 2px solid lightgrey;
 }
 
 .block-facet--checkbox ul{
@@ -351,7 +761,7 @@ div .author{
 
 @media (max-width: 1270px) {
 	.form-item.js-form-item.form-type-search-api-autocomplete{
-  		width:100%;
+  		width:85%;
 	}
 }
 
@@ -365,11 +775,6 @@ div .author{
     line-height: 1.5;
 }
 
-.field--name-body p.sub{
-	font-size:12px;
-    line-height: 1.5;
-}
-
 .leaflet-container{
 	margin-bottom:10px;
 }
@@ -380,17 +785,22 @@ div .author{
 
 /*UKRI Styleguide Changes Below*/
 
-
+.menu--footer>li>a {
+    color: black;
+}
+.menu--footer>li>a:hover, .menu--footer>li>a:active {
+    color: #0000CD ;
+}
 a {
-	color:#1D4F91;
+     color:#0000CD;
 }
 
 a:hover {
-	color:#008275;
+    color:black;
 }
 
 a:focus {
-	color:#008275;
+   color:black;
 }
 
 .pagination>.active>a {
@@ -404,7 +814,13 @@ a:focus {
 .pagination>li>a:hover {
 	background-color:#4d1f55;
 }
-
+.navbar-default .navbar-nav>li>a {
+    color: black !important;
+    background-color:transparent;
+}
+.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>li>a:active{
+   background-color: #f5f5f5;
+}
 .pagination>li>a{
 	background-color:#8c4799;
 }
@@ -412,7 +828,8 @@ a:focus {
 
 
 .navbar-default .navbar-nav>li>a{
-	color:#1D4F91;}
+	color:black;
+}
 
 .contextual-region.rii.full.clearfix .field--label + .field--item{
 	padding:8px;
@@ -435,7 +852,7 @@ a:focus {
 }
 
 /*Move user account menu down to make space for navigation menu*/
-.menu.menu--account {margin-top:7%;}
+.menu.menu--account {margin-left:0%;}
 
 /*Make Create an Account link appear only to logged out users*/
 .user-logged-in .menu.menu--account a[href="/user/register"] { display: none; }
@@ -451,5 +868,3 @@ button[class="tabledrag-toggle-weight btn-sm btn btn-default"] { display: none; 
 /*Hide scheduled moderation field from RII edit form. The module throws an error if you do not enable it on the form field list, but we don't want it to be visible to I've CSS'd it away*/
 div[id="edit-field-rii-expiry-wrapper"] { display: none; }
 div[class="form-item js-form-item form-type-vertical-tabs js-form-type-vertical-tabs form-item- js-form-item- form-no-label form-group"] { display: none; }
-
-
