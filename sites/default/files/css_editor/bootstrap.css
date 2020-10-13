@@ -1,10 +1,176 @@
 /*skyblue:#BFEFFF;
 //blue:#0198E1;
 //pale orange:#FFEBCD;*/
-//first foreground  #587007e
+//first foreground  #581074;
+
+
 * {
  font-size: 18px;
  font-family: Arial;
+}
+/*HEADINGS COLOR SCHEME */
+h1{
+  color:black;
+}
+h2{
+  color:black;
+}
+/*FOOTER*/
+.footer, .footer-bar, .region-footer {
+  background-color:#f5f5f5 !important;
+  border-color:#f5f5f5;
+}
+.menu--footer>li>a {
+    color: black;
+}
+.menu--footer>li>a:hover, .footer>li>a:active {
+    color: #0000CD ;
+}
+/*links*/
+a {
+     color:#0000CD;
+}
+
+a:hover, a:focus {
+    color:black;
+}
+
+/*TEXT BACKGROUND COLOR SCHEME*/
+.view-search article.rii.teaser, .case-study .teaser, .case-study .mobile-teaser, .teaser .block-field-blocknodecase-studytitle, .mobile-teaser .block-field-blocknodecase-studytitle, .case-study .layout__region--second, .rii .layout__region--second section:not(.block-field-blocknoderiifield-uk-postcode-geofield){
+    background-color: #f5f5f5 !important;
+    color:black !important;
+}
+.teaser .block-field-blocknodecase-studytitle a, h2 a{
+    color:black !important;
+}
+.teaser .block-field-blocknodecase-studytitle:hover{
+  background-color:#E8E8E8;
+  color:black !important;
+}
+/*PSEUDO-LINK COLOR SCHEME*/
+.field--name-field-macro-domains .field--item,.field--name-field-keywords .field--item{
+   background-color: #F5F5F5;
+  margin:5px;
+}
+/*REGISTER INFRASTRUCTURE BUTTON COLOR SCHEME*/
+.navbar-right>.last>a {
+ background-color:#F39C12 !important;
+ color: #581074;
+ text-align:center;
+ border-radius:25px;
+}
+.navbar-right>.last>a:hover,.navbar-right>.last>a:focus {
+ background-color:darkorange !important;
+ color: #581074 !important;
+ border-radius:25px;
+}
+/*USER MENU COLOR SCHEME*/
+.navbar-right>li>a,.navbar-right>li>a:active{
+   color: white;
+   background-color:#003f8c !important;
+   border-radius:25px;
+}
+.navbar-right>li>a:hover,.navbar-right>li>a:focus{
+   color: white !important;
+   background-color: #0073ec !important;
+   text-decoration:none !important;
+}
+/*DROPDOWN MENU COLOR SCHEME*/
+.dropdown-menu,.dropdown-menu a{
+  color:white !important;
+  width:100%;
+  background-color:#003f8c;
+ //border-radius:10px;
+}
+
+.dropdown-menu a:hover, .dropdown-menu a:focus {
+  color:white !important;
+  background-color: #0073ec !important;
+}
+
+/*MENU ITEM COLOR SCHEME*/
+ .menu--main a, .navbar-default,.navbar-default .menu--main>.active>a {
+  color:black !important;
+  //background-color:#2c3e50 ;
+   background-color:white;
+   border-radius:25px;
+}
+.navbar-default .navbar-toggle{
+   background-color:#2c3e50 ;
+}
+.csnav-item{
+  background-color:#f5f5f5;
+  color:black;
+}
+.cs-navbar a, .cs-navbar-2 a, .cs-navbar-2 a:hover, .cs-navbar-2 a:active{
+    color:black !important;
+   text-decoration:none;
+}
+ .cs-navbar :not(.csnav-icon)>a:hover,.cs-navbar :not(.csnav-icon)>a:focus,.csnav-item:hover, .csnav-item:focus{
+   background-color:#dcdcdc;
+   color:black;
+}
+ .menu--main a:hover,.menu--main a:focus, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus {
+  background-color: white ;
+  //color:white !important;
+  text-decoration:underline;
+}
+/*LINK BUTTON COLOR SCHEME*/
+.field--name-field-rii-referred>a, a.more-link,.btn-success,.btn-default{
+   background-color:#2c3e50;
+   color:white;
+   border-color:#2c3e50;
+}
+.field--name-field-rii-referred>a:hover, a.more-link:hover, .field--name-field-rii-referred>a:focus, a.more-link:focus,.btn-success:hover,.btn-success:focus,.btn-default:hover,.btn-default:focus{
+   background-color:#0073ec;
+   color:white;
+   border-color:#0073ec
+}
+
+/*PAGINATION COLOR SCHEME*/
+.pagination>li>a:hover, .pagination>.active>a, .pagination>.active>a:hover {
+	background-color:#0073ec;
+}
+.pagination>li>a{
+	background-color:#2c3e50;
+}
+
+.view-search article.rii.teaser {
+    margin-top: 15px;
+    //border: 2px solid black;
+    padding: 1%;
+    border-radius: 10px;
+}
+line-height: 21px;
+}
+.nav>li>a {
+   // min-width: 100%;
+    display: grid;
+    place-items: center;
+}
+.block-field-blocknoderiifield-q-6a{
+ padding-bottom:2em;
+}
+.rii .field--label{
+ margin-top:15px;
+}
+.field--name-field-uk-postcode-geofield>div>div {
+    //border-bottom: 15px solid transparent;
+    padding: 0;
+}
+.field--item{
+  position:relative;
+}
+.more-link{
+  margin-top:8px;
+  padding-top: 1%;
+  padding-bottom:1%;
+}
+.field--name-field-macro-domains .field--item, .field--name-field-keywords .field--item {
+    display: inline-flex;
+    flex-wrap: wrap;
+    border-radius: 10px;
+    padding: 5px;
 }
 /*TITLE*/
 .region-header h1>span {
@@ -13,16 +179,59 @@
     margin: 0.67em 0;
     font-weight: bold;
 }
-/*main menu CSS*/
-h2.block-title {
-    padding-left: 3%;
+.region-header h1{
+  font-weight:bold;
 }
-
+.path-frontpage h1.page-header {
+  margin-top:10px;
+}
+.field--name-field-rii-referred>a, a.more-link{
+  text-decoration:none;
+  padding: 1%;
+  border-radius:10px;
+}
+.dropdown-menu,.dropdown-menu a{
+min-width:fit-content;
+}
+.field--name-field-rii-logo>img {
+    max-width: 250px;
+    max-height: 100px;
+    width:auto;
+    height:auto;
+    padding-bottom: 20px;
+}
+/*main menu CSS*/
+@media(max-width:780px){
+ .dropdown{
+  width:100vw;
+  background-color:white;
+}
+ .dropdown a{
+  border-radius:10px;
+}
+.dropdown-menu{
+    width: 100%;
+    text-align: center;
+}
+.dropdown-menu li{
+ margin:5px;
+}
+}
+.navbar{
+  min-height:50px;
+}
+@media (min-width: 768px)
+{
+.navbar-nav>li>a {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+}
 ul.menu.menu--main.nav.navbar-nav{
   display:inline-flex;
    width:80%;
     gap: 20px;
-   padding-left:15%;
+   padding-left:20%;
    place-content:center;
 }
 ul.menu.menu--main.nav.navbar-nav>li{
@@ -31,28 +240,43 @@ ul.menu.menu--main.nav.navbar-nav>li{
 ul.menu.menu--account.nav.navbar-nav.navbar-right{
  display:inline-flex;
   width:20%;
+  gap:10px;
+  margin: 0px;
+  margin-right:-20px;
   place-content:flex-end;
   float:right;
+  text-align:center;
 }
-
+.ftnav-item{
+width:100%;
+}
 header#navbar.navbar-default {
  border-bottom:3px solid grey;
  margin-bottom:10px !important;
 }
-ul.menu.menu--account.nav.navbar-nav.navbar-right>li{
+ul.menu.menu--account.nav.navbar-nav.navbar-right>li:not(.dropdown){
   flex:1;
+  max-width:50%;
+  //min-width:320px;
 }
 .navbar-nav>li{
   display:grid;
   max-width: fit-content;
   place-items:center;
 }
-.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:active {
-  color:black;
-  background-color:	#F5F5F5;
+.nav>li>a{
+    min-width: 100%;
+     display: grid;
+    place-items: center;
+    min-height:fit-content;
 }
-
+#edit-submit-search{
+ margin-top:22px;
+}
 /*USER MENU*/
+.user-logged-in .menu.menu--account a[href="/user/login"],.user-logged-in ul.menu.menu--account.nav.navbar-nav.navbar-right>li:not(.dropdown){
+  display:none;
+}
 .label{
  color:black;
 }
@@ -67,6 +291,8 @@ ul.menu.menu--account.nav.navbar-nav.navbar-right>li{
     position: relative;
     /* display: block; */
     min-width: 100%;
+     display: grid;
+    place-items: center;
     padding: 10px 15px;
 }
   ul.menu.menu--main.nav.navbar-nav{
@@ -81,7 +307,6 @@ ul.menu.menu--account.nav.navbar-nav.navbar-right{
   width:100%;
 }
 .navbar-default .navbar-nav .open .dropdown-menu>li>a {
-  color: black;
   min-width:100%
 }
 .navbar-nav{
@@ -90,11 +315,9 @@ ul.menu.menu--account.nav.navbar-nav.navbar-right{
   }
  .navbar-nav>li{
    min-width:100%;
-   color:black;
   }
    .navbar-nav>li>a{
    min-width:100%;
-   color:black;
    display:grid;
    place-items:center;
   }
@@ -180,11 +403,12 @@ margin-bottom: 25px;
 /*layout normalization*/
 .footer{
   position:relative;
+  padding-top:20px;
+  padding-bottom:0;
 }
 
 .csnav-item{
  text-decoration:none;
- background:#F5F5F5;
  max-width: 33.5vw;
  min-width: 100px;
  min-height: 140px;
@@ -197,26 +421,19 @@ margin-bottom: 25px;
   width:100%;
   height:50%;
   position:relative;
-  color:black;
   text-align:center;
    font-weight: 800;
   display:grid;
   place-items: center
 }
-.csnav-item:hover{
-  background-color:#E8E8E8;
-}
-.navbar-right>.first>a {
- background-color:orange !important;
- color: #587007e;
- border-radius:25px;
-}
-.navbar-right>.first>a:hover {
- background-color:darkorange !important;
- color: #587007e;
- border-radius:25px;
-}
+
+
 /*CASE STUDY CONTENT*/
+p.support-text {
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.2em;
+}
 .views-view-grid.views-row {
     display: inline-flex;
     flex-wrap: wrap;
@@ -255,7 +472,6 @@ text-align: center;
  padding-left: 8px;
 }
 .case-study a{
- color:black;
  font-weight:600;
 }
 .field--name-field-rii-referred{
@@ -266,7 +482,6 @@ text-align: center;
 }
 .field--name-field-rii-referred>a{
   text-decoration:none;
-  background-color:#DCDCDC;
   padding: 2%;
   border-radius:5%;
 }
@@ -292,14 +507,12 @@ text-align: center;
 }
 .case-study .teaser{
    text-align:center;
-  background-color: #F5F5F5;
 }
 .layout--twocol-section{
   position:relative;
 }
 .case-study .mobile-teaser{
    text-align:center;
-  background-color: #F5F5F5;
 }
 .teaser .field--name-field-case-study-im{
   height:60vh;
@@ -341,7 +554,6 @@ text-align: center;
   display:grid;
   position:relative;
   margin-bottom:10px;
-  background-color:#F5F5F5;
   height:6em;
   text-align:center;
   place-items:center;
@@ -350,14 +562,11 @@ text-align: center;
 .mobile-teaser .block-field-blocknodecase-studytitle{
   padding:5%;
   display:grid;
-  background-color:#F5F5F5;
   place-items: center;
   text-align:center;
 }
 
-.teaser .block-field-blocknodecase-studytitle:hover{
-  background-color:#DCDCDC;
-}
+
 .logo IMG {
     max-width: 100px;
 
@@ -374,44 +583,43 @@ text-align: center;
 .csnav-icon{
   background-size:100% 100%;
   width:100%;
-  margin-top:2%;
+  margin-top:10px;
   position:relative;
-  height: 50%;
+  height: 45%;
 }
 .csnav-icon>a {
     width: 100%;
     height: 100%;
-    color:black;
     text-decorations:none;
     display: grid;
     place-items:center;
 }
 .csnav-all{
-  background-image:url("/sites/default/files/2020-09/border-all-solid.svg");
+background-image:url("/sites/default/files/2020-09/border-all-solid.svg");
 }
 .csnav-covid{
-  background-image:url("/sites/default/files/2020-09/virus-solid.svg");
+background-image:url("/sites/default/files/2020-09/virus-solid.svg");
 }
 .csnav-bio{
-  background-image:url("/sites/default/files/2020-09/microscope-solid.svg");
+background-image:url("/sites/default/files/2020-09/microscope-solid.svg");
 }
 .csnav-phy{
-  background-image:url("/sites/default/files/2020-09/atom-solid.svg");
+background-image:url("/sites/default/files/2020-09/atom-solid.svg");
 }
 .csnav-soc{
-   background-image:url("/sites/default/files/2020-09/people-arrows-solid.svg");
+ background-image:url("/sites/default/files/2020-09/people-arrows-solid.svg");
 }
 .csnav-ene{
-  background-image:url("/sites/default/files/2020-09/lightbulb-regular.svg");
+background-image:url("/sites/default/files/2020-09/lightbulb-regular.svg");
 }
 .csnav-env{
-  background-image:url("/sites/default/files/2020-09/globe-europe-solid.svg");
+background-image:url("/sites/default/files/2020-09/globe-europe-solid.svg");
 }
 .csnav-comp{
-  background-image:url("/sites/default/files/2020-09/server-solid.svg");
+background-image:url("/sites/default/files/2020-09/server-solid.svg");
 }
 .csnav-oth{
-  background-image:url("/sites/default/files/2020-09/ellipsis-h-solid.svg");
+background-image:url("/sites/default/files/2020-09/ellipsis-h-solid.svg");
 }
 .logo.navbar-btn.pull-left{
 	width:00%;
@@ -422,6 +630,7 @@ text-align: center;
 .view-homepage-banner {
   border-bottom:2px solid grey;
 	overflow-x:hidden;
+        width:100%;
 }
 
 .view-homepage-banner img{
@@ -429,17 +638,20 @@ text-align: center;
     border-radius:0px;
     height:100%;
     padding-top:10px;
-    width:16.67%;
+    width:14.67%;
 }
 
 .block-views-blockhomepage-banner-block-1 .form-group{
     height:15vw;
     position:absolute;
+    width:100%;
     left:0px
 }
 
 .main-container .row .col-sm-12{
 	position:static;
+        padding-right:5%;
+         padding-left:5%;
 }
 
 .block-views-blockhomepage-banner-block-1{
@@ -466,12 +678,12 @@ text-align: center;
 .view-homepage-banner .view-content{
     white-space:nowrap;
   	height:15vw;
-    width:100vw !important;
+    width:100% !important;
     width:fit-content;
 }
 
 .navbar.navbar-default.container{
-    background: url(/sites/default/files/ukri4colourbanner.svg) no-repeat bottom center;
+    //background: url(/sites/default/files/ukri4colourbanner.svg) no-repeat bottom center;
 }
 
 .col-sm-12 .form--inline.form-inline.clearfix{
@@ -503,11 +715,11 @@ text-align: center;
   }
 
   .menu.menu--main.nav.navbar-nav a:not(:hover){
-    color:black;
+//    color:black;
   }
   .menu.menu--main.nav.navbar-nav a:hover{
-   background-color:#F5F5F5;
-   color:black;
+   //background-color:#F5F5F5;
+ //  color:black;
 }
 
   #block-bootstrap-footer > .nav{
@@ -523,15 +735,9 @@ text-align: center;
 
 }
 
-.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus {
-  background-color: #E8E8E8;
-	color:black!important;
-}
 
-.navbar-default .navbar-nav>.active>a:hover{
-	color:black;
-  background-color:#E8E8E8;
-}
+
+
 
 header#navbar.navbar-default{
   	/*background-image: url("/sites/default/files/2020-08/bg2.jpg");*/
@@ -570,7 +776,7 @@ header#navbar.navbar-default{
 }
 
 .footer.footer.container{
-	background-color:#303f42;
+	//background-color:#303f42;
   	max-width:100%;
   	width:100%;
   	margin:0;
@@ -613,7 +819,6 @@ html.js fieldset.collapsible.collapsed span.fieldset-legend {
         overflow: auto;
         margin-right: 10px;
         height:45em;
-        background-color:#F5F5F5;
         min-height:320px;
 }
 
@@ -629,23 +834,29 @@ html.js fieldset.collapsible.collapsed span.fieldset-legend {
 }
 
 .rii .layout__region--first{
-	flex:1 1 40% !important;
+	flex:1 1 66% !important;
 }
 .rii .layout__region--second{
-        flex: 1 1 40% !important;
+        flex: 1 1 33% !important;
+        text-align:center;
         margin-left:auto;
+}
+.rii .layout__region--second section:not(.block-field-blocknoderiifield-uk-postcode-geofield){
+       width: 80% !important;
+        text-align:center;
+         overflow-wrap: anywhere;
+        display:grid;
+        place-items:center;
+        margin-left:10%;
 }
 .layout--twocol-section.layout--twocol-section--75-25 >  .layout__region--second{
 	flex:0 1 100px !important;
-       backround-color:red;
 }
 
 .layout--twocol-section.layout--twocol-section--75-25 > .layout__region--first{
 	flex:1 1 80% !important;
-    height: 30vh;
     display: grid;
     align-items: center;
-       backround-color:red;
 }
 .case-study .layout__region--first{
 	flex:1 !important;
@@ -664,6 +875,7 @@ html.js fieldset.collapsible.collapsed span.fieldset-legend {
 
 .col-sm-9 .region-content #views-exposed-form-search-page-1 .form-type-select{
 	order:99;
+        margin-top:5px;
 }
 
 #edit-search-api-fulltext {
@@ -792,7 +1004,7 @@ div .author{
 }
 
 .field--name-body p{
-	font-size:14px;
+//font-size:14px;
     line-height: 1.5;
 }
 
@@ -806,59 +1018,13 @@ div .author{
 
 /*UKRI Styleguide Changes Below*/
 
-.menu--footer>li>a {
-    color: black;
-}
-.menu--footer>li>a:hover, .menu--footer>li>a:active {
-    color: #0000CD ;
-}
-a {
-     color:#0000CD;
-}
-
-a:hover {
-    color:black;
-}
-
-a:focus {
-   color:black;
-}
-
-.pagination>.active>a {
-	background-color:#4d1f55;
-}
-
-.pagination>.active>a:hover {
-	background-color:#4d1f55;
-}
-
-.pagination>li>a:hover {
-	background-color:#4d1f55;
-}
-.navbar-default .navbar-nav>li>a {
-    color: black !important;
-    background-color:transparent;
-}
-.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>li>a:active{
-   background-color: #f5f5f5;
-}
-.pagination>li>a{
-	background-color:#8c4799;
-}
 
 
-
-.navbar-default .navbar-nav>li>a{
-	color:black;
-}
 
 .contextual-region.rii.full.clearfix .field--label + .field--item{
 	padding:8px;
 }
 
-.navbar-toggle{
-    background-color: #1D4F91;
-}
 
 .leaflet-popup-content .field.field--name-field-uk-postcode-geofield{
     display:none;
