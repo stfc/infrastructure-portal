@@ -115,11 +115,11 @@ class Cities extends ControllerBase {
   protected function _getData($header, $country) {
     $items_per_page = \Drupal::config('visitors.config')->get('items_per_page');
     $original_country =  ($country == '(none)') ? '' : $country;
-  
+
     $query = \Drupal::database()->select('visitors', 'v')
       ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
       ->extend('Drupal\Core\Database\Query\TableSortExtender');
-  
+
     $query->addExpression('COUNT(visitors_city)', 'count');
     $query->fields('v', array('visitors_city'));
     $query->condition('v.visitors_country_name', $original_country);
@@ -127,19 +127,19 @@ class Cities extends ControllerBase {
     $query->groupBy('visitors_city');
     $query->orderByHeader($header);
     $query->limit($items_per_page);
-  
+
     $count_query = \Drupal::database()->select('visitors', 'v');
     $count_query->addExpression('COUNT(DISTINCT visitors_city)');
     $count_query->condition('v.visitors_country_name', $original_country);
     visitors_date_filter_sql_condition($count_query);
     $query->setCountQuery($count_query);
     $results = $query->execute();
-  
+
     $rows = array();
-  
-    $page = isset($_GET['page']) ? $_GET['page'] : '';
+
+    $page = isset($_GET['page']) ? $_GET['page'] : 0;
     $i = 0 + ($page  * $items_per_page);
-  
+
     foreach ($results as $data) {
       if ($data->visitors_city == '') {
         $data->visitors_city = '(none)';

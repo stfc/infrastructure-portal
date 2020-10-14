@@ -68,7 +68,8 @@ class IgnoredModulesForm extends ConfigFormBase {
 
     $settings_url = Url::fromRoute('nagios.settings')->toString();
     // Is the nagios module itself disabled?
-    if ($config->get('nagios.enable.nagios')) {
+    $nagios_hooks_enabled = $config->get('nagios.enable.nagios') ?? TRUE;
+    if (!$nagios_hooks_enabled) {
       \Drupal::messenger()->addMessage(
         $this->t(
           'These settings are not available, because the nagios module is not enabled within the <a href="@nagios-settings">nagios settings</a>.', [
@@ -133,7 +134,7 @@ class IgnoredModulesForm extends ConfigFormBase {
     $this->moduleHandler->loadInclude('system', 'inc', 'system.admin');
 
     // Sort all modules by their names.
-    $modules = system_rebuild_module_data();
+    $modules = \Drupal::service('extension.list.module')->getList();
     uasort($modules, 'system_sort_modules_by_info_name');
 
     // Build the rows

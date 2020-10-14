@@ -124,13 +124,20 @@ function search_api_autocomplete_form_views_exposed_form_alter(array &$form, For
 
   foreach ($view->filter as $filter_name => $filter) {
     if (!in_array($filter->realField, $fields)
-        || empty($filter->options['expose']['identifier'])
-        || !isset($form[$filter->options['expose']['identifier']])) {
+        || empty($filter->options['expose']['identifier'])) {
       continue;
     }
     $key = $filter->options['expose']['identifier'];
 
-    $element = &$form[$key];
+    if (isset($form[$key])) {
+      $element = &$form[$key];
+    }
+    elseif (isset($form[$key . '_wrapper'][$key])) {
+      $element = &$form[$key . '_wrapper'][$key];
+    }
+    else {
+      continue;
+    }
     $data = $base_data;
 
     // The Views filter for individual fulltext fields uses a nested "value"
@@ -154,7 +161,7 @@ function search_api_autocomplete_form_views_exposed_form_alter(array &$form, For
 }
 
 /**
- * Implements hook_form_FORM_ID_alter() for "search_api_page_block_form".
+ * Implements hook_form_BASE_FORM_ID_alter() for "search_api_page_block_form".
  *
  * Adds autocompletion to the keywords field on search pages, if enabled by the
  * user.
@@ -162,12 +169,8 @@ function search_api_autocomplete_form_views_exposed_form_alter(array &$form, For
  * @see \Drupal\search_api_page\Form\SearchApiPageBlockForm
  * @see \Drupal\search_api_autocomplete\Plugin\search_api_autocomplete\search\Page
  */
-function search_api_autocomplete_form_search_api_page_block_form_alter(array &$form, FormStateInterface $form_state) {
-  $build_info = $form_state->getBuildInfo();
-  if (!isset($build_info['args'][0]['search_api_page'])) {
-    return;
-  }
-  $page_id = $build_info['args'][0]['search_api_page'];
+function search_api_autocomplete_form_search_api_page_block_form_alter(array &$form, FormStateInterface $form_state, $form_id) {
+  $page_id = substr($form_id, strlen('search_api_page_block_form_'));
   /** @var \Drupal\search_api_autocomplete\Entity\SearchStorage $search_storage */
   $search_storage = \Drupal::entityTypeManager()
     ->getStorage('search_api_autocomplete_search');

@@ -16,6 +16,6 @@ function facets_map_widget_facets_search_api_query_type_mapping_alter($backend_p
   // Check if rpt data type is supported by the backend plugin before adding the
   // query type to the allowed query types.
   if ($plugin->supportsDataType('rpt')) {
-    $query_types['search_api_rpt'] = 'search_api_rpt';
+    $query_types['rpt'] = 'search_api_rpt';
   }
 }

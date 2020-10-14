@@ -3,7 +3,8 @@
 namespace Drupal\userprotect\Plugin\UserProtection;
 
 use Drupal\Component\Plugin\PluginInspectionInterface;
-use Drupal\Component\Plugin\ConfigurablePluginInterface;
+use Drupal\Component\Plugin\ConfigurableInterface;
+use Drupal\Component\Plugin\DependentPluginInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\user\UserInterface;
@@ -11,7 +12,8 @@ use Drupal\user\UserInterface;
 /**
  * Defines the interface for user protection plugins.
  */
-interface UserProtectionInterface extends PluginInspectionInterface, ConfigurablePluginInterface {
+interface UserProtectionInterface extends PluginInspectionInterface, ConfigurableInterface, DependentPluginInterface {
+
   /**
    * Returns the user protection label.
    *
@@ -66,12 +68,13 @@ interface UserProtectionInterface extends PluginInspectionInterface, Configurabl
    *
    * @param array $form
    *   Nested array of form elements that comprise the form.
-   * @param array $form_state
-   *   A keyed array containing the current state of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
    *
    * @return bool
    *   TRUE if the protection was applied.
    *   FALSE otherwise.
    */
   public function applyAccountFormProtection(array &$form, FormStateInterface $form_state);
+
 }

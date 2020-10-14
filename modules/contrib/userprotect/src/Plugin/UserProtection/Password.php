@@ -14,6 +14,7 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class Password extends UserProtectionBase {
+
   /**
    * {@inheritdoc}
    */
@@ -43,4 +44,5 @@ class Password extends UserProtectionBase {
 
     return FALSE;
   }
+
 }

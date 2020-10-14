@@ -5,6 +5,8 @@
  * Logs visitors for your site.
  */
 
+use Drupal\Core\Database\Database;
+
 /**
  * Implements of hook_help().
  */
@@ -45,7 +47,7 @@ function visitors_cron() {
 
   if ($flush_log_timer > 0) {
     // Clean up expired access logs.
-    db_delete('visitors')
+    \Drupal::database()->delete('visitors')
       ->condition('visitors_date_time', time() - $flush_log_timer, '<')
       ->execute();
   }
@@ -58,7 +60,7 @@ function visitors_cron() {
  */
 function visitors_get_mysql_current_timezone() {
   $query = 'SHOW variables LIKE \'time_zone\'';
-  return db_query($query)->fetchField(1);
+  return \Drupal::database()->query($query)->fetchField(1);
 }
 
 /**
@@ -67,7 +69,7 @@ function visitors_get_mysql_current_timezone() {
  * @return int
  */
 function visitors_timezone_diff() {
-  $timezone = drupal_get_user_timezone();
+  $timezone = date_default_timezone_get();
   return timezone_offset_get(timezone_open($timezone), date_create());
 }
 
@@ -80,7 +82,7 @@ function visitors_timezone_diff() {
  * @return string date format
  */
 function visitors_date_format_sql($field_name, $format) {
-  switch (Drupal\Core\Database\Database::getConnection()->driver()) {
+  switch (Database::getConnection()->driver()) {
     case 'pgsql':
       return visitors_pgsql_date_format_sql($field_name, $format);
       break;

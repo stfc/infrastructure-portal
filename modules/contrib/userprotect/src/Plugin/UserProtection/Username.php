@@ -14,6 +14,7 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class Username extends UserProtectionBase {
+
   /**
    * {@inheritdoc}
    */
@@ -21,11 +22,12 @@ class Username extends UserProtectionBase {
     $build_info = $form_state->getBuildInfo();
     $account = $build_info['callback_object']->getEntity();
     // If for some reason the account has no username, then don't protect it.
-    if ($account->getUsername() && isset($form['account']['name'])) {
+    if ($account->getAccountName() && isset($form['account']['name'])) {
       $form['account']['name']['#disabled'] = TRUE;
-      $form['account']['name']['#value'] = $account->getUsername();
+      $form['account']['name']['#value'] = $account->getAccountName();
       return TRUE;
     }
     return FALSE;
   }
+
 }

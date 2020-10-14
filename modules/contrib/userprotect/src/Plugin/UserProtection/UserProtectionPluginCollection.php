@@ -18,16 +18,6 @@ class UserProtectionPluginCollection extends DefaultLazyPluginCollection {
   protected $definitions;
 
   /**
-   * {@inheritdoc}
-   *
-   * @return \Drupal\userprotect\Plugin\UserProtection\UserProtectionInterface
-   *   An instance of UserProtectionInterface.
-   */
-  public function &get($instance_id) {
-    return parent::get($instance_id);
-  }
-
-  /**
    * Retrieves all user protection plugin instances.
    *
    * @return array
@@ -47,7 +37,7 @@ class UserProtectionPluginCollection extends DefaultLazyPluginCollection {
     }
 
     // Sort plugins.
-    uasort($this->pluginInstances, array($this, 'pluginInstancesSort'));
+    uasort($this->pluginInstances, [$this, 'pluginInstancesSort']);
 
     return $this->pluginInstances;
   }
@@ -60,7 +50,7 @@ class UserProtectionPluginCollection extends DefaultLazyPluginCollection {
    */
   public function getEnabledPlugins() {
     $instances = $this->getAll();
-    $enabled = array();
+    $enabled = [];
     foreach ($this->configurations as $instance_id => $configuration) {
       if ($configuration['status']) {
         $enabled[] = $instances[$instance_id];
@@ -68,7 +58,7 @@ class UserProtectionPluginCollection extends DefaultLazyPluginCollection {
     }
 
     // Sort plugins.
-    uasort($enabled, array($this, 'pluginInstancesSort'));
+    uasort($enabled, [$this, 'pluginInstancesSort']);
 
     return $enabled;
   }
@@ -89,9 +79,9 @@ class UserProtectionPluginCollection extends DefaultLazyPluginCollection {
   /**
    * Sorts plugin instances based on weight, label, provider or id.
    *
-   * @param Drupal\userprotect\Plugin\UserProtection\UserProtectionInterface $a
+   * @param \Drupal\userprotect\Plugin\UserProtection\UserProtectionInterface $a
    *   The first plugin in the comparison.
-   * @param Drupal\userprotect\Plugin\UserProtection\UserProtectionInterface $b
+   * @param \Drupal\userprotect\Plugin\UserProtection\UserProtectionInterface $b
    *   The second plugin in the comparison.
    *
    * @return int
@@ -99,7 +89,7 @@ class UserProtectionPluginCollection extends DefaultLazyPluginCollection {
    *   1 if $b should go first.
    *   0 if it's unknown which should go first.
    */
-  public function pluginInstancesSort($a, $b) {
+  public function pluginInstancesSort(UserProtectionInterface $a, UserProtectionInterface $b) {
     if ($a->getWeight() != $b->getWeight()) {
       return $a->getWeight() < $b->getWeight() ? -1 : 1;
     }
@@ -125,4 +115,5 @@ class UserProtectionPluginCollection extends DefaultLazyPluginCollection {
     }
     return $configuration;
   }
+
 }

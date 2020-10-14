@@ -16,5 +16,10 @@ nagios:
     display: FALSE
     channel_blacklist:
       'access denied': access denied
+  function:
+    watchdog: TRUE
+    cron: TRUE
+    maintenance: TRUE
+    requirements: TRUE
   cron_duration: 60
   elysia_cron_duration: 60

@@ -17,6 +17,35 @@ leaflet:
     component:
       js/leaflet/dist/leaflet.css: {}
 
+leaflet-drupal:
+  version: VERSION
+  js:
+    js/leaflet.drupal.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.once
+    - core/drupal
+    - leaflet/leaflet
+
+leaflet-geoman:
+  version: 2.x
+  css:
+    theme:
+      '//unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css': {type: external, minified: true}
+  js:
+    '//unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js': {type: external, minified: true}
+  dependencies:
+    - leaflet/leaflet
+
+leaflet-widget:
+  version: 1.x
+  js:
+    js/leaflet.widget.js: {}
+  dependencies:
+    - core/jquery
+    - leaflet/general
+    - leaflet/leaflet-geoman
+
 # Control Fullscreen
 leaflet.fullscreen:
   header: true
@@ -34,11 +63,30 @@ leaflet.fullscreen:
   dependencies:
     - leaflet/leaflet
 
-leaflet-drupal:
-    version: VERSION
-    js:
-      leaflet.drupal.js: {}
-    dependencies:
-      - leaflet/leaflet
-      - core/jquery
-      - core/drupal
+# Gesture Handling Leaflet Library
+leaflet.gesture_handling:
+  header: true
+  remote: https://github.com/elmarquis/Leaflet.GestureHandling
+  version: '1.0.1'
+  license:
+    name: MIT License
+    url: https://raw.githubusercontent.com/elmarquis/Leaflet.GestureHandling/master/LICENSE
+    gpl-compatible: no
+  css:
+    component:
+      'https://unpkg.com/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css': { type: external}
+  js:
+    'https://unpkg.com/leaflet-gesture-handling': { type: external, minified: true }
+  dependencies:
+    - leaflet/leaflet
+
+leaflet.geocoder:
+  version: 1.x
+  css:
+    component:
+      css/leaflet_geocoder.css: {}
+  js:
+    js/leaflet.geocoder.js: {}
+  dependencies:
+    - core/drupal.autocomplete
+    - leaflet/leaflet-drupal

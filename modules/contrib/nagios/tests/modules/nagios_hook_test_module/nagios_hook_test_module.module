@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\Core\Url;
+
 /**
  * Implements hook_nagios_info().
  *
@@ -18,9 +20,25 @@ function nagios_hook_test_module_nagios_info() {
 function nagios_hook_test_module_nagios() {
   return [
     'NAGIOS_CHECK_KEY' => [
-      'status' => 1,
+      'status' => 1, // NAGIOS_STATUS_WARNING
       'type' => 'state',
       'text' => 'Text description for the problem',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function nagios_hook_test_module_requirements() {
+  $url = Url::fromRoute('nagios.ignored_modules');
+  $url->setAbsolute();
+  return [
+    'big_example_problem' => [
+      'title' => 'Nagios Hook Test Module',
+      'value' => 'This is an example error.',
+      'severity' => REQUIREMENT_ERROR,
+      'description' => 'This hook exists to play with IgnoredModulesForm at ' . $url->toString(),
     ],
   ];
 }

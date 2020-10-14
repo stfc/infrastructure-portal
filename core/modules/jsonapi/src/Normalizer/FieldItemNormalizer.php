@@ -20,7 +20,7 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
  * @internal JSON:API maintains no PHP API since its API is the HTTP API. This
  *   class may change at any time and this will break any dependencies on it.
  *
- * @see https://www.drupal.org/project/jsonapi/issues/3032787
+ * @see https://www.drupal.org/project/drupal/issues/3032787
  * @see jsonapi.api.php
  */
 class FieldItemNormalizer extends NormalizerBase implements DenormalizerInterface {
@@ -112,6 +112,12 @@ class FieldItemNormalizer extends NormalizerBase implements DenormalizerInterfac
     // be expanded to an array of all properties, we special-case single-value
     // properties.
     if (!is_array($data)) {
+      // The NULL normalization means there is no value, hence we can return
+      // early. Note that this is not just an optimization but a necessity for
+      // field types without main properties (such as the "map" field type).
+      if ($data === NULL) {
+        return $data;
+      }
       $property_value = $data;
       $property_name = $item_definition->getMainPropertyName();
       $property_value_class = $property_definitions[$property_name]->getClass();

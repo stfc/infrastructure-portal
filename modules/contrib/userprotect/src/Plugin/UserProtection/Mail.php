@@ -14,6 +14,7 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class Mail extends UserProtectionBase {
+
   /**
    * {@inheritdoc}
    */
@@ -28,4 +29,5 @@ class Mail extends UserProtectionBase {
     }
     return FALSE;
   }
+
 }

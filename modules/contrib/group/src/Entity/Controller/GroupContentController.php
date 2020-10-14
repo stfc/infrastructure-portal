@@ -12,7 +12,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Url;
 use Drupal\group\Entity\GroupContentType;
 use Drupal\group\Entity\GroupInterface;
-use Drupal\user\PrivateTempStoreFactory;
+use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -24,7 +24,7 @@ class GroupContentController extends ControllerBase {
   /**
    * The private store factory.
    *
-   * @var \Drupal\user\PrivateTempStoreFactory
+   * @var \Drupal\Core\TempStore\PrivateTempStoreFactory
    */
   protected $privateTempStoreFactory;
 
@@ -52,7 +52,7 @@ class GroupContentController extends ControllerBase {
   /**
    * Constructs a new GroupContentController.
    *
-   * @param \Drupal\user\PrivateTempStoreFactory $temp_store_factory
+   * @param \Drupal\Core\TempStore\PrivateTempStoreFactory $temp_store_factory
    *   The private store factory.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
@@ -73,7 +73,7 @@ class GroupContentController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('user.private_tempstore'),
+      $container->get('tempstore.private'),
       $container->get('entity_type.manager'),
       $container->get('entity.form_builder'),
       $container->get('renderer')
@@ -107,7 +107,7 @@ class GroupContentController extends ControllerBase {
     // Filter out the bundles the user doesn't have access to.
     $access_control_handler = $this->entityTypeManager->getAccessControlHandler('group_content');
     foreach ($bundle_names as $plugin_id => $bundle_name) {
-      $access = $access_control_handler->createAccess($bundle_name, NULL, ['group' => $group, 'create_mode' => $create_mode], TRUE);
+      $access = $access_control_handler->createAccess($bundle_name, NULL, ['group' => $group], TRUE);
       if (!$access->isAllowed()) {
         unset($bundle_names[$plugin_id]);
       }

@@ -8,5 +8,8 @@
   "support": {
     "issues": "https://www.drupal.org/project/issues/userprotect",
     "source": "http://cgit.drupalcode.org/userprotect"
+  },
+  "require-dev": {
+    "drupal/role_delegation": "^1.0"
   }
 }

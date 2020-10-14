@@ -127,8 +127,24 @@
       return;
     }
 
+    var attributes = Attributes.create(element).remove('style').set('data-drupal-theme', this.themeHooks.modal);
+
+    // Merge in trigger data attributes.
+    if (options.$trigger && options.$trigger[0]) {
+      /** @var {HTMLElement} trigger */
+      var trigger = options.$trigger[0];
+      var data = {};
+      for (var i = 0, l = trigger.attributes.length; i < l; i++) {
+        var name = trigger.attributes[i].name;
+        if (name && name.substring(0, 5) === 'data-') {
+          data[name] = trigger.getAttribute(name);
+        }
+      }
+      attributes.merge(data);
+    }
+
     options = $.extend(true, {}, options, {
-      attributes: Attributes.create(element).remove('style').set('data-drupal-theme', this.themeHooks.modal),
+      attributes: attributes,
     });
 
     // Create a new modal.

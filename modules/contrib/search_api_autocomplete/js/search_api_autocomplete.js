@@ -56,7 +56,7 @@
    */
   Drupal.behaviors.searchApiAutocomplete = {
     attach: function (context, settings) {
-      // Find all our fields with autocomplete settings
+      // Find all our fields with autocomplete settings.
       $(context)
         .find('.ui-autocomplete-input[data-search-api-autocomplete-search]')
         .once('search-api-autocomplete')

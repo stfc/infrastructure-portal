@@ -157,17 +157,18 @@ class SettingsForm extends ConfigFormBase {
         '#collapsible' => TRUE,
         '#collapsed' => FALSE,
         '#title' => $this->t('Watchdog settings'),
-        '#description' => $this->t('Controls how watchdog messages are retreived and displayed when watchdog checking is set.'),
+        '#description' => $this->t('Controls how watchdog messages are retrieved and displayed when watchdog checking is set.'),
         '#states' => [
           'visible' => [
             '#edit-nagios #edit-nagios-func-watchdog' => ['checked' => TRUE],
+            '#edit-nagios-enable-nagios' => ['checked' => TRUE],
           ],
         ],
         '#weight' => 5,
       ];
       $form['watchdog']['limit_watchdog_display'] = [
         '#type' => 'checkbox',
-        '#title' => t('Limit watchdog display'),
+        '#title' => $this->t('Limit watchdog display'),
         '#default_value' => $config->get('nagios.limit_watchdog.display'),
         '#description' => $this->t('Limit watchdog messages to only those that are new since the last check.'),
       ];
@@ -180,7 +181,7 @@ class SettingsForm extends ConfigFormBase {
       $options += $channel_blacklist;
       $form['watchdog']['channel_blacklist'] = [
         '#type' => 'select',
-        '#title' => t('Message types to ignore'),
+        '#title' => $this->t('Message types to ignore'),
         '#default_value' => $channel_blacklist,
         '#options' => $options,
         '#multiple' => TRUE,
@@ -212,9 +213,9 @@ class SettingsForm extends ConfigFormBase {
 
         // Set #defaultvalue from #configname for second level form elements:
         if (isset($data['#type']) && $data['#type'] == 'fieldset') {
-          foreach ($data as $fieldsetelement => $fieldsetdata) {
-            if (is_array($fieldsetdata) && !isset($fieldsetdata['#default_value']) && isset($fieldsetdata['#configname'])) {
-              $form[$module][$element][$fieldsetelement]['#default_value'] = $config->get($module . '.' . $fieldsetdata['#configname']);
+          foreach ($data as $fieldset_element => $fieldset_data) {
+            if (is_array($fieldset_data) && !isset($fieldset_data['#default_value']) && isset($fieldset_data['#configname'])) {
+              $form[$module][$element][$fieldset_element]['#default_value'] = $config->get($module . '.' . $fieldset_data['#configname']);
             }
           }
         }
@@ -251,7 +252,7 @@ class SettingsForm extends ConfigFormBase {
       $form_state->setErrorByName(
         'nagios_ua',
         $this->t('You must change the Unique ID if you make the status page available over HTTP.') . ' ' .
-        t('This step reduces the risk of publically sharing information that might make hacking your site easier.'));
+        $this->t('This step reduces the risk of publicly sharing information that might make hacking your site easier.'));
     }
   }
 
@@ -296,9 +297,9 @@ class SettingsForm extends ConfigFormBase {
 
         // Save config for second level form elements:
         if (isset($data['#type']) && $data['#type'] == 'fieldset') {
-          foreach ($data as $fieldsetelement => $fieldsetdata) {
-            if (is_array($fieldsetdata) && !isset($fieldsetdata['#default_value']) && isset($fieldsetdata['#configname'])) {
-              $config->set($module . '.' . $fieldsetdata['#configname'], $form_state->getValue($fieldsetelement, $config->get($module . '.' . $fieldsetdata['#configname'])));
+          foreach ($data as $fieldset_element => $fieldset_data) {
+            if (is_array($fieldset_data) && !isset($fieldset_data['#default_value']) && isset($fieldset_data['#configname'])) {
+              $config->set($module . '.' . $fieldset_data['#configname'], $form_state->getValue($fieldset_element, $config->get($module . '.' . $fieldset_data['#configname'])));
             }
           }
         }

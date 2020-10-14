@@ -6,6 +6,9 @@
  */
 
 use DrupalCodeGenerator\ApplicationFactory;
+use DrupalCodeGenerator\Twig\Twig1Environment;
+use DrupalCodeGenerator\Twig\Twig2Environment;
+use Twig\Environment;
 
 /**
  * DCG root.
@@ -28,4 +31,23 @@ define('DCG_ROOT', dirname(__DIR__));
  */
 function dcg_create_application() {
   return ApplicationFactory::create();
+}
+
+/**
+ * Creates an Twig environment.
+ */
+function dcg_get_twig_environment($loader) {
+  switch (Environment::MAJOR_VERSION) {
+    case 1:
+      $environment = new Twig1Environment($loader);
+      break;
+
+    case 2:
+      $environment = new Twig2Environment($loader);
+      break;
+
+    default:
+      throw new \RuntimeException('Unsupported Twig version');
+  }
+  return $environment;
 }

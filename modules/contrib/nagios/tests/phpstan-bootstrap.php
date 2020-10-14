@@ -1,0 +1,6 @@
+<?php
+
+define('NAGIOS_STATUS_OK', 0);
+define('NAGIOS_STATUS_WARNING', 1);
+define('NAGIOS_STATUS_CRITICAL', 2);
+define('NAGIOS_STATUS_UNKNOWN', 3);

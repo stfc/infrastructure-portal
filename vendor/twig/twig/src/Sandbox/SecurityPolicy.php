@@ -51,7 +51,7 @@ class SecurityPolicy implements SecurityPolicyInterface
     {
         $this->allowedMethods = [];
         foreach ($methods as $class => $m) {
-            $this->allowedMethods[$class] = array_map('strtolower', \is_array($m) ? $m : [$m]);
+            $this->allowedMethods[$class] = array_map(function ($value) { return strtr($value, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'); }, \is_array($m) ? $m : [$m]);
         }
     }
 
@@ -89,11 +89,11 @@ class SecurityPolicy implements SecurityPolicyInterface
     public function checkMethodAllowed($obj, $method)
     {
         if ($obj instanceof \Twig_TemplateInterface || $obj instanceof Markup) {
-            return true;
+            return;
         }
 
         $allowed = false;
-        $method = strtolower($method);
+        $method = strtr($method, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz');
         foreach ($this->allowedMethods as $class => $methods) {
             if ($obj instanceof $class) {
                 $allowed = \in_array($method, $methods);

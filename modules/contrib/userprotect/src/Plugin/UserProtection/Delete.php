@@ -15,6 +15,7 @@ use Drupal\user\UserInterface;
  * )
  */
 class Delete extends UserProtectionBase {
+
   /**
    * {@inheritdoc}
    */
@@ -24,4 +25,5 @@ class Delete extends UserProtectionBase {
     }
     return parent::isProtected($user, $op, $account);
   }
+
 }

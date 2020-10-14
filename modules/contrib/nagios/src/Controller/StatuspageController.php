@@ -28,9 +28,14 @@ class StatuspageController {
   /**
    * Main function building the string to show via HTTP.
    *
+   * @param string $module_name
+   *   Only check the given module with a hook_nagios() implementation.
+   * @param string $id_for_hook
+   *   An arbitary value to pass into the hook_nagios() implementation.
+   *
    * @return \Symfony\Component\HttpFoundation\Response
    */
-  public function content() {
+  public function content(string $module_name = '', string $id_for_hook = '') {
 
     // Disable cache:
     \Drupal::service('page_cache_kill_switch')->trigger();
@@ -47,7 +52,9 @@ class StatuspageController {
     if ($request_code == $ua || \Drupal::currentUser()
         ->hasPermission('administer site configuration')) {
       // Authorized, so go ahead calling all modules:
-      $nagios_data = nagios_invoke_all('nagios');
+      $nagios_data = $module_name ?
+        [$module_name => call_user_func($module_name . '_nagios', $id_for_hook)] :
+        nagios_invoke_all('nagios');
     }
     else {
       // This is not an authorized unique id or user,
@@ -135,11 +142,13 @@ class StatuspageController {
     // Returns an array of Route objects.
     $routes['nagios.statuspage'] = new Route(
     // Path to attach this route to:
-      $config->get('nagios.statuspage.path'),
+      $config->get('nagios.statuspage.path') . '/{module_name}/{id_for_hook}',
       // Route defaults:
       [
         '_controller' => $config->get('nagios.statuspage.controller'),
         '_title' => 'Nagios Status',
+        'module_name' => '',
+        'id_for_hook' => '',
       ],
       // Route requirements:
       [

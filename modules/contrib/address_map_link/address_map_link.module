@@ -63,7 +63,6 @@ function address_map_link_field_formatter_third_party_settings_form(FormatterInt
         'address' => t('Link address itself'),
         'before' => t('Place link before address'),
         'after' => t('Place link after address'),
-        'embed' => t('For use with Google Maps Embed'),
       ],
       '#states' => [
         'visible' => [
@@ -184,8 +183,7 @@ function address_map_link_preprocess_field(&$variables) {
           $url = $mapLinkType->getAddressUrl($item)->toString();
           $aTagOpen = '<a href="' . $url . '" class="address-map-link"' . ($openInNewWindow ? ' target="_blank"' : '') . '>';
           $aTagClose = '</a>';
-          $iframe = '<iframe width="600" height="450" frameborder="0" style="border:0" src="' . $url . '" >';
-          $iframeClose = '</iframe>';
+
           // Define prefix and suffix if not already set.
           if (!isset($variables['items'][$delta]['content']['#prefix'])) {
             $variables['items'][$delta]['content']['#prefix'] = '';
@@ -201,10 +199,6 @@ function address_map_link_preprocess_field(&$variables) {
 
             case 'after':
               $variables['items'][$delta]['content']['#suffix'] .= $aTagOpen . $linkText . $aTagClose;
-              break;
-
-            case 'embed':
-              $variables['items'][$delta]['content']['#suffix'] .= $iframe . $linkText . $iframeClose;
               break;
 
             case 'address':

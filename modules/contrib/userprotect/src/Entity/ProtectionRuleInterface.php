@@ -10,6 +10,7 @@ use Drupal\user\UserInterface;
  * Provides an interface defining a userprotect_rule entity.
  */
 interface ProtectionRuleInterface extends ConfigEntityInterface {
+
   /**
    * Gets the protected entity type id.
    *
@@ -180,4 +181,5 @@ interface ProtectionRuleInterface extends ConfigEntityInterface {
    *   FALSE if the operation is not protected by this rule.
    */
   public function isProtected(UserInterface $user, $op, AccountInterface $account);
+
 }

@@ -4,7 +4,10 @@ namespace Drupal\geofield_map\Plugin\views\style;
 
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Field\FieldTypePluginManagerInterface;
+use Drupal\Core\Render\BubbleableMetadata;
+use Drupal\Core\Render\RenderContext;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\geofield_map\Controller\GeofieldMapAjaxPopupController;
 use Drupal\geofield_map\GeofieldMapFieldTrait;
 use Drupal\geofield_map\GeofieldMapFormElementsValidationTrait;
 use Drupal\Component\Utility\Html;
@@ -354,28 +357,22 @@ class GeofieldGoogleMapViewStyle extends DefaultStyle implements ContainerFactor
   /**
    * {@inheritdoc}
    */
-  protected $usesRowPlugin = FALSE;
+  protected $usesFields = TRUE;
 
   /**
-   * Does the style plugin support custom css class for the rows.
-   *
-   * @var bool
+   * {@inheritdoc}
+   */
+  protected $usesRowPlugin = TRUE;
+
+  /**
+   * {@inheritdoc}
    */
   protected $usesRowClass = FALSE;
 
   /**
-   * Does the style plugin support grouping of rows.
-   *
-   * @var bool
+   * {@inheritdoc}
    */
   protected $usesGrouping = FALSE;
-
-  /**
-   * Does the style plugin for itself support to add fields to it's output.
-   *
-   * @var bool
-   */
-  protected $usesFields = TRUE;
 
   /**
    * Should field labels be enabled by default.
@@ -602,6 +599,7 @@ class GeofieldGoogleMapViewStyle extends DefaultStyle implements ContainerFactor
       $desc_options += [
         '#rendered_entity' => $this->t('- Rendered @entity entity -', ['@entity' => $this->entityType]),
         '#rendered_entity_ajax' => $this->t('- Rendered @entity entity via Ajax (Quicker Map start / Slower Infowindow show) -', ['@entity' => $this->entityType]),
+        '#rendered_view_fields' => $this->t('# Rendered View Fields (with field label, format, classes, etc)'),
       ];
     }
 
@@ -688,7 +686,6 @@ class GeofieldGoogleMapViewStyle extends DefaultStyle implements ContainerFactor
       catch (PluginException $e) {
         $form['map_marker_and_infowindow']['theming']['plugin_id']['#default_value'] = $map_themers_options['none'];
       }
-
     }
 
     $form['map_marker_and_infowindow']['theming']['plugins_descriptions'] = [
@@ -817,6 +814,8 @@ class GeofieldGoogleMapViewStyle extends DefaultStyle implements ContainerFactor
     ];
 
     $data = [];
+    // Collect bubbleable metadata when doing early rendering.
+    $build_for_bubbleable_metadata = [];
 
     // Get the Geofield field.
     $geofield_name = $map_settings['data_source'];
@@ -931,27 +930,34 @@ class GeofieldGoogleMapViewStyle extends DefaultStyle implements ContainerFactor
                 case '#rendered_entity':
                   $build = $this->entityManager->getViewBuilder($entity->getEntityTypeId())
                     ->view($entity, $default_view_mode, $langcode);
-                  $description[] = $this->renderer->renderPlain($build);
+                  $render_context = new RenderContext();
+                  $description[] = $this->renderer->executeInRenderContext($render_context, function () use (&$build) {
+                    return $this->renderer->render($build, TRUE);
+                  });
+                  if (!$render_context->isEmpty()) {
+                    $render_context->update($build_for_bubbleable_metadata);
+                  }
+                  break;
+
+                case '#rendered_view_fields':
+                  // Normal rendering via view/row fields (with labels options, formatters, classes, etc.).
+                  $renderedRow = [
+                    $this->view->rowPlugin->render($result),
+                  ];
+                  $description[]= $this->renderer->renderPlain($renderedRow);
                   break;
 
                 case '#rendered_entity_ajax':
                   $parameters = [
-                    'entity_type' => $entity->getEntityTypeId(),
+                    'entity_type' => $entity_type,
                     'entity' => $entity->id(),
                     'view_mode' => $default_view_mode,
                     'langcode' => $langcode,
                   ];
-                  $url = Url::fromRoute('geofield_map.ajax_popup', $parameters, ['absolute' => TRUE]);
-                  $build = [
-                    '#type' => 'html_tag',
-                    '#tag' => 'div',
-                    '#value' => '',
-                    '#attributes' => [
-                      'class' => ['geofield-google-map-ajax-popup'],
-                      'data-geofield-google-map-ajax-popup' => $url->toString(),
-                    ],
-                  ];
-                  $description[] = $this->renderer->renderPlain($build);
+                  $url = Url::fromRoute('geofield_map.ajax_popup', $parameters);
+                  $description[] = sprintf('<div class="geofield-google-map-ajax-popup" data-geofield-google-map-ajax-popup="%s" %s></div>',
+                    $url->toString(), GeofieldMapAjaxPopupController::getPopupIdentifierAttribute($entity_type, $entity->id(), $default_view_mode, $langcode));
+                  $js_settings['map_settings']['ajaxPoup'] = TRUE;
                   break;
 
                 default:
@@ -988,6 +994,12 @@ class GeofieldGoogleMapViewStyle extends DefaultStyle implements ContainerFactor
             $tooltip_field = isset($map_settings['map_marker_and_infowindow']['tooltip_field']) ? $map_settings['map_marker_and_infowindow']['tooltip_field'] : NULL;
             $tooltip = isset($entity) && !empty($tooltip_field) ? trim(html_entity_decode(strip_tags($this->rendered_fields[$id][$tooltip_field]), ENT_QUOTES)) : NULL;
 
+            // Define possible tokens.
+            $tokens = [];
+            foreach ($this->rendered_fields[$result->index] as $field_name => $field_value) {
+              $tokens[$field_name] = $field_value;
+            }
+
             // Generate GeoJsonData.
             $geojson_data = $this->getGeoJsonData($geofield_value, $entity->id(), $description, $tooltip, $view_data);
 
@@ -1000,9 +1012,11 @@ class GeofieldGoogleMapViewStyle extends DefaultStyle implements ContainerFactor
                 $map_themer = $this->mapThemerManager->createInstance($theming['plugin_id'], ['geofieldMapView' => $this]);
                 $map_theming = $theming[$map_themer->getPluginId()]['values'];
                 foreach ($geojson_data as $k => $datum) {
-                  $geojson_data[$k]['properties']['icon'] = $map_themer->getIcon($datum, $this, $entity, $map_theming);
-                  // Flag the data with theming, for later rendering logic.
-                  $geojson_data[$k]['properties']['theming'] = TRUE;
+                  if ($datum['geometry']->type === 'Point') {
+                    $geojson_data[$k]['properties']['icon'] = $map_themer->getIcon($datum, $this, $entity, $map_theming);
+                    // Flag the data with theming, for later rendering logic.
+                    $geojson_data[$k]['properties']['theming'] = TRUE;
+                  }
                 }
               }
               catch (PluginException $e) {
@@ -1010,14 +1024,21 @@ class GeofieldGoogleMapViewStyle extends DefaultStyle implements ContainerFactor
               }
             }
             elseif ($map_settings['map_marker_and_infowindow']['icon_image_mode'] == 'icon_file' && strlen($map_settings['map_marker_and_infowindow']['icon_image_path']) > 0) {
-              $tokens = [];
-              foreach ($this->rendered_fields[$result->index] as $field_name => $field_value) {
-                $tokens[$field_name] = $field_value;
-              }
               foreach ($geojson_data as $k => $datum) {
-                $geojson_data[$k]['properties']['icon'] = $this->viewsTokenReplace($this->options['map_marker_and_infowindow']['icon_image_path'], $tokens);
+                if ($datum['geometry']->type === 'Point') {
+                  $geojson_data[$k]['properties']['icon'] = $this->viewsTokenReplace($this->options['map_marker_and_infowindow']['icon_image_path'], $tokens);
+                }
               }
             }
+
+            // Associate dynamic path properties (token based) to each feature,
+            // in case of not point.
+            foreach ($geojson_data as $k => $datum) {
+              if ($datum['geometry']->type !== 'Point') {
+                $geojson_data[$k]['properties']['path_options'] = str_replace(["\n", "\r"], "", $this->viewsTokenReplace($this->options['map_geometries_options'], $tokens));
+              }
+            }
+
             // Generate incremental GeoJsonData.
             $data = array_merge($data, $geojson_data);
           }
@@ -1033,7 +1054,13 @@ class GeofieldGoogleMapViewStyle extends DefaultStyle implements ContainerFactor
       $this->moduleHandler->alter('geofield_map_googlemap_view_style', $js_settings, $this);
 
       $element = geofield_map_googlemap_render($js_settings);
-
+      // Add the Core Drupal Ajax library for Ajax Popups.
+      if (isset($js_settings['map_settings']['ajaxPoup']) && $js_settings['map_settings']['ajaxPoup'] == TRUE) {
+        $build_for_bubbleable_metadata['#attached']['library'][] = 'core/drupal.ajax';
+      }
+      BubbleableMetadata::createFromRenderArray($element)
+        ->merge(BubbleableMetadata::createFromRenderArray($build_for_bubbleable_metadata))
+        ->applyTo($element);
     }
     return $element;
   }

@@ -109,4 +109,3 @@ function simple_mail_queue($from, $to, $subject, $body) {
   $queue->createItem($item);
   return TRUE;
 }
-

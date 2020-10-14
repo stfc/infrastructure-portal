@@ -60,11 +60,11 @@ abstract class UserProtectionBase extends PluginBase implements UserProtectionIn
    * {@inheritdoc}
    */
   public function getConfiguration() {
-    return array(
+    return [
       'id' => $this->getPluginId(),
       'provider' => $this->pluginDefinition['provider'],
       'status' => $this->status,
-    );
+    ];
   }
 
   /**
@@ -81,14 +81,14 @@ abstract class UserProtectionBase extends PluginBase implements UserProtectionIn
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array();
+    return [];
   }
 
   /**
    * {@inheritdoc}
    */
   public function calculateDependencies() {
-    return array();
+    return [];
   }
 
   /**
@@ -115,4 +115,5 @@ abstract class UserProtectionBase extends PluginBase implements UserProtectionIn
   public function applyAccountFormProtection(array &$form, FormStateInterface $form_state) {
     return FALSE;
   }
+
 }

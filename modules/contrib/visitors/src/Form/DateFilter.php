@@ -62,7 +62,7 @@ class DateFilter extends FormBase {
 
     $form['visitors_date_filter']['from'] = array(
       '#date_part_order'  => $this->_getOrder(),
-      '#date_timezone'    => drupal_get_user_timezone(),
+      '#date_timezone'    => date_default_timezone_get(),
       '#default_value'    => $from,
       '#element_validate' => array(array($this, 'datelistValidate')),
       '#process'          => array(array($this, 'formProcessDatelist')),
@@ -73,7 +73,7 @@ class DateFilter extends FormBase {
 
     $form['visitors_date_filter']['to'] = array(
       '#date_part_order'  => $this->_getOrder(),
-      '#date_timezone'    => drupal_get_user_timezone(),
+      '#date_timezone'    => date_default_timezone_get(),
       '#default_value'    => $to,
       '#element_validate' => array(array($this, 'datelistValidate')),
       '#process'          => array(array($this, 'formProcessDatelist')),
@@ -263,9 +263,9 @@ class DateFilter extends FormBase {
     $query->addExpression('MIN(visitors_date_time)');
     $min_timestamp = $query->execute()->fetchField();
 
-    $timezone = drupal_get_user_timezone();
+    $timezone = date_default_timezone_get();
 
-    return format_date($min_timestamp, 'custom', 'Y', $timezone);
+    return \Drupal::service('date.formatter')->format($min_timestamp, 'custom', 'Y', $timezone);
   }
 }
 

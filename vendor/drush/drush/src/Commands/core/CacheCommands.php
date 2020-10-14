@@ -13,16 +13,19 @@ use Drupal\Core\Site\Settings;
 use Drupal\Core\Cache\Cache;
 use Drush\Drush;
 use Drush\Utils\StringUtils;
-use Symfony\Component\HttpFoundation\Request;
+use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
+use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
+use Symfony\Component\Filesystem\Exception\IOException;
 
 /*
  * Interact with Drupal's Cache API.
  */
-class CacheCommands extends DrushCommands implements CustomEventAwareInterface, AutoloaderAwareInterface
+class CacheCommands extends DrushCommands implements CustomEventAwareInterface, AutoloaderAwareInterface, StdinAwareInterface
 {
 
     use CustomEventAwareTrait;
     use AutoloaderAwareTrait;
+    use StdinAwareTrait;
 
     /**
      * Fetch a cached object and display it.
@@ -57,6 +60,23 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     }
 
     /**
+     * Invalidate by cache tags.
+     *
+     * @command cache:tags
+     * @param string $tags A comma delimited list of cache tags to clear.
+     * @aliases ct
+     * @bootstrap full
+     * @usage drush cache:tag node:12,user:4
+     *   Purge content associated with two cache tags.
+     */
+    public function tags($tags)
+    {
+        $tags = StringUtils::csvToArray($tags);
+        Cache::invalidateTags($tags);
+        $this->logger()->success(dt("Invalidated tag(s): !list.", ['!list' => implode(' ', $tags)]));
+    }
+
+    /**
      * Clear a specific cache, or all Drupal caches.
      *
      * @command cache:clear
@@ -67,6 +87,8 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
      * @aliases cc,cache-clear
      * @bootstrap max
      * @notify Caches have been cleared.
+     * @usage drush cc bin
+     *   Choose a bin to clear.
      * @usage drush cc bin entity,bootstrap
      *   Clear the entity and bootstrap cache bins.
      */
@@ -83,7 +105,10 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
 
         // Do it.
         drush_op($types[$type], $args);
-        $this->logger()->success(dt("'!name' cache was cleared.", ['!name' => $type]));
+        // Avoid double confirm.
+        if ($type !== 'bin') {
+            $this->logger()->success(dt("'!name' cache was cleared.", ['!name' => $type]));
+        }
     }
 
     /**
@@ -98,6 +123,13 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
             $type = $this->io()->choice(dt("Choose a cache to clear"), $choices, 'all');
             $input->setArgument('type', $type);
         }
+
+        if ($input->getArgument('type') == 'bin' && empty($input->getArgument('args'))) {
+            $bins = Cache::getBins();
+            $choices = array_combine(array_keys($bins), array_keys($bins));
+            $chosen = $this->io()->choice(dt("Choose a cache to clear"), $choices, 'default');
+            $input->setArgument('args', [$chosen]);
+        }
     }
 
     /**
@@ -109,22 +141,17 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
      * @param $bin The cache bin to store the object in.
      * @param $expire 'CACHE_PERMANENT', or a Unix timestamp.
      * @param $tags A comma delimited list of cache tags.
-     * @option input-format The format of value. Use 'json' for complex values.
+     * @option input-format The format of value. Use <info>json</info> for complex values.
      * @option cache-get If the object is the result a previous fetch from the cache, only store the value in the 'data' property of the object in the cache.
      * @aliases cs,cache-set
      * @bootstrap full
      */
     public function set($cid, $data, $bin = 'default', $expire = null, $tags = null, $options = ['input-format' => 'string', 'cache-get' => false])
     {
-        $tags = is_string($tags) ? _convert_csv_to_array($tags) : [];
-
+        $tags = is_string($tags) ? StringUtils::csvToArray($tags) : [];
         // In addition to prepare, this also validates. Can't easily be in own validate callback as
         // reading once from STDIN empties it.
         $data = $this->setPrepareData($data, $options);
-        if ($data === false && drush_get_error()) {
-            // An error was logged above.
-            return;
-        }
 
         if (!isset($expire) || $expire == 'CACHE_PERMANENT') {
             $expire = Cache::PERMANENT;
@@ -136,13 +163,16 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     protected function setPrepareData($data, $options)
     {
         if ($data == '-') {
-            $data = file_get_contents("php://stdin");
+            $data = $this->stdin()->contents();
         }
 
         // Now, we parse the object.
         switch ($options['input-format']) {
             case 'json':
                 $data = json_decode($data, true);
+                if ($data === false) {
+                    throw new \Exception('Unable to parse JSON.');
+                }
                 break;
         }
 
@@ -150,8 +180,8 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
             // $data might be an object.
             if (is_object($data) && $data->data) {
                 $data = $data->data;
-            } // But $data returned from `drush cache-get --format=json` will be an array.
-            elseif (is_array($data) && isset($data['data'])) {
+            } elseif (is_array($data) && isset($data['data'])) {
+                // But $data returned from `drush cache-get --format=json` will be an array.
                 $data = $data['data'];
             } else {
                 // If $data is neither object nor array and cache-get was specified, then
@@ -199,9 +229,6 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
         $root  = DRUPAL_ROOT;
         $site_path = DrupalKernel::findSitePath($request);
         Settings::initialize($root, $site_path, $autoloader);
-
-        // Use our error handler since _drupal_log_error() depends on an unavailable theme system (ugh).
-        set_error_handler('drush_error_handler');
 
         // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it manually.
         drupal_rebuild($autoloader, $request);
@@ -272,8 +299,14 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
      */
     public static function clearDrush()
     {
-        drush_cache_clear_all(null, 'default'); // commandfiles, etc.
-        drush_cache_clear_all(null, 'factory'); // command info from annotated-command library
+        try {
+            drush_cache_clear_all(null, 'default');// No longer used by Drush core, but still cleared for backward compat.
+            drush_cache_clear_all(null, 'factory'); // command info from annotated-command library (i.e. parsed annotations)
+        } catch (IOException $e) {
+            // Sometimes another process writes files into a bin dir and \Drush\Cache\FileCache::clear fails.
+            // That is not considered an error. https://github.com/drush-ops/drush/pull/4535.
+            Drush::logger()->info($e->getMessage());
+        }
     }
 
     /**
@@ -284,6 +317,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
         $bins = StringUtils::csvToArray($args);
         foreach ($bins as $bin) {
             \Drupal::service("cache.$bin")->deleteAll();
+            Drush::logger()->success("$bin cache bin cleared.");
         }
     }
 

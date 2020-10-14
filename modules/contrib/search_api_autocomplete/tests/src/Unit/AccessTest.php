@@ -42,7 +42,7 @@ class AccessTest extends UnitTestCase {
     parent::setUp();
 
     $this->autocompleteHelper = new AutocompleteHelper();
-    $this->search = $this->getMock(SearchInterface::class);
+    $this->search = $this->createMock(SearchInterface::class);
     $this->search->method('id')->willReturn('test');
     $this->search->method('getCacheContexts')->willReturn(['test']);
     $this->search->method('getCacheTags')->willReturn(['test']);
@@ -89,13 +89,13 @@ class AccessTest extends UnitTestCase {
     $this->search->method('status')->willReturn($options['status']);
     $this->search->method('hasValidIndex')->willReturn($options['index']);
     if ($options['index']) {
-      $index = $this->getMock(IndexInterface::class);
+      $index = $this->createMock(IndexInterface::class);
       $index->method('status')->willReturn($options['index_status']);
       $this->search->method('getIndex')->willReturn($index);
     }
 
     /** @var \Drupal\Core\Session\AccountInterface|\PHPUnit_Framework_MockObject_MockObject $account */
-    $account = $this->getMock(AccountInterface::class);
+    $account = $this->createMock(AccountInterface::class);
     $permission = 'use search_api_autocomplete for ' . $this->search->id();
     $account->method('hasPermission')->willReturnMap([
       [$permission, $options['permission']],

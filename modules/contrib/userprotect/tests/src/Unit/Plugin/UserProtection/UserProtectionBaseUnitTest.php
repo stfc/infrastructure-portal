@@ -29,13 +29,13 @@ class UserProtectionBaseUnitTest extends UnitTestCase {
    *
    * @var array
    */
-  protected $pluginDefinition = array(
+  protected $pluginDefinition = [
     'id' => 'dummy',
     'label' => 'Dummy',
     'description' => 'This is a dummy plugin definition.',
     'provider' => '',
     'status' => FALSE,
-  );
+  ];
 
   /**
    * {@inheritdoc}
@@ -43,16 +43,16 @@ class UserProtectionBaseUnitTest extends UnitTestCase {
   public function setUp() {
     parent::setUp();
 
-    $this->moduleHandler = $this->getMock('\Drupal\Core\Extension\ModuleHandlerInterface');
+    $this->moduleHandler = $this->createMock('\Drupal\Core\Extension\ModuleHandlerInterface');
 
     $this->plugin = $this->getMockBuilder('\Drupal\userprotect\Plugin\UserProtection\UserProtectionBase')
-      ->setConstructorArgs(array(
-        array(),
+      ->setConstructorArgs([
+        [],
         '',
         $this->pluginDefinition,
         $this->moduleHandler,
-      ))
-      ->setMethods(array('t'))
+      ])
+      ->setMethods(['t'])
       ->getMock();
     $this->plugin->expects($this->any())
       ->method('t')
@@ -78,9 +78,9 @@ class UserProtectionBaseUnitTest extends UnitTestCase {
    * @covers ::getConfiguration
    */
   public function testGetConfiguration() {
-    $configuration = array(
+    $configuration = [
       'status' => TRUE,
-    );
+    ];
     $this->assertInstanceOf('\Drupal\userprotect\Plugin\UserProtection\UserProtectionInterface', $this->plugin->setConfiguration($configuration));
     $saved_configuration = $this->plugin->getConfiguration();
     $this->assertSame($configuration['status'], $saved_configuration['status']);
@@ -92,4 +92,5 @@ class UserProtectionBaseUnitTest extends UnitTestCase {
   public function testDefaultConfiguration() {
     $this->assertInternalType('array', $this->plugin->defaultConfiguration());
   }
+
 }

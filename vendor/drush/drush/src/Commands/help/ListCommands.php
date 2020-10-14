@@ -11,8 +11,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Descriptor\JsonDescriptor;
 use Symfony\Component\Console\Descriptor\XmlDescriptor;
 use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Terminal;
 
 class ListCommands extends DrushCommands
 {
@@ -153,26 +153,20 @@ class ListCommands extends DrushCommands
             }
         }
         $formatterManager = new FormatterManager();
-        list($terminalWidth,) = $application->getTerminalDimensions();
         $opts = [
             FormatterOptions::INCLUDE_FIELD_LABELS => false,
             FormatterOptions::TABLE_STYLE => 'compact',
-            FormatterOptions::TERMINAL_WIDTH => $terminalWidth,
+            FormatterOptions::TERMINAL_WIDTH => self::getTerminalWidth(),
         ];
         $formatterOptions = new FormatterOptions([], $opts);
 
         $formatterManager->write($output, 'table', new RowsOfFields($rows), $formatterOptions);
     }
 
-    public function getTerminalWidth()
+    public static function getTerminalWidth()
     {
-        // From \Consolidation\AnnotatedCommand\Options\PrepareTerminalWidthOption::getTerminalWidth
-        $application = Drush::getApplication();
-        $dimensions = $application->getTerminalDimensions();
-        if ($dimensions[0] == null) {
-            return 0;
-        }
-        return $dimensions[0];
+        $term = new Terminal();
+        return $term->getWidth();
     }
 
     /**
@@ -194,7 +188,7 @@ class ListCommands extends DrushCommands
      * @param Command[] $all
      * @param string $separator
      *
-     * @return array
+     * @return Command[]
      */
     public static function categorize($all, $separator = ':')
     {
@@ -215,6 +209,11 @@ class ListCommands extends DrushCommands
         }
 
         ksort($namespaced);
+
+        // Sort inside namespaces.
+        foreach ($namespaced as $key => &$items) {
+            ksort($items);
+        }
         return $namespaced;
     }
 }

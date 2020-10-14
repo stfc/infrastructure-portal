@@ -2,9 +2,11 @@
 
 namespace Drupal\Tests\nagios\Kernel;
 
+use Drupal\Core\Form\FormState;
 use Drupal\KernelTests\Core\Entity\EntityKernelTestBase;
 use Drupal\nagios\Controller\StatuspageController;
 use Drupal\nagios\EventSubscriber\MaintenanceModeSubscriber;
+use Drupal\system\Form\SiteMaintenanceModeForm;
 use Prophecy\Argument;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -58,6 +60,9 @@ class MaintenanceModeTest extends EntityKernelTestBase {
       ->shouldBeCalled();
 
     $config = \Drupal::configFactory()->getEditable('nagios.settings');
+    foreach (['cron', 'maintenance', 'watchdog'] as $check) {
+      $config->set('nagios.function.' . $check, FALSE);
+    }
     $config->set('nagios.statuspage.enabled', TRUE);
     $config->save();
 
@@ -67,5 +72,14 @@ class MaintenanceModeTest extends EntityKernelTestBase {
     $subscriber->onKernelRequestMaintenance($get_response_event->reveal());
 
     self::assertSame("\nnagios=OK,  | \n", $content);
+  }
+
+  public function testMaintenanceModeCheck() {
+    self::assertSame(NAGIOS_STATUS_OK, nagios_check_maintenance()['data']['status']);
+    $form_object = SiteMaintenanceModeForm::create(\Drupal::getContainer());
+    $form = [];
+    $form_state = new FormState();
+    $form_object->submitForm($form, $form_state->setValue('maintenance_mode', 1));
+    self::assertSame(NAGIOS_STATUS_CRITICAL, nagios_check_maintenance()['data']['status']);
   }
 }

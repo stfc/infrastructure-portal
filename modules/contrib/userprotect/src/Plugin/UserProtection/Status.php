@@ -14,6 +14,7 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class Status extends UserProtectionBase {
+
   /**
    * {@inheritdoc}
    */
@@ -27,4 +28,5 @@ class Status extends UserProtectionBase {
     }
     return FALSE;
   }
+
 }

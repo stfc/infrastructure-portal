@@ -131,31 +131,6 @@ class AddressItem extends FieldItemBase implements AddressInterface {
     $properties['family_name'] = DataDefinition::create('string')
       ->setLabel(t('The family name.'));
 
-    // Computed full name properties.
-    $properties['country_name'] = DataDefinition::create('string')
-      ->setLabel(t('The full name of the country.'))
-      ->setComputed(TRUE)
-      ->setClass('\Drupal\address\TypedData\CountryName')
-      ->setSetting('property source', 'country_code');
-
-    $properties['administrative_area_name'] = DataDefinition::create('string')
-      ->setLabel(t('The full name of the top-level administrative subdivision of the country.'))
-      ->setComputed(TRUE)
-      ->setClass('\Drupal\address\TypedData\SubdivisionName')
-      ->setSetting('property source', 'administrative_area');
-
-    $properties['locality_name'] = DataDefinition::create('string')
-      ->setLabel(t('The full name of the locality (i.e. city).'))
-      ->setComputed(TRUE)
-      ->setClass('\Drupal\address\TypedData\SubdivisionName')
-      ->setSetting('property source', 'locality');
-
-    $properties['dependent_locality_name'] = DataDefinition::create('string')
-      ->setLabel(t('The full name of the dependent locality (i.e. neighbourhood).'))
-      ->setComputed(TRUE)
-      ->setClass('\Drupal\address\TypedData\SubdivisionName')
-      ->setSetting('property source', 'dependent_locality');
-
     return $properties;
   }
 
@@ -321,7 +296,7 @@ class AddressItem extends FieldItemBase implements AddressInterface {
    */
   public function getConstraints() {
     $constraints = parent::getConstraints();
-    $constraint_manager = \Drupal::typedDataManager()->getValidationConstraintManager();
+    $constraint_manager = $this->getTypedDataManager()->getValidationConstraintManager();
     $field_overrides = new FieldOverrides($this->getFieldOverrides());
     $constraints[] = $constraint_manager->create('ComplexData', [
       'country_code' => [

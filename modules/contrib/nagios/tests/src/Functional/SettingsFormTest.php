@@ -19,6 +19,13 @@ class SettingsFormTest extends BrowserTestBase {
   public static $modules = ['nagios'];
 
   /**
+   * Default theme.
+   *
+   * @var string
+   */
+  protected $defaultTheme = 'stark';
+
+  /**
    * A simple user with 'administer site configuration' permission
    *
    * @var \Drupal\Core\Session\AccountInterface

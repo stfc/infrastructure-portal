@@ -7,12 +7,12 @@
 
 namespace Drupal\visitors\Controller\Report;
 
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Datetime\Date;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Form\FormBuilderInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Url;
 use Drupal\Core\Link;
 
@@ -66,7 +66,7 @@ class Hits extends ControllerBase {
     $header = $this->_getHeader();
 
     return array(
-      '#title' => SafeMarkup::checkPlain(t('Hits from') . ' ' . $host),
+      '#title' => Html::escape(t('Hits from') . ' ' . $host),
       'visitors_date_filter_form' => $form,
       'visitors_table' => array(
         '#type'  => 'table',
@@ -171,7 +171,7 @@ class Hits extends ControllerBase {
     }
     $rows = array();
 
-    $page = isset($_GET['page']) ? $_GET['page'] : '';
+    $page = isset($_GET['page']) ? $_GET['page'] : 0;
     $i = 0 + $page * $items_per_page;
 
     foreach ($results as $data) {
@@ -191,7 +191,7 @@ class Hits extends ControllerBase {
         ++$i,
         $data->visitors_id,
         $this->date->format($data->visitors_date_time, 'short'),
-              SafeMarkup::checkPlain($data->visitors_title) . '<br/>',
+              Html::escape($data->visitors_title) . " - ". $data->visitors_url,
         render($user_profile_link),
         render($visitors_host_link)
       );

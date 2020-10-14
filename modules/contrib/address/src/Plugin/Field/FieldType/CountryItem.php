@@ -47,14 +47,6 @@ class CountryItem extends FieldItemBase {
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
     $properties['value'] = DataDefinition::create('string')
       ->setLabel(t('Country'));
-
-    // Computed full name property.
-    $properties['country_name'] = DataDefinition::create('string')
-      ->setLabel(t('Country Full Name'))
-      ->setComputed(TRUE)
-      ->setClass('\Drupal\address\TypedData\CountryName')
-      ->setSetting('property source', 'value');
-
     return $properties;
   }
 
@@ -84,7 +76,7 @@ class CountryItem extends FieldItemBase {
    */
   public function getConstraints() {
     $constraints = parent::getConstraints();
-    $constraint_manager = \Drupal::typedDataManager()->getValidationConstraintManager();
+    $constraint_manager = $this->getTypedDataManager()->getValidationConstraintManager();
     $constraints[] = $constraint_manager->create('ComplexData', [
       'value' => [
         'Country' => [

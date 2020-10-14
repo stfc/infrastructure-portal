@@ -9,10 +9,8 @@ use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\user\UserInterface;
-use Drupal\userprotect\Entity\ProtectionRuleInterface;
 use Drupal\userprotect\UserProtect;
 use Drupal\userprotect\Plugin\UserProtection\UserProtectionPluginCollection;
-use Drupal\userprotect\Plugin\UserProtection\UserProtectionInterface;
 
 /**
  * Defines the Protection rule entity.
@@ -35,6 +33,14 @@ use Drupal\userprotect\Plugin\UserProtection\UserProtectionInterface;
  *     "id" = "name",
  *     "label" = "label",
  *     "uuid" = "uuid"
+ *   },
+ *   config_export = {
+ *     "name",
+ *     "label",
+ *     "uuid",
+ *     "protectedEntityTypeId",
+ *     "protectedEntityId",
+ *     "protections"
  *   },
  *   links = {
  *     "edit-form" = "/admin/config/people/userprotect/manage/{userprotect_rule}",
@@ -86,7 +92,7 @@ class ProtectionRule extends ConfigEntityBase implements ProtectionRuleInterface
    *
    * @var array
    */
-  protected $protections = array();
+  protected $protections = [];
 
   /**
    * Holds the collection of protections that are used by this protection rule.
@@ -107,7 +113,7 @@ class ProtectionRule extends ConfigEntityBase implements ProtectionRuleInterface
    *
    * @var array
    */
-  protected $bypassRoles = array();
+  protected $bypassRoles = [];
 
   /**
    * Overrides Drupal\Core\Entity\Entity::id().
@@ -129,7 +135,7 @@ class ProtectionRule extends ConfigEntityBase implements ProtectionRuleInterface
   public function setProtectedEntityTypeId($entity_type_id) {
     // Check if given entity type exists. An InvalidArgumentException will be
     // thrown if not.
-    \Drupal::entityManager()->getDefinition($entity_type_id, TRUE);
+    \Drupal::entityTypeManager()->getDefinition($entity_type_id, TRUE);
 
     $this->protectedEntityTypeId = $entity_type_id;
     return $this;
@@ -140,7 +146,7 @@ class ProtectionRule extends ConfigEntityBase implements ProtectionRuleInterface
    */
   public function getProtectedEntity() {
     if ($this->getProtectedEntityId()) {
-      return entity_load($this->getProtectedEntityTypeId(), $this->getProtectedEntityId());
+      return \Drupal::entityTypeManager()->getStorage($this->getProtectedEntityTypeId())->load($this->getProtectedEntityId());
     }
   }
 
@@ -180,7 +186,7 @@ class ProtectionRule extends ConfigEntityBase implements ProtectionRuleInterface
    * {@inheritdoc}
    */
   public function getPluginCollections() {
-    return array('protections' => $this->getProtections());
+    return ['protections' => $this->getProtections()];
   }
 
   /**
@@ -199,7 +205,7 @@ class ProtectionRule extends ConfigEntityBase implements ProtectionRuleInterface
    * {@inheritdoc}
    */
   public function enableProtection($instance_id) {
-    $this->setPluginConfig($instance_id, array('status' => TRUE));
+    $this->setPluginConfig($instance_id, ['status' => TRUE]);
     return $this;
   }
 
@@ -207,7 +213,7 @@ class ProtectionRule extends ConfigEntityBase implements ProtectionRuleInterface
    * {@inheritdoc}
    */
   public function disableProtection($instance_id) {
-    $this->setPluginConfig($instance_id, array('status' => FALSE));
+    $this->setPluginConfig($instance_id, ['status' => FALSE]);
     return $this;
   }
 
@@ -216,11 +222,11 @@ class ProtectionRule extends ConfigEntityBase implements ProtectionRuleInterface
    */
   public function toArray() {
     $properties = parent::toArray();
-    $names = array(
+    $names = [
       'protections',
       'protectedEntityTypeId',
       'protectedEntityId',
-    );
+    ];
     foreach ($names as $name) {
       $properties[$name] = $this->get($name);
     }
@@ -298,7 +304,7 @@ class ProtectionRule extends ConfigEntityBase implements ProtectionRuleInterface
     if ($roles && $permission) {
       foreach (user_roles() as $rid => $name) {
         $enabled = in_array($rid, $roles, TRUE);
-        user_role_change_permissions($rid, array($permission => $enabled));
+        user_role_change_permissions($rid, [$permission => $enabled]);
       }
     }
   }
@@ -364,4 +370,5 @@ class ProtectionRule extends ConfigEntityBase implements ProtectionRuleInterface
     // In all other cases, the operation is not protected by this rule.
     return FALSE;
   }
+
 }

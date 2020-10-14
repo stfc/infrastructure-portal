@@ -12,7 +12,6 @@ use Drupal\Core\Datetime\Date;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Form\FormBuilderInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Component\Utility\SafeMarkup;
 
 class TopPages extends ControllerBase {
   /**
@@ -134,7 +133,7 @@ class TopPages extends ControllerBase {
 
     $rows = array();
 
-    $page = isset($_GET['page']) ? $_GET['page'] : '';
+    $page = isset($_GET['page']) ? $_GET['page'] : 0;
     $i = 0 + $page * $items_per_page;
     //@TODO add links
     foreach ($results as $data) {

@@ -37,5 +37,5 @@ function search_api_autocomplete_test_hooks_search_api_autocomplete_search_info_
  * Implements hook_search_api_autocomplete_views_fulltext_fields_alter().
  */
 function search_api_autocomplete_test_hooks_search_api_autocomplete_views_fulltext_fields_alter(array &$fields, SearchInterface $search, ViewExecutable $view) {
-  drupal_set_message("Creek Mary's Blood");
+  \Drupal::messenger()->addStatus("Creek Mary's Blood");
 }

@@ -13,6 +13,7 @@ use Drupal\search_api_autocomplete\Suggester\SuggesterInterface;
 use Drupal\search_api_autocomplete\Search\SearchPluginManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Messenger\MessengerInterface;
 
 /**
  * Provides an edit form for autocomplete search entities.
@@ -48,6 +49,13 @@ class SearchEditForm extends EntityForm {
   protected $logger;
 
   /**
+   * The messenger.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
    * Creates a new SearchEditForm instance.
    *
    * @param \Drupal\Component\Plugin\PluginManagerInterface $suggester_manager
@@ -56,11 +64,14 @@ class SearchEditForm extends EntityForm {
    *   The search plugin manager.
    * @param \Psr\Log\LoggerInterface $logger
    *   The logger.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   The messenger.
    */
-  public function __construct(PluginManagerInterface $suggester_manager, SearchPluginManager $search_plugin_manager, LoggerInterface $logger) {
+  public function __construct(PluginManagerInterface $suggester_manager, SearchPluginManager $search_plugin_manager, LoggerInterface $logger, MessengerInterface $messenger) {
     $this->suggesterManager = $suggester_manager;
     $this->searchPluginManager = $search_plugin_manager;
     $this->logger = $logger;
+    $this->messenger = $messenger;
   }
 
   /**
@@ -72,7 +83,8 @@ class SearchEditForm extends EntityForm {
     return new static(
       $container->get('plugin.manager.search_api_autocomplete.suggester'),
       $container->get('plugin.manager.search_api_autocomplete.search'),
-      $logger
+      $logger,
+      $container->get('messenger')
     );
   }
 
@@ -96,7 +108,7 @@ class SearchEditForm extends EntityForm {
     $form['suggesters'] = $this->buildSuggestersForm($form_state);
 
     if (!$search->hasValidSearchPlugin()) {
-      drupal_set_message($this->t('No information about this search could be found. Unless this is a temporary problem for some reason, you are advised to delete this search configuration.'), 'error');
+      $this->messenger->addError($this->t('No information about this search could be found. Unless this is a temporary problem for some reason, you are advised to delete this search configuration.'));
     }
     else {
       $search_plugin = $search->getSearchPlugin();
@@ -353,7 +365,7 @@ class SearchEditForm extends EntityForm {
 
     $form_state->setRedirect('search_api_autocomplete.admin_overview', ['search_api_index' => $search->getIndexId()]);
 
-    drupal_set_message($this->t('The autocompletion settings for the search have been saved.'));
+    $this->messenger->addStatus($this->t('The autocompletion settings for the search have been saved.'));
   }
 
   /**

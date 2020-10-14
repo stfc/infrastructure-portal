@@ -5,13 +5,15 @@
  * Main file for Nagios service monitoring.
  */
 
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Database\Database;
+use Drupal\Core\Extension\Extension;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\nagios\Controller\RequirementsController;
 use Drupal\nagios\Controller\StatuspageController;
 use Drupal\nagios\Form\SettingsForm;
-use Drupal\update\UpdateFetcherInterface;
 
 if (class_exists(StatuspageController::class)) {
   // Class won't exist during the installation.
@@ -42,6 +44,7 @@ function nagios_functions() {
     'users' => t('Check the number of users for nagios performance data'),
     'modules' => t('Check the number of modules for nagios performance data'),
     'themes' => t('Check the number of themes for nagios performance data'),
+    'maintenance' => t('Check if maintenance mode is not active (site is online).'),
   ];
   $moduleHandler = Drupal::moduleHandler();
   if ($moduleHandler->moduleExists('update')) {
@@ -173,8 +176,8 @@ function nagios_form_system_theme_settings_alter(&$form, FormStateInterface $for
 
   // Grab the name of the theme.
   $buildinfo = $form_state->getBuildInfo();
-  if (isset($buildinfo['args'][0]) && !empty($buildinfo['args'][0])) {
-    $theme_name = \Drupal\Component\Utility\Html::escape($buildinfo['args'][0]);
+  if (!empty($buildinfo['args'][0])) {
+    $theme_name = Html::escape($buildinfo['args'][0]);
 
     $config = Drupal::config('nagios.settings');
     $nagios_ignored_themes = $config->get('nagios.ignored_themes') ?: [];
@@ -213,8 +216,8 @@ function nagios_system_theme_settings_form_submit(/** @noinspection PhpUnusedPar
   &$form, FormStateInterface $form_state) {
   $buildinfo = $form_state->getBuildInfo();
   // Grab the name of the theme.
-  if (isset($buildinfo['args'][0]) && !empty($buildinfo['args'][0])) {
-    $theme_name = \Drupal\Component\Utility\Html::escape($buildinfo['args'][0]);
+  if (!empty($buildinfo['args'][0])) {
+    $theme_name = Html::escape($buildinfo['args'][0]);
     $config = Drupal::config('nagios.settings');
     $nagios_ignored_themes = $config->get('nagios.ignored_themes') ?: [];
 
@@ -233,14 +236,46 @@ function nagios_system_theme_settings_form_submit(/** @noinspection PhpUnusedPar
 
 /**
  * Implements hook_nagios().
+ *
+ * @param string $id
+ *   Name of the function to call. If $id is empty, all are called.
+ *   The $id can be submitted from the HTTP status page. For example, the
+ *   following will only run the cron check:
+ *     URL: https://your-drupal-8-domain/nagios/nagios/cron
+ *
+ *   In the URL above, the path segments are
+ *   - the "Nagios page path" (1ˢᵗ nagios),
+ *   - the module machine name implementing hook_nagios() (nagios), and
+ *   - the check name ($id = "cron")
+ *
+ * @return array
  */
-function nagios_nagios() {
+function nagios_nagios(string $id = '') {
   $config = Drupal::config('nagios.settings');
-
   $status = [];
+  /** @var callable $func */
+  if ($id && $config->get('nagios.function.' . $id)) {
+    $func = 'nagios_check_' . $id;
+    $result = $func();
+    $status[$result['key']] = $result['data'];
+    return $status;
+  }
+
   foreach (nagios_functions() as $function => $description) {
     if ($config->get('nagios.function.' . $function)) {
       $func = 'nagios_check_' . $function;
+      /**
+       * @uses nagios_check_watchdog
+       * @uses nagios_check_cron
+       * @uses nagios_check_session_anon
+       * @uses nagios_check_session_auth
+       * @uses nagios_check_users
+       * @uses nagios_check_modules
+       * @uses nagios_check_themes
+       * @uses nagios_check_requirements
+       * @uses nagios_check_nodes
+       * @uses nagios_check_maintenance
+       */
       $result = $func();
       $status[$result['key']] = $result['data'];
     }
@@ -259,119 +294,58 @@ function nagios_nagios() {
  */
 function nagios_check_requirements() {
   $config = Drupal::config('nagios.settings');
+  /** @noinspection PhpIncludeInspection */
   // Load .install files:
   include_once DRUPAL_ROOT . '/core/includes/install.inc';
   module_load_include('inc', 'update', 'update.compare');
 
   drupal_load_updates();
 
-  $project_data = Drupal::service('update.manager')->getProjects();
+  $enabled_projects = Drupal::service('update.manager')->getProjects();
   $nagios_ignored_modules = $config->get('nagios.ignored_modules') ?: [];
   $nagios_ignored_themes = $config->get('nagios.ignored_themes') ?: [];
-  $nagios_ignored_projects = $nagios_ignored_modules + $nagios_ignored_themes;
+  /** @var string[] $nagios_ignored_extensions */
+  $nagios_ignored_extensions = $nagios_ignored_modules + $nagios_ignored_themes;
+  $nagios_ignored_extensions['cron'] = 1;
 
-  $enabled_modules = [];
+  /** @var array<string, \Drupal\Core\Extension\Extension> $modules_to_check */
+  $modules_to_check = Drupal::service('extension.list.module')
+    ->reset()
+    ->getList();
 
-  foreach ($project_data as $project) {
-    foreach ($project['includes'] as $key => $val) {
-      if (!isset($nagios_ignored_projects[$key])) {
-        $enabled_modules[] = $key;
-      }
+  $themes_to_check = Drupal::service('extension.list.theme')
+    ->reset()
+    ->getList();
+
+  $installed_extensions = array_map(static function ($module) {
+    if ($module instanceof Extension) {
+      return $module->getName();
     }
-  }
+    return $module;
+  }, $modules_to_check + $themes_to_check);
+
+  /** @var string[] $extensions_to_check */
+  $extensions_to_check = array_diff($installed_extensions, $nagios_ignored_extensions);
 
   // Copied from update_requirements(). Get available update data for projects.
-  $data = [];
+  $project_update_status = [];
   // TODO: The TRUE param should be made configurable when writing a drush
   // command, so we don't rely on cached data.
   if ($available = update_get_available(TRUE)) {
     module_load_include('inc', 'update', 'update.compare');
-    $data = update_calculate_project_data($available);
+    $project_update_status = update_calculate_project_data($available);
   }
   // Remove from the update data array the projects ignored.
-  foreach ($nagios_ignored_projects as $key => $value) {
-    unset($data[$key]);
+  foreach ($nagios_ignored_extensions as $key => $value) {
+    unset($project_update_status[$key]);
   }
-
-  // Get the run-time requirements and status information.
-  // module_invoke_all('requirements', 'runtime') returns an array that isn't
-  // keyed by the module name, eg we might get a key 'ctools_css_cache'.
-  // We have no way of knowing which module set this, and we can't guess based
-  // on the name, as removing everything that begins with 'ctools_' might remove
-  // data from other ctools sub-modules that we want to still monitor.
-  // The only safe way is to use module_invoke, calling each module in turn.
-  /** @var \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler */
-  $moduleHandler = Drupal::service('module_handler');
 
   // Cycle through enabled modules for requirements checks.
-  $reqs = [];
-  $module_data = [];
-  foreach ($enabled_modules as $module_name) {
-
-    $requirements_data = $moduleHandler->invoke($module_name, 'requirements', ['runtime']);
-    if ($requirements_data && is_array($requirements_data)) {
-      // Intercept the Update Status module to respect our Ignore behaviour.
-      // Note, if $data is empty then there's no available update data and Update Status will handle that for us.
-      if ($module_name == 'update' && !empty($data)) {
-        // Don't want the 'update_contrib' section reported by 'update' module,
-        // because that one contains *ALL* modules, even the ones ignored by
-        // nagios module.
-        unset($requirements_data['update_contrib']);
-        // Now we need to loop through all modules again to reset 'update_contrib'.
-        foreach ($enabled_modules as $inner_module_name) {
-          // Double check we're not processing a core module.
-          if (!array_key_exists($inner_module_name, $project_data['drupal']['includes']) && isset($data[$inner_module_name]['status']) && is_numeric($data[$inner_module_name]['status'])) {
-            // Within this clause, only contrib modules are processed. Get
-            // update status for the current one, and store data as it would be
-            // left by update_requirements() function.
-            $contrib_req = _update_requirement_check($data[$inner_module_name], 'contrib');
-            $contrib_req['name'] = $inner_module_name;
-            // If module up to date, set a severity of -1 for sorting purposes.
-            if (!isset($contrib_req['severity'])) {
-              $contrib_req['severity'] = -1;
-            }
-            // Build an array of required contrib updates.
-            if ($contrib_req) {
-              $module_data[] = $contrib_req;
-            }
-          }
-        }
-
-        // Sort our finished array by severity so we can set Nagios status accordingly.
-        if (!empty($module_data)) {
-          usort($module_data, '_nagios_updates_sort_by_severity');
-          // Add the 'worst case' to requirements.
-          $requirements_data['update_contrib'] = array_pop($module_data);
-        }
-      }
-      $reqs += $requirements_data;
-    }
-  }
+  $req_controller = new RequirementsController($config);
+  $req_controller->collectRequirements($extensions_to_check, $project_update_status, $enabled_projects);
 
   // Check the requirements as to the most severe status:
-  $descriptions = [];
-  $severity = REQUIREMENT_OK;
-  $min_severity = $config->get('nagios.min_report_severity');
-  foreach ($reqs as $key => $requirement) {
-    if (isset($requirement['severity'])) {
-      // Ignore update_core warning if update check is pending:
-      if (($key == 'update_core' || $key == 'update_contrib') && $requirement['severity'] == REQUIREMENT_ERROR && $requirement['reason'] == UpdateFetcherInterface::FETCH_PENDING) {
-        continue;
-      }
-      if ($requirement['severity'] >= $min_severity) {
-        if ($requirement['severity'] > $severity) {
-          $severity = $requirement['severity'];
-        }
-        $descriptions[] = $requirement['title'];
-      }
-    }
-  }
-  if (empty($descriptions)) {
-    $desc = t('No information.');
-  }
-  else {
-    $desc = implode(', ', $descriptions);
-  }
+  list($severity, $desc) = $req_controller->findMostSevereProblem();
 
   // Create a status to pass back, and a text description too:
   switch ($severity) {
@@ -723,6 +697,34 @@ function nagios_check_nodes() {
 }
 
 /**
+ * Check when the site is in maintenance mode.
+ *
+ * @return array
+ *   Array containing state data
+ */
+function nagios_check_maintenance() {
+  if (Drupal::state()->get('system.maintenance_mode')) {
+    $data = [
+      'status' => NAGIOS_STATUS_CRITICAL,
+      'type' => 'state',
+      'text' => t('Site is offline (maintenance mode on)'),
+    ];
+  }
+  else {
+    $data = [
+      'status' => NAGIOS_STATUS_OK,
+      'type' => 'state',
+      'text' => t('Site is online (maintenance mode off)'),
+    ];
+  }
+
+  return [
+    'key' => 'MAINT',
+    'data' => $data,
+  ];
+}
+
+/**
  * Report the number of active user accounts.
  *
  * @return array
@@ -762,6 +764,8 @@ function nagios_check_modules() {
 
 /**
  * Implements hook_nagios_checks().
+ *
+ * This hook is only used by Drush 8.
  */
 function nagios_nagios_checks() {
   return nagios_functions();

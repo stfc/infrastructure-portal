@@ -2,12 +2,9 @@
 
 namespace Drush\Drupal\Commands\core;
 
-use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
 
 class MessengerCommands extends DrushCommands
 {
@@ -16,12 +13,9 @@ class MessengerCommands extends DrushCommands
     /**
      * @inheritDoc
      */
-    public function __construct()
+    public function __construct(MessengerInterface $messenger)
     {
-        if (\Drupal::hasService('messenger')) {
-            // Inject this once Drupal 8.4 becomes unsupported.
-            $this->messenger = \Drupal::messenger();
-        }
+        $this->messenger = $messenger;
     }
 
     /**

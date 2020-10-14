@@ -3,11 +3,16 @@
 namespace Drupal\age_field_formatter\Plugin\Field\FieldFormatter;
 
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\Core\Datetime\DateFormatterInterface;
+use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 
 /**
  * Plugin implementation of the 'age_field_formatter' formatter.
@@ -20,15 +25,47 @@ use Drupal\Core\Datetime\DrupalDateTime;
  *   }
  * )
  */
-class AgeFieldFormatter extends FormatterBase {
+class AgeFieldFormatter extends FormatterBase implements ContainerFactoryPluginInterface {
 
+  /**
+   * The date formatter service.
+   *
+   * @var \Drupal\Core\Datetime\DateFormatterInterface
+   */
+  protected $dateFormatter;
+
+  /**
+   * The date format entity storage.
+   *
+   * @var \Drupal\Core\Entity\EntityStorageInterface
+   */
+  protected $dateFormatStorage;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    $formatter = new static(
+      $plugin_id,
+      $plugin_definition,
+      $configuration['field_definition'],
+      $configuration['settings'],
+      $configuration['label'],
+      $configuration['view_mode'],
+      $configuration['third_party_settings']
+    );
+    $container->get('date.formatter');
+    $formatter->setDateFormatter($container->get('date.formatter'));
+    $formatter->setDateFormat($container->get('entity_type.manager')->getStorage('date_format'));
+    return $formatter;
+  }
   /**
    * {@inheritdoc}
    */
   public static function defaultSettings() {
     $options = parent::defaultSettings();
 
-    $options['date_format'] = \Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface::DATETIME_STORAGE_FORMAT;
+    $options['date_format'] = DateTimeItemInterface::DATETIME_STORAGE_FORMAT;
     $options['age_format'] = TRUE;
     $options['year_suffix'] = TRUE;
     return $options;
@@ -143,8 +180,7 @@ class AgeFieldFormatter extends FormatterBase {
 
     $date_raw = $item->getValue();
     $date = strtotime($date_raw['value']);
-    $date_formatted = \Drupal::service('date.formatter')->format($date, 'custom', $format, $timezone != '' ? $timezone : NULL);
-
+    $date_formatted = $this->dateFormatter->format($date, 'custom', $format, $timezone != '' ? $timezone : NULL);
     if ($year_suffix == true) {
       $age_suffix = $this->stringTranslation->formatPlural($age, 'year', 'years');
       $age = $age . ' ' . $age_suffix;
@@ -159,6 +195,26 @@ class AgeFieldFormatter extends FormatterBase {
     }
 
     return nl2br(Html::escape($age_formatted));
+  }
+
+  /**
+   * Sets date formatter.
+   *
+   * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
+   *   The date formatter service.
+   */
+  public function setDateFormatter(DateFormatterInterface $date_formatter) {
+    $this->dateFormatter = $date_formatter;
+  }
+
+  /**
+   * Sets date format storage.
+   *
+   * @param \Drupal\Core\Entity\EntityStorageInterface $date_format_storage
+   *   The date format storage.
+   */
+  public function setDateFormat(EntityStorageInterface $date_format_storage) {
+    $this->dateFormatStorage = $date_format_storage;
   }
 
 }

@@ -99,28 +99,42 @@ class TokenParser
      */
     public function parseUseStatement()
     {
+
+        $groupRoot = '';
         $class = '';
         $alias = '';
-        $statements = array();
+        $statements = [];
         $explicitAlias = false;
         while (($token = $this->next())) {
-            $isNameToken = $token[0] === T_STRING || $token[0] === T_NS_SEPARATOR;
-            if (!$explicitAlias && $isNameToken) {
+            if (!$explicitAlias && $token[0] === T_STRING) {
                 $class .= $token[1];
                 $alias = $token[1];
-            } else if ($explicitAlias && $isNameToken) {
-                $alias .= $token[1];
+            } else if ($explicitAlias && $token[0] === T_STRING) {
+                $alias = $token[1];
+            } else if (\PHP_VERSION_ID >= 80000 && ($token[0] === T_NAME_QUALIFIED || $token[0] === T_NAME_FULLY_QUALIFIED)) {
+                $class .= $token[1];
+
+                $classSplit = explode('\\', $token[1]);
+                $alias = $classSplit[count($classSplit) - 1];
+            } else if ($token[0] === T_NS_SEPARATOR) {
+                $class .= '\\';
+                $alias = '';
             } else if ($token[0] === T_AS) {
                 $explicitAlias = true;
                 $alias = '';
             } else if ($token === ',') {
-                $statements[strtolower($alias)] = $class;
+                $statements[strtolower($alias)] = $groupRoot . $class;
                 $class = '';
                 $alias = '';
                 $explicitAlias = false;
             } else if ($token === ';') {
-                $statements[strtolower($alias)] = $class;
+                $statements[strtolower($alias)] = $groupRoot . $class;
                 break;
+            } else if ($token === '{' ) {
+                $groupRoot = $class;
+                $class = '';
+            } else if ($token === '}' ) {
+                continue;
             } else {
                 break;
             }
@@ -138,7 +152,7 @@ class TokenParser
      */
     public function parseUseStatements($namespaceName)
     {
-        $statements = array();
+        $statements = [];
         while (($token = $this->next())) {
             if ($token[0] === T_USE) {
                 $statements = array_merge($statements, $this->parseUseStatement());
@@ -151,7 +165,7 @@ class TokenParser
             // Get fresh array for new namespace. This is to prevent the parser to collect the use statements
             // for a previous namespace with the same name. This is the case if a namespace is defined twice
             // or if a namespace with the same name is commented out.
-            $statements = array();
+            $statements = [];
         }
 
         return $statements;
@@ -165,7 +179,10 @@ class TokenParser
     public function parseNamespace()
     {
         $name = '';
-        while (($token = $this->next()) && ($token[0] === T_STRING || $token[0] === T_NS_SEPARATOR)) {
+        while (($token = $this->next()) && ($token[0] === T_STRING || $token[0] === T_NS_SEPARATOR || (
+            \PHP_VERSION_ID >= 80000 &&
+            ($token[0] === T_NAME_QUALIFIED || $token[0] === T_NAME_FULLY_QUALIFIED)
+        ))) {
             $name .= $token[1];
         }
 

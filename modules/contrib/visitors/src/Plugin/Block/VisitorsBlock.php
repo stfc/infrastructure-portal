@@ -159,7 +159,7 @@ class VisitorsBlock extends BlockBase {
       $since_date = $query->execute()->fetchField();
 
       $this->items[] = t('Since: %since_date',
-        array('%since_date' => format_date($since_date, 'short'))
+        array('%since_date' => \Drupal::service('date.formatter')->format($since_date, 'short'))
       );
     }
   }

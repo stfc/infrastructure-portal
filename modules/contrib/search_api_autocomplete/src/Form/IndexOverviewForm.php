@@ -15,6 +15,7 @@ use Drupal\search_api_autocomplete\Search\SearchPluginInterface;
 use Drupal\search_api_autocomplete\Search\SearchPluginManager;
 use Drupal\search_api_autocomplete\Utility\PluginHelperInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Messenger\MessengerInterface;
 
 /**
  * Defines the overview of all search autocompletion configurations.
@@ -57,6 +58,13 @@ class IndexOverviewForm extends FormBase {
   protected $redirectDestination;
 
   /**
+   * The messenger.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
    * Creates a new AutocompleteSearchAdminOverview instance.
    *
    * @param \Drupal\Component\Plugin\PluginManagerInterface $suggester_manager
@@ -69,13 +77,16 @@ class IndexOverviewForm extends FormBase {
    *   The entity type manager.
    * @param \Drupal\Core\Routing\RedirectDestinationInterface $redirect_destination
    *   The redirect destination.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   The messenger.
    */
-  public function __construct(PluginManagerInterface $suggester_manager, SearchPluginManager $search_plugin_manager, PluginHelperInterface $plugin_helper, EntityTypeManagerInterface $entity_type_manager, RedirectDestinationInterface $redirect_destination) {
+  public function __construct(PluginManagerInterface $suggester_manager, SearchPluginManager $search_plugin_manager, PluginHelperInterface $plugin_helper, EntityTypeManagerInterface $entity_type_manager, RedirectDestinationInterface $redirect_destination, MessengerInterface $messenger) {
     $this->suggesterManager = $suggester_manager;
     $this->searchPluginManager = $search_plugin_manager;
     $this->pluginHelper = $plugin_helper;
     $this->entityTypeManager = $entity_type_manager;
     $this->redirectDestination = $redirect_destination;
+    $this->messenger = $messenger;
   }
 
   /**
@@ -87,7 +98,8 @@ class IndexOverviewForm extends FormBase {
       $container->get('plugin.manager.search_api_autocomplete.search'),
       $container->get('search_api_autocomplete.plugin_helper'),
       $container->get('entity_type.manager'),
-      $container->get('redirect.destination')
+      $container->get('redirect.destination'),
+      $container->get('messenger')
     );
   }
 
@@ -276,7 +288,7 @@ class IndexOverviewForm extends FormBase {
         $search->save();
       }
     }
-    drupal_set_message(empty($change) ? $this->t('No values were changed.') : $messages);
+    $this->messenger->addStatus(empty($change) ? $this->t('No values were changed.') : $messages);
   }
 
   /**

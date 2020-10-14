@@ -2,8 +2,7 @@
 
 /**
  * @file
- * Allows admins to protect users from being edited or cancelled, on a per-user
- * basis.
+ * Allows admins to protect users from being edited or cancelled.
  */
 
 use Drupal\Core\Access\AccessResult;
@@ -23,14 +22,11 @@ use Drupal\userprotect\UserProtect;
  *   An instance of an userprotect_rule entity.
  */
 function userprotect_rule_load($name) {
-  return entity_load('userprotect_rule', $name);
+  return \Drupal::entityTypeManager()->getStorage('userprotect_rule')->load($name);
 }
 
 /**
  * Implements hook_ENTITY_TYPE_access() for entity type "user".
- *
- * @param \Drupal\user\UserInterface $entity
- *   The user object to check access for.
  */
 function userprotect_user_access(UserInterface $entity, $op, AccountInterface $account) {
   // Check if the account has the permission "userprotect.bypass_all".
@@ -118,8 +114,8 @@ function userprotect_user_access(UserInterface $entity, $op, AccountInterface $a
  */
 function userprotect_entity_field_access($operation, FieldDefinitionInterface $field_definition, AccountInterface $account, FieldItemList $items = NULL) {
   if (is_null($items)) {
-    // Sometimes no field item list is passed. In this case, there is nothing for
-    // userprotect to check.
+    // Sometimes no field item list is passed. In this case, there is nothing
+    // for userprotect to check.
     return AccessResult::neutral();
   }
 
@@ -152,6 +148,11 @@ function userprotect_entity_field_access($operation, FieldDefinitionInterface $f
       // userprotect_user_access().
       $entity_operation = 'user_' . $name;
       return ($entity->access($entity_operation, $account)) ? AccessResult::neutral() : AccessResult::forbidden();
+
+    // Make sure this module also works when role_delegation is enabled.
+    case 'role_change':
+      $entity_operation = 'user_roles';
+      return ($entity->access($entity_operation, $account)) ? AccessResult::neutral() : AccessResult::forbidden();
   }
 
   // The field is not one of the fields that userprotect supports.
@@ -171,7 +172,9 @@ function userprotect_user_delete($account) {
     ->execute();
   // Delete protection rules.
   if (!empty($entity_ids)) {
-    entity_delete_multiple('userprotect_rule', $entity_ids);
+    $storage_handler = \Drupal::entityTypeManager()->getStorage('userprotect_rule');
+    $entities = $storage_handler->loadMultiple($entity_ids);
+    $storage_handler->delete($entities);
   }
 }
 
@@ -188,7 +191,9 @@ function userprotect_user_role_delete($role) {
     ->execute();
   // Delete protection rules.
   if (!empty($entity_ids)) {
-    entity_delete_multiple('userprotect_rule', $entity_ids);
+    $storage_handler = \Drupal::entityTypeManager()->getStorage('userprotect_rule');
+    $entities = $storage_handler->loadMultiple($entity_ids);
+    $storage_handler->delete($entities);
   }
 }
 
@@ -214,7 +219,7 @@ function userprotect_form_user_form_alter(&$form, &$form_state) {
 
   // For each protection plugin, check if the current user has access
   // to the element the plugin protects. If not, apply the protection.
-  $applied = array();
+  $applied = [];
   foreach ($protection_definitions as $protection_definition) {
     if (!$entity->access($protection_definition['id'], $account)) {
       // Apply protection.
@@ -229,11 +234,11 @@ function userprotect_form_user_form_alter(&$form, &$form_state) {
   // Display a message about the applied protections if there were protections
   // applied and if the current user is an admin user.
   if (count($applied) && $account->hasPermission('administer users')) {
-    $message = t('%user has been protected from the following editing operations: @operations', array(
-      '%user' => $entity->getUsername(),
+    $message = t('%user has been protected from the following editing operations: @operations', [
+      '%user' => $entity->getAccountName(),
       '@operations' => implode(', ', $applied),
-    ));
-    drupal_set_message($message);
+    ]);
+    \Drupal::messenger()->addMessage($message);
   }
 }
 
@@ -261,5 +266,5 @@ function userprotect_get_user_protection_rules(UserInterface $account) {
   $entity_ids = $query
     ->condition($group)
     ->execute();
-  return entity_load_multiple('userprotect_rule', $entity_ids);
+  return \Drupal::entityTypeManager()->getStorage('userprotect_rule')->loadMultiple($entity_ids);
 }

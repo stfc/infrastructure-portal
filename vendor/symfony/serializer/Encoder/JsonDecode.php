@@ -62,7 +62,7 @@ class JsonDecode implements DecoderInterface
      *
      * @throws NotEncodableValueException
      *
-     * @see http://php.net/json_decode json_decode
+     * @see https://php.net/json_decode
      */
     public function decode($data, $format, array $context = [])
     {
@@ -78,11 +78,11 @@ class JsonDecode implements DecoderInterface
             throw new NotEncodableValueException($e->getMessage(), 0, $e);
         }
 
-        if (\PHP_VERSION_ID >= 70300 && (JSON_THROW_ON_ERROR & $options)) {
+        if (\PHP_VERSION_ID >= 70300 && (\JSON_THROW_ON_ERROR & $options)) {
             return $decodedData;
         }
 
-        if (JSON_ERROR_NONE !== json_last_error()) {
+        if (\JSON_ERROR_NONE !== json_last_error()) {
             throw new NotEncodableValueException(json_last_error_msg());
         }
 

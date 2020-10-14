@@ -7,11 +7,13 @@
 
 namespace Drupal\visitors\Controller\Report;
 
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Datetime\Date;
 use Drupal\Core\Datetime\DateFormatterInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Component\Utility\SafeMarkup;
 
 class HitDetails extends ControllerBase {
   /**
@@ -89,24 +91,24 @@ class HitDetails extends ControllerBase {
       //@TODO make url, referer and username as link
       $array = array(
         'URL'        => $url,
-        'Title'      => SafeMarkup::checkPlain($hit_details->visitors_title),
+        'Title'      => Html::escape($hit_details->visitors_title),
         'Referer'    => $referer,
         'Date'       => $date,
         'User'       => $user->getAccountName(),
-        'IP'         => $whois_enable ? \Drupal::l($ip, 'whois/' . $ip, $attr) : $ip,
-        'User Agent' => SafeMarkup::checkPlain($hit_details->visitors_user_agent)
+        'IP'         => $whois_enable ? Link::fromTextAndUrl($ip, Url::fromUri('whois/' . $ip, $attr)) : $ip,
+        'User Agent' => Html::escape($hit_details->visitors_user_agent)
       );
 
       if (\Drupal::service('module_handler')->moduleExists('visitors_geoip')) {
         $geoip_data_array = array(
-          'Country'        => SafeMarkup::checkPlain($hit_details->visitors_country_name),
-          'Region'         => SafeMarkup::checkPlain($hit_details->visitors_region),
-          'City'           => SafeMarkup::checkPlain($hit_details->visitors_city),
-          'Postal Code'    => SafeMarkup::checkPlain($hit_details->visitors_postal_code),
-          'Latitude'       => SafeMarkup::checkPlain($hit_details->visitors_latitude),
-          'Longitude'      => SafeMarkup::checkPlain($hit_details->visitors_longitude),
-          'DMA Code'       => SafeMarkup::checkPlain($hit_details->visitors_dma_code),
-          'PSTN Area Code' => SafeMarkup::checkPlain($hit_details->visitors_area_code),
+          'Country'        => Html::escape($hit_details->visitors_country_name),
+          'Region'         => Html::escape($hit_details->visitors_region),
+          'City'           => Html::escape($hit_details->visitors_city),
+          'Postal Code'    => Html::escape($hit_details->visitors_postal_code),
+          'Latitude'       => Html::escape($hit_details->visitors_latitude),
+          'Longitude'      => Html::escape($hit_details->visitors_longitude),
+          'DMA Code'       => Html::escape($hit_details->visitors_dma_code),
+          'PSTN Area Code' => Html::escape($hit_details->visitors_area_code),
         );
         $array = array_merge($array, $geoip_data_array);
       }

@@ -8,9 +8,12 @@
 namespace Drupal\visitors\Controller\Report;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Database\Query\Condition;
 use Drupal\Core\Datetime\Date;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Form\FormBuilderInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -146,7 +149,7 @@ class Node extends ControllerBase {
 
     $nid = (int) $node->id();
     $query->fields('u', array('name', 'uid'));
-    $db_or = db_or();
+    $db_or = new Condition();
     $db_or->condition('v.visitors_path', '/node/' . $nid, '=');
     //@todo removed placeholder is this right?
     $db_or->condition(
@@ -168,7 +171,7 @@ class Node extends ControllerBase {
 
     $page = isset($_GET['page']) ? (int) $_GET['page'] : '';
     $i = 0 + $page * $items_per_page;
-    $timezone =  drupal_get_user_timezone();
+    $timezone =  date_default_timezone_get();
 
     foreach ($results as $data) {
       $user = \Drupal::entityTypeManager()->getStorage('user')->load($data->visitors_uid);
@@ -176,16 +179,13 @@ class Node extends ControllerBase {
         '#type' => 'username',
         '#account' => $user
       );
-
       $rows[] = array(
         ++$i,
         $data->visitors_id,
         $this->date->format($data->visitors_date_time, 'short'),
-        //l($data->visitors_referer, $data->visitors_referer),
         !empty($data->visitors_referer) ? $data->visitors_referer : 'none',
-        //drupal_render($username),
         $user->getAccountName(),
-        \Drupal::l($this->t('details'),\Drupal\Core\Url::fromRoute('visitors.hit_details',array("hit_id"=>$data->visitors_id)))
+        Link::fromTextAndUrl($this->t('details'),Url::fromRoute('visitors.hit_details',array("hit_id"=>$data->visitors_id)))
       );
     }
 

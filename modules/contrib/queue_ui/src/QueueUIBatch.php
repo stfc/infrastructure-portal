@@ -22,6 +22,12 @@ class QueueUIBatch {
    * The batch job will be marked as finished when the queue is empty.
    *
    * Based on \Drupal\Core\Cron::processQueues().
+   *
+   * @param $queue_name
+   * @param $context
+   *
+   * @throws \Drupal\Component\Plugin\Exception\PluginException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public static function step($queue_name, &$context) {
     /** @var $queue_manager \Drupal\Core\Queue\QueueWorkerManagerInterface */
@@ -36,12 +42,19 @@ class QueueUIBatch {
     $queue_worker = $queue_manager->createInstance($queue_name);
     $queue = $queue_factory->get($queue_name);
 
+    $num_of_items = $queue->numberOfItems();
+    if (!array_key_exists('num_of_total_items', $context['sandbox'])
+      || $context['sandbox']['num_of_total_items'] < $num_of_items
+    ) {
+      $context['sandbox']['num_of_total_items'] = $num_of_items;
+    }
+
     $context['finished'] = 0;
     $context['results']['queue_name'] = $info['title'];
 
     $title = t('Processing queue %name: %count items remaining', [
       '%name' => $info['title'],
-      '%count' => $queue->numberOfItems(),
+      '%count' => $num_of_items,
     ]);
 
     try {
@@ -55,20 +68,27 @@ class QueueUIBatch {
         $queue_worker->processItem($item->data);
         $queue->deleteItem($item);
 
+        $num_of_items = $queue->numberOfItems();
+
         // Update context
         $context['results']['processed'][] = $item->item_id;
+        $context['finished'] = ($context['sandbox']['num_of_total_items'] - $num_of_items) / $context['sandbox']['num_of_total_items'];
       }
       else {
         // If we cannot claim an item we must be done processing this queue.
         $context['finished'] = 1;
       }
     } catch (RequeueException $e) {
-      // The worker requested the task be immediately requeued.
-      $queue->releaseItem($item);
+      if (isset($item)) {
+        // The worker requested the task be immediately requeued.
+        $queue->releaseItem($item);
+      }
     } catch (SuspendQueueException $e) {
       // If the worker indicates there is a problem with the whole queue,
-      // release the item and skip to the next queue.
-      $queue->releaseItem($item);
+      if (isset($item)) {
+        // release the item and skip to the next queue.
+        $queue->releaseItem($item);
+      }
 
       watchdog_exception('queue_ui', $e);
       $context['results']['errors'][] = $e->getMessage();
@@ -85,18 +105,33 @@ class QueueUIBatch {
 
   /**
    * Callback when finishing a batch job.
+   *
+   * @param $success
+   * @param $results
+   * @param $operations
    */
   public static function finish($success, $results, $operations) {
-    drupal_set_message(
-      \Drupal::translation()->formatPlural(
-        count($results['processed']),
-        'Queue %queue: One item successfully processed.',
-        'Queue %queue: @count items successfully processed.',
-        ['%queue' => $results['queue_name']]
-      )
-    );
+    // Display success of no results.
+    if (!empty($results['processed'])) {
+      \Drupal::messenger()->addMessage(
+        \Drupal::translation()->formatPlural(
+          count($results['processed']),
+          'Queue %queue: One item successfully processed.',
+          'Queue %queue: @count items successfully processed.',
+          ['%queue' => $results['queue_name']]
+        )
+      );
+    }
+    elseif (!isset($results['processed'])) {
+      \Drupal::messenger()->addMessage(\Drupal::translation()
+        ->translate("Items were not processed. Try to release existing items or add new items to the queues."),
+        'warning'
+      );
+    }
+
+    // Display errors.
     if (!empty($results['errors'])) {
-      drupal_set_message(
+      \Drupal::messenger()->addError(
         \Drupal::translation()->formatPlural(
           count($results['errors']),
           'Queue %queue error: @errors',
@@ -108,8 +143,7 @@ class QueueUIBatch {
             // will not add glue for single entry array.
             '@errors' => Markup::create(implode('</li><li>', $results['errors'])),
           ]
-        ),
-        'error'
+        )
       );
     }
   }

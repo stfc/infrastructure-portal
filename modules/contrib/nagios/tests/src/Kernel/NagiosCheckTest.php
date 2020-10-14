@@ -68,12 +68,16 @@ class NagiosCheckTest extends EntityKernelTestBase {
       "nagios=UNKNOWN, DRUPAL:UNKNOWN=Unauthorized |",
       $statuspage_controller->content()->getContent());
 
+    $config = \Drupal::configFactory()->getEditable('nagios.settings');
+    foreach (['cron', 'maintenance', 'watchdog'] as $check) {
+      $config->set('nagios.function.' . $check, FALSE);
+    }
+    $config->save();
     $_SERVER['HTTP_USER_AGENT'] = 'Nagios';
     self::assertContains(
       "nagios=OK,",
       $statuspage_controller->content()->getContent());
 
-    $config = \Drupal::configFactory()->getEditable('nagios.settings');
     $config->set('nagios.statuspage.getparam', TRUE);
     $config->save();
     $_SERVER['HTTP_USER_AGENT'] = 'Test';

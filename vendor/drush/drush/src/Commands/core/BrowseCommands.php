@@ -20,7 +20,7 @@ class BrowseCommands extends DrushCommands implements SiteAliasManagerAwareInter
      *
      * @param string|null $path Path to open. If omitted, the site front page will be opened.
      * @param array $options An associative array of options whose values come from cli, aliases, config, etc.
-     * @option string $browser Specify a particular browser (defaults to operating system default). Use --no-browser to suppress opening a browser.
+     * @option string $browser Specify a particular browser (defaults to OS default). Use --no-browser to suppress opening a browser.
      * @option integer $redirect-port The port that the web server is redirected to (e.g. when running within a Vagrant environment).
      * @usage drush browse
      *   Open default web browser (if configured or detected) to the site front page.
@@ -37,13 +37,10 @@ class BrowseCommands extends DrushCommands implements SiteAliasManagerAwareInter
         $aliasRecord = $this->siteAliasManager()->getSelf();
         // Redispatch if called against a remote-host so a browser is started on the
         // the *local* machine.
-        if ($aliasRecord->isRemote()) {
-            $return = drush_invoke_process($aliasRecord, 'browse', [$path], Drush::redispatchOptions(), ['integrate' => true]);
-            if ($return['error_status']) {
-                throw new \Exception('Unable to execute browse command on remote alias.');
-            } else {
-                $link = $return['object'];
-            }
+        if ($this->processManager()->hasTransport($aliasRecord)) {
+            $process = $this->processManager()->drush($aliasRecord, 'browse', [$path], Drush::redispatchOptions());
+            $process->mustRun();
+            $link = $process->getOutput();
         } else {
             if (!Drush::bootstrapManager()->doBootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
                 // Fail gracefully if unable to bootstrap Drupal. drush_bootstrap() has

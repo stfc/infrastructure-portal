@@ -5,11 +5,12 @@
  * Install, update and uninstall functions for the group module.
  */
 
-use Drupal\group\Entity\GroupContent;
 use Drupal\Core\Config\ExtensionInstallStorage;
 use Drupal\Core\Config\InstallStorage;
 use Drupal\Core\Entity\EntityTypeListenerInterface;
 use Drupal\Core\Entity\Sql\SqlContentEntityStorage;
+use Drupal\group\Entity\GroupContent;
+use Drupal\group\Entity\Storage\GroupContentStorageSchema;
 
 /**
  * Resave all GroupContent labels and remove orphaned entities.
@@ -17,11 +18,11 @@ use Drupal\Core\Entity\Sql\SqlContentEntityStorage;
 function group_update_8001(&$sandbox) {
   // Set up the batch by retrieving all of the group content IDs.
   if (!isset($sandbox['progress'])) {
-    /** @var \Drupal\Core\Entity\EntityTypeManager $entity_type_manager */
+    /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager */
     $entity_type_manager = \Drupal::service('entity_type.manager');
     $storage_handler = $entity_type_manager->getStorage('group_content');
 
-    $sandbox['ids'] = $storage_handler->getQuery()->execute();
+    $sandbox['ids'] = $storage_handler->getQuery()->accessCheck(FALSE)->execute();
     $sandbox['max'] = count($sandbox['ids']);
     $sandbox['progress'] = 0;
   }
@@ -429,62 +430,95 @@ function group_update_8014() {
  * Update the group members view to use the new cache group permissions context.
  */
 function group_update_8015() {
-  if (\Drupal::moduleHandler()->moduleExists('views')) {
-    $view = \Drupal::configFactory()->getEditable('views.view.group_members');
-    if (!$view->isNew()) {
-      foreach (['default', 'page_1'] as $display) {
-        $cache_metadata_key = "display.$display.cache_metadata";
-        $cache_metadata = $view->get($cache_metadata_key);
-
-        // Remove the deleted cache context and add the updated metadata.
-        $key = array_search('group_membership.roles.permissions', $cache_metadata['contexts'], TRUE);
-        if ($key !== FALSE) {
-          unset($cache_metadata['contexts'][$key]);
-        }
-        $cache_metadata['max-age'] = -1;
-        $cache_metadata['contexts'][] = 'route.group';
-        $cache_metadata['contexts'][] = 'user.group_permissions';
-
-        $view->set($cache_metadata_key, $cache_metadata);
-      }
-
-      $view->save(TRUE);
-    }
-  }
+  // Empty update. See group_post_update_view_cache_contexts();
 }
 
 /**
  * Re-run a fixed version of _8015 and gnode_update_8006 on all views.
  */
 function group_update_8016() {
-  if (\Drupal::moduleHandler()->moduleExists('views')) {
-    $config_factory = \Drupal::configFactory();
+  // Empty update. See group_post_update_view_cache_contexts();
+}
 
-    foreach ($config_factory->listAll('views.view.') as $view_config_name) {
-      $view = $config_factory->getEditable($view_config_name);
 
-      $needs_save = FALSE;
-      foreach ($view->get('display') as $display => $display_data) {
-        $cache_metadata_key = "display.$display.cache_metadata";
-        $cache_metadata = $view->get($cache_metadata_key);
+/**
+ * Add storage schema to group content.
+ */
+function group_update_8017() {
+  $manager = \Drupal::entityDefinitionUpdateManager();
 
-        // Remove the deleted cache context and add the updated metadata.
-        $key = array_search('group_membership.roles.permissions', $cache_metadata['contexts'], TRUE);
-        if ($key !== FALSE) {
-          unset($cache_metadata['contexts'][$key]);
+  // Add the new storage schema to the GroupContent entity type, which should
+  // automatically reindex the table.
+  $entity_type = $manager->getEntityType('group_content');
+  $entity_type->setHandlerClass('storage_schema', GroupContentStorageSchema::class);
+  $manager->updateEntityType($entity_type);
+}
 
-          $cache_metadata['max-age'] = -1;
-          $cache_metadata['contexts'][] = 'route.group';
-          $cache_metadata['contexts'][] = 'user.group_permissions';
+/**
+ * Set the 'owner' entity key and update the owner field.
+ */
+function group_update_8018() {
+  $definition_update_manager = \Drupal::entityDefinitionUpdateManager();
+  foreach (['group', 'group_content'] as $entity_type_id) {
+    $entity_type = $definition_update_manager->getEntityType($entity_type_id);
+    $keys = $entity_type->getKeys();
+    $keys['owner'] = 'uid';
+    $entity_type->set('entity_keys', $keys);
+    $definition_update_manager->updateEntityType($entity_type);
+    $definition_update_manager->updateFieldStorageDefinition($definition_update_manager->getFieldStorageDefinition('uid', $entity_type_id));
+  }
+}
 
-          $view->set($cache_metadata_key, $cache_metadata);
-          $needs_save = TRUE;
-        }
-      }
+/**
+ * Make sure Entity API is installed.
+ */
+function group_update_8019() {
+  if (!\Drupal::moduleHandler()->moduleExists('entity')) {
+    \Drupal::service('module_installer')->install(['entity']);
+    return t('The "Entity API" module has been installed.');
+  }
+}
 
-      if ($needs_save) {
-        $view->save(TRUE);
-      }
+/**
+ * Make sure VariationCache is installed.
+ */
+function group_update_8020() {
+  if (!\Drupal::moduleHandler()->moduleExists('variationcache')) {
+    \Drupal::service('module_installer')->install(['variationcache']);
+    return t('The "VariationCache" module has been installed.');
+  }
+}
+
+/**
+ * Updates base field definitions that use the old default value callback.
+ */
+function group_update_8021() {
+  $config_factory = \Drupal::configFactory();
+  foreach ($config_factory->listAll('core.base_field_override.') as $config_name) {
+    $base_field_override = $config_factory->getEditable($config_name);
+
+    if ($base_field_override->get('field_name') !== 'uid') {
+      continue;
     }
+
+    switch ($base_field_override->get('entity_type')) {
+      case 'group':
+        $class = 'Drupal\group\Entity\Group';
+        break;
+
+      case 'group_content':
+        $class = 'Drupal\group\Entity\GroupContent';
+        break;
+
+      default:
+        continue 2;
+    }
+
+    if ($base_field_override->get('default_value_callback') !== $class . '::getCurrentUserId') {
+      continue;
+    }
+
+    $base_field_override->set('default_value_callback', $class . '::getDefaultEntityOwner');
+    $base_field_override->save(TRUE);
   }
 }

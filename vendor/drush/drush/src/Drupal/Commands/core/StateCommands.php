@@ -2,13 +2,16 @@
 
 namespace Drush\Drupal\Commands\core;
 
+use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
+use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal\Core\State\StateInterface;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Yaml\Yaml;
 
-class StateCommands extends DrushCommands
+class StateCommands extends DrushCommands implements StdinAwareInterface
 {
+    use StdinAwareTrait;
 
     protected $state;
 
@@ -33,6 +36,8 @@ class StateCommands extends DrushCommands
      * @param string $key The key name.
      * @usage drush state:get system.cron_last
      *   Displays last cron run timestamp
+     * @usage drush state:get drupal_css_cache_files --format=yaml
+     *   Displays an array of css files in yaml format.
      * @aliases sget,state-get
      *
      * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
@@ -48,9 +53,9 @@ class StateCommands extends DrushCommands
      *
      * @command state:set
      *
-     * @param string $key The state key, for example: system.cron_last.
-     * @param mixed $value The value to assign to the state key. Use '-' to read from STDIN.
-     * @option input-format Type for the value. Defaults to 'auto'. Other recognized values: string, integer float, boolean, json, yaml.
+     * @param string $key The state key, for example: <info>system.cron_last</info>.
+     * @param mixed $value The value to assign to the state key. Use <info>-</info> to read from STDIN.
+     * @option input-format Type for the value. Other recognized values: string, integer, float, boolean, json, yaml.
      * @option value For internal use only.
      * @hidden-options value
      * @usage drush sset system.maintenance_mode 1 --input-format=integer
@@ -74,7 +79,7 @@ class StateCommands extends DrushCommands
 
         // Special flag indicating that the value has been passed via STDIN.
         if ($value === '-') {
-            $value = stream_get_contents(STDIN);
+            $value = $this->stdin()->contents();
         }
 
         // If the value is a string (usual case, unless we are called from code),
@@ -91,7 +96,7 @@ class StateCommands extends DrushCommands
      *
      * @command state:delete
      *
-     * @param string $key The state key, for example "system.cron_last".
+     * @param string $key The state key, for example <info>system.cron_last</info>.
      * @usage drush state:del system.cron_last
      *   Delete state entry for system.cron_last.
      * @aliases sdel,state-delete

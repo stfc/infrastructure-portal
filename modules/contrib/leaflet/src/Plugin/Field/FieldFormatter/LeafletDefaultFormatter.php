@@ -12,11 +12,11 @@ use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Leaflet\LeafletService;
 use Drupal\leaflet\LeafletSettingsElementsTrait;
+use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Utility\Token;
 use Drupal\core\Render\Renderer;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Component\Utility\Html;
-use Drupal\Core\Url;
 use Drupal\Core\Utility\LinkGeneratorInterface;
 
 /**
@@ -47,6 +47,13 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
    * @var \Drupal\Leaflet\LeafletService
    */
   protected $leafletService;
+
+  /**
+   * The EntityField Manager service.
+   *
+   * @var \Drupal\Core\Entity\EntityFieldManagerInterface
+   */
+  protected $entityFieldManager;
 
   /**
    * The token service.
@@ -95,6 +102,8 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
    *   Any third party settings settings.
    * @param \Drupal\Leaflet\LeafletService $leaflet_service
    *   The Leaflet service.
+   * @param \Drupal\Core\Entity\EntityFieldManagerInterface $entity_field_manager
+   *   The Entity Field Manager.
    * @param \Drupal\core\Utility\Token $token
    *   The token service.
    * @param \Drupal\core\Render\Renderer $renderer
@@ -113,6 +122,7 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
     $view_mode,
     array $third_party_settings,
     LeafletService $leaflet_service,
+    EntityFieldManagerInterface $entity_field_manager,
     Token $token,
     Renderer $renderer,
     ModuleHandlerInterface $module_handler,
@@ -121,6 +131,7 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
     $this->defaultSettings = self::getDefaultSettings();
     $this->leafletService = $leaflet_service;
+    $this->entityFieldManager = $entity_field_manager;
     $this->token = $token;
     $this->renderer = $renderer;
     $this->moduleHandler = $module_handler;
@@ -140,6 +151,7 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
       $configuration['view_mode'],
       $configuration['third_party_settings'],
       $container->get('leaflet.service'),
+      $container->get('entity_field.manager'),
       $container->get('token'),
       $container->get('renderer'),
       $container->get('module_handler'),
@@ -158,9 +170,7 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
-
     $settings = $this->getSettings();
-
     $form['#tree'] = TRUE;
 
     // Get the Cardinality set for the Formatter Field.
@@ -169,6 +179,9 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
 
     $elements = parent::settingsForm($form, $form_state);
     $field_name = $this->fieldDefinition->getName();
+
+    // Set Replacement Patterns Element.
+    $this->setReplacementPatternsElement($elements);
 
     if ($field_cardinality !== 1) {
       $elements['multiple_map'] = [
@@ -196,7 +209,7 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
     $elements['popup_content'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Popup content'),
-      '#description' => $this->t('Define the custom content for the Pop Infowindow. If empty the Content Title will be output.<br>See "REPLACEMENT PATTERNS" below for available replacements.'),
+      '#description' => $this->t('Define the custom content for the Pop Infowindow. If empty the Content Title will be output.<br>See "REPLACEMENT PATTERNS" above for available replacements.'),
       '#default_value' => $settings['popup_content'],
       '#states' => [
         'visible' => [
@@ -204,34 +217,6 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
         ],
       ],
     ];
-
-    if ($this->moduleHandler->moduleExists('token')) {
-
-      $elements['replacement_patterns'] = [
-        '#type' => 'details',
-        '#title' => 'Replacement patterns',
-        '#description' => $this->t('The following replacement tokens are available for the "Popup Content and the Icon Options":'),
-        '#states' => [
-          'visible' => [
-            'input[name="fields[' . $field_name . '][settings_edit_form][settings][popup]"]' => ['checked' => TRUE],
-          ],
-        ],
-      ];
-
-      $elements['replacement_patterns']['token_help'] = [
-        '#theme' => 'token_tree_link',
-        '#token_types' => [$this->fieldDefinition->getTargetEntityTypeId()],
-      ];
-    }
-    else {
-      $elements['replacement_patterns']['#description'] = $this->t('The @token_link is needed to browse and use @entity_type entity token replacements.', [
-        '@token_link' => $this->link->generate(t('Token module'), Url::fromUri('https://www.drupal.org/project/token', [
-          'absolute' => TRUE,
-          'attributes' => ['target' => 'blank'],
-        ])),
-        '@entity_type' => $this->fieldDefinition->getTargetEntityTypeId(),
-      ]);
-    }
 
     // Generate the Leaflet Map General Settings.
     $this->generateMapGeneralSettings($elements, $settings);
@@ -243,15 +228,22 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
     $map_position_options = $settings['map_position'];
     $elements['map_position'] = $this->generateMapPositionElement($map_position_options);
 
+    // Generate the Leaflet Map weight/zIndex Form Element.
+    $elements['weight'] = $this->generateWeightElement($settings['weight']);
+
     // Generate Icon form element.
-    $icon = $settings['icon'];
-    $elements['icon'] = $this->generateIconFormElement($icon);
+    $icon_options = $settings['icon'];
+    $elements['icon'] = $this->generateIconFormElement($icon_options);
 
     // Set Map Marker Cluster Element.
     $this->setMapMarkerclusterElement($elements, $settings);
 
     // Set Map Geometries Options Element.
     $this->setMapPathOptionsElement($elements, $settings);
+
+    // Set Map Geocoder Control Element, if the Geocoder Module exists,
+    // otherwise output a tip on Geocoder Module Integration.
+    $this->setGeocoderMapControl($elements, $settings);
 
     return $elements;
   }
@@ -262,7 +254,7 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
   public function settingsSummary() {
     $summary = [];
     $summary[] = $this->t('Leaflet Map: @map', ['@map' => $this->getSetting('leaflet_map')]);
-    $summary[] = $this->t('Map height: @height px', ['@height' => $this->getSetting('height')]);
+    $summary[] = $this->t('Map height: @height @height_unit', ['@height' => $this->getSetting('height'), '@height_unit' => $this->getSetting('height_unit')]);
     $summary[] = $this->t('Popup Infowindow: @popup', ['@popup' => $this->getSetting('popup') ? $this->t('Yes') : $this->t('No')]);
     if ($this->getSetting('popup') && $this->getSetting('popup_content')) {
       $summary[] = $this->t('Popup content: @popup_content', ['@popup_content' => $this->getSetting('popup_content')]);
@@ -295,9 +287,6 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
     $this->setExistingZoomSettings();
     $settings = $this->getSettings();
 
-    // Performs some preprocess on the leaflet map settings.
-    $this->leafletService->preProcessMapSettings($settings);
-
     // Always render the map, even if we do not have any data.
     $map = leaflet_map_get_info($settings['leaflet_map']);
 
@@ -311,7 +300,7 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
     $this->setAdditionalMapOptions($map, $settings);
 
     // Get token context.
-    $token_context = [
+    $tokens = [
       'field' => $items,
       $this->fieldDefinition->getTargetEntityTypeId() => $items->getEntity(),
     ];
@@ -324,6 +313,9 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
       $feature = $points[0];
       $feature['entity_id'] = $entity_id;
 
+      // Add its entity id, so that it might be referenced from outside.
+      $feature['weight'] = !empty($settings['zIndex']) ? intval(str_replace(["\n", "\r"], "", $this->token->replace($settings['zIndex'], $tokens))) : NULL;
+
       // Eventually set the popup content.
       if ($settings['popup']) {
         // Construct the renderable array for popup title / text. As we later
@@ -332,7 +324,7 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
         $build = [];
         if ($this->getSetting('popup_content')) {
           $bubbleable_metadata = new BubbleableMetadata();
-          $popup_content = $this->token->replace($this->getSetting('popup_content'), $token_context, [], $bubbleable_metadata);
+          $popup_content = $this->token->replace($this->getSetting('popup_content'), $tokens, ['clear' => TRUE], $bubbleable_metadata);
           $build[] = [
             '#markup' => $popup_content,
           ];
@@ -354,7 +346,7 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
       // Add/merge eventual map icon definition from hook_leaflet_map_info.
       if (!empty($map['icon'])) {
         $settings['icon'] = $settings['icon'] ?: [];
-        // Remove empty icon options so that they might be replaced by the
+        // Remove empty icon options so thxat they might be replaced by the
         // ones set by the hook_leaflet_map_info.
         foreach ($settings['icon'] as $k => $icon_option) {
           if (empty($icon_option) || (is_array($icon_option) && $this->leafletService->multipleEmpty($icon_option))) {
@@ -364,15 +356,80 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
         $settings['icon'] = array_replace($map['icon'], $settings['icon']);
       }
 
-      // Eventually set the custom icon.
-      if (!empty($settings['icon']['iconUrl'])) {
-        $settings['icon']['iconUrl'] = !empty($settings['icon']['iconUrl']) > 0 ? $this->token->replace($settings['icon']['iconUrl'], $token_context) : '';
-        $settings['icon']['shadowUrl'] = !empty($settings['icon']['shadowUrl']) > 0 ? $this->token->replace($settings['icon']['shadowUrl'], $token_context) : '';
+      $icon_type = isset($settings['icon']['iconType']) ? $settings['icon']['iconType'] : 'marker';
+
+      // Eventually set the custom Marker icon (DivIcon, Icon Url or
+      // Circle Marker).
+      if ($feature['type'] === 'point' && isset($settings['icon'])) {
+
+        // Set Feature Icon properties.
         $feature['icon'] = $settings['icon'];
+
+        // Transforms Icon Options that support Replacement Patterns/Tokens.
+        if (!empty($settings["icon"]["iconSize"]["x"])) {
+          $feature['icon']["iconSize"]["x"] = $this->token->replace($settings["icon"]["iconSize"]["x"], $tokens);
+        }
+        if (!empty($settings["icon"]["iconSize"]["y"])) {
+          $feature['icon']["iconSize"]["y"] = $this->token->replace($settings["icon"]["iconSize"]["y"], $tokens);
+        }
+        if (!empty($settings["icon"]["shadowSize"]["x"])) {
+          $feature['icon']["shadowSize"]["x"] = $this->token->replace($settings["icon"]["shadowSize"]["x"], $tokens);
+        }
+        if (!empty($settings["icon"]["shadowSize"]["y"])) {
+          $feature['icon']["shadowSize"]["y"] = $this->token->replace($settings["icon"]["shadowSize"]["y"], $tokens);
+        }
+
+        switch ($icon_type) {
+          case 'html':
+            $feature['icon']['html'] = $this->token->replace($settings['icon']['html'], $tokens);
+            $feature['icon']['html_class'] = isset($settings['icon']['html_class']) ? $settings['icon']['html_class'] : '';
+            break;
+
+          case 'circle_marker':
+            $feature['icon']['options'] = $this->token->replace($settings['icon']['circle_marker_options'], $tokens);
+            break;
+
+          default:
+            if (!empty($settings['icon']['iconUrl'])) {
+              $feature['icon']['iconUrl'] = str_replace(["\n", "\r"], "", $this->token->replace($settings['icon']['iconUrl'], $tokens));
+              if (!empty($feature['icon']['iconUrl'])) {
+                // Generate Absolute iconUrl , if not external.
+                $feature['icon']['iconUrl'] = $this->leafletService->pathToAbsolute($feature['icon']['iconUrl']);
+                // Set the Feature IconSize to the IconUrl Image sizes (if empty).
+              }
+            }
+            if (!empty($settings['icon']['shadowUrl'])) {
+              $feature['icon']['shadowUrl'] = str_replace(["\n", "\r"], "", $this->token->replace($settings['icon']['shadowUrl'], $tokens));
+              if (!empty($feature['icon']['shadowUrl'])) {
+                // Generate Absolute shadowUrl, if not external.
+                $feature['icon']['shadowUrl'] = $this->leafletService->pathToAbsolute($feature['icon']['shadowUrl']);
+              }
+            }
+            // Set the Feature IconSize and ShadowSize to the IconUrl or
+            // ShadowUrl Image sizes (if empty or invalid).
+            $this->leafletService-> setFeatureIconSizesIfEmptyOrInvalid($feature);
+            break;
+        }
       }
+
+      // Associate dynamic path properties (token based) to the feature,
+      // in case of not point.
+      if ($feature['type'] !== 'point') {
+        $feature['path'] = str_replace(["\n", "\r"], "", $this->token->replace($settings['path'], $tokens));
+      }
+
+      // Associate dynamic className property (token based) to icon.
+      $feature['className'] = !empty($settings['className']) ? str_replace(["\n", "\r"], "", $this->token->replace($settings['className'], $tokens)) : '';
+
+
+      // Allow modules to adjust the marker.
+      $this->moduleHandler->alter('leaflet_formatter_feature', $feature, $item, $entity);
 
       $features[] = $feature;
     }
+
+    // Order the data features based on the 'weight' element.
+    uasort($features, ['Drupal\Component\Utility\SortArray', 'sortByWeightElement']);
 
     $js_settings = [
       'map' => $map,
@@ -382,16 +439,18 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
     // Allow other modules to add/alter the map js settings.
     $this->moduleHandler->alter('leaflet_default_map_formatter', $js_settings, $items);
 
+    $map_height = !empty($settings['height']) ? $settings['height'] . $settings['height_unit'] : '';
+
     if (!empty($settings['multiple_map'])) {
       foreach ($js_settings['features'] as $k => $feature) {
         $map = $js_settings['map'];
         $map['id'] = $map['id'] . "-{$k}";
-        $results[] = $this->leafletService->leafletRenderMap($map, [$feature], $settings['height'] . 'px');
+        $results[] = $this->leafletService->leafletRenderMap($map, [$feature], $map_height);
       }
     }
     // Render the map, if we do have data or the hide option is unchecked.
     elseif (!empty($js_settings['features']) || empty($settings['hide_empty_map'])) {
-      $results[] = $this->leafletService->leafletRenderMap($js_settings['map'], $js_settings['features'], $settings['height'] . 'px');
+      $results[] = $this->leafletService->leafletRenderMap($js_settings['map'], $js_settings['features'], $map_height);
     }
 
     return $results;

@@ -21,32 +21,33 @@ class UserProtection extends Plugin {
   /**
    * The human-readable name of the protection.
    *
-   * @ingroup plugin_translatable
-   *
    * @var \Drupal\Core\Annotation\Translation
+   *
+   * @ingroup plugin_translatable
    */
   public $label;
 
   /**
    * A brief description of the protection.
    *
-   * @ingroup plugin_translatable
+   * @var \Drupal\Core\Annotation\Translation
    *
-   * @var \Drupal\Core\Annotation\Translation (optional)
+   * @ingroup plugin_translatable
    */
   public $description = '';
 
   /**
    * A default weight used for presentation in the user interface only.
    *
-   * @var int (optional)
+   * @var int
    */
   public $weight = 0;
 
   /**
    * Whether this protection is enabled or disabled by default.
    *
-   * @var bool (optional)
+   * @var bool
    */
   public $status = FALSE;
+
 }

@@ -3,12 +3,12 @@
 namespace Drupal\userprotect;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Provides dynamic permissions of the filter module.
+ * Provides dynamic permissions for bypassing user protect rules.
  */
 class UserProtectPermissions implements ContainerInjectionInterface {
 
@@ -17,25 +17,25 @@ class UserProtectPermissions implements ContainerInjectionInterface {
   /**
    * The entity manager.
    *
-   * @var \Drupal\Core\Entity\EntityManagerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityManager;
+  protected $entityTypeManager;
 
   /**
    * Constructs a new UserProtectPermissions instance.
    *
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
-   *   The entity manager.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    */
-  public function __construct(EntityManagerInterface $entity_manager) {
-    $this->entityManager = $entity_manager;
+  public function __construct(EntityTypeManagerInterface $entity_type_manager) {
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static($container->get('entity.manager'));
+    return new static($container->get('entity_type.manager'));
   }
 
   /**
@@ -48,7 +48,7 @@ class UserProtectPermissions implements ContainerInjectionInterface {
     $permissions = [];
     // For each protection rule, create a permission to bypass the rule.
     /** @var \Drupal\userprotect\Entity\ProtectionRuleInterface[] $rules */
-    $rules = $this->entityManager->getStorage('userprotect_rule')->loadMultiple();
+    $rules = $this->entityTypeManager->getStorage('userprotect_rule')->loadMultiple();
     uasort($rules, 'Drupal\Core\Config\Entity\ConfigEntityBase::sort');
     foreach ($rules as $rule) {
       $vars = [

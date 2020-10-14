@@ -21,7 +21,6 @@ class FieldInstanceSettings extends ProcessPluginBase {
     $widget_type = $widget_settings['type'];
 
     $field_data = unserialize($field_definition['data']);
-    $field_settings = $field_data['settings'];
 
     // Get taxonomy term reference handler settings from allowed values.
     if ($row->getSourceProperty('type') == 'taxonomy_term_reference') {
@@ -38,6 +37,7 @@ class FieldInstanceSettings extends ProcessPluginBase {
 
     // Get entityreference handler settings from source field configuration.
     if ($row->getSourceProperty('type') == "entityreference") {
+      $field_settings = $field_data['settings'];
       $instance_settings['handler'] = 'default:' . $field_settings['target_type'];
       // Transform the sort settings to D8 structure.
       $sort = [
@@ -63,6 +63,16 @@ class FieldInstanceSettings extends ProcessPluginBase {
       }
       $field_settings['handler_settings']['sort'] = $sort;
       $instance_settings['handler_settings'] = $field_settings['handler_settings'];
+    }
+
+    // Get the labels for the list_boolean type.
+    if ($row->getSourceProperty('type') === 'list_boolean') {
+      if (isset($field_data['settings']['allowed_values'][1])) {
+        $instance_settings['on_label'] = $field_data['settings']['allowed_values'][1];
+      }
+      if (isset($field_data['settings']['allowed_values'][0])) {
+        $instance_settings['off_label'] = $field_data['settings']['allowed_values'][0];
+      }
     }
 
     switch ($widget_type) {

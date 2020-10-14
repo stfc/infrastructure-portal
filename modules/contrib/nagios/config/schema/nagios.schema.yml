@@ -88,6 +88,9 @@ nagios.settings:
             cron:
               type: boolean
               label: 'Check whether cron has been running regularly'
+            maintenance:
+              type: boolean
+              label: 'Check if maintenance mode is not active (site is online).'
             session_anon:
               type: boolean
               label: 'Check the number of anonymous sessions for nagios performance data'

@@ -7,7 +7,7 @@ nagios.settings:
     _permission: 'administer site configuration'
 
 nagios.ignored_modules:
-  path: '/admin/config/system/nagios/ignoredmodules'
+  path: '/admin/config/system/nagios/ignored_modules'
   defaults:
     _form: '\Drupal\nagios\Form\IgnoredModulesForm'
     _title: 'Ignored modules'

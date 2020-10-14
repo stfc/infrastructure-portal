@@ -270,7 +270,7 @@ ul.menu.menu--account.nav.navbar-nav.navbar-right>li:not(.dropdown){
     place-items: center;
     min-height:fit-content;
 }
-#edit-submit-search{
+#edit-submit-search,  #edit-submit-search--2{
  margin-top:22px;
 }
 /*USER MENU*/

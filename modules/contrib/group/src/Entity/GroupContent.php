@@ -2,12 +2,14 @@
 
 namespace Drupal\group\Entity;
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\user\EntityOwnerTrait;
 use Drupal\user\UserInterface;
 
 /**
@@ -27,6 +29,7 @@ use Drupal\user\UserInterface;
  *   bundle_label = @Translation("Group content type"),
  *   handlers = {
  *     "storage" = "Drupal\group\Entity\Storage\GroupContentStorage",
+ *     "storage_schema" = "Drupal\group\Entity\Storage\GroupContentStorageSchema",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "views_data" = "Drupal\group\Entity\Views\GroupContentViewsData",
  *     "list_builder" = "Drupal\group\Entity\Controller\GroupContentListBuilder",
@@ -48,6 +51,7 @@ use Drupal\user\UserInterface;
  *   entity_keys = {
  *     "id" = "id",
  *     "uuid" = "uuid",
+ *     "owner" = "uid",
  *     "langcode" = "langcode",
  *     "bundle" = "type",
  *     "label" = "label"
@@ -73,6 +77,7 @@ use Drupal\user\UserInterface;
 class GroupContent extends ContentEntityBase implements GroupContentInterface {
 
   use EntityChangedTrait;
+  use EntityOwnerTrait;
 
   /**
    * {@inheritdoc}
@@ -157,36 +162,6 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
   /**
    * {@inheritdoc}
    */
-  public function getOwner() {
-    return $this->get('uid')->entity;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getOwnerId() {
-    return $this->get('uid')->target_id;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwnerId($uid) {
-    $this->set('uid', $uid);
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwner(UserInterface $account) {
-    $this->set('uid', $account->id());
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function preSave(EntityStorageInterface $storage) {
     parent::preSave($storage);
 
@@ -262,8 +237,42 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
   /**
    * {@inheritdoc}
    */
+  public function getListCacheTagsToInvalidate() {
+    $tags = parent::getListCacheTagsToInvalidate();
+
+    $group_id = $this->get('gid')->target_id;
+    $entity_id = $this->get('entity_id')->target_id;
+    $plugin_id = $this->getGroupContentType()->getContentPluginId();
+
+    // A specific group gets any content, regardless of plugin used.
+    // E.g.: A group's list of entities can be flushed with this.
+    $tags[] = "group_content_list:group:$group_id";
+
+    // A specific entity gets added to any group, regardless of plugin used.
+    // E.g.: An entity's list of groups can be flushed with this.
+    $tags[] = "group_content_list:entity:$entity_id";
+
+    // Any entity gets added to any group using a specific plugin.
+    // E.g.: A list of all memberships anywhere can be flushed with this.
+    $tags[] = "group_content_list:plugin:$plugin_id";
+
+    // A specific group gets any content using a specific plugin.
+    // E.g.: A group's list of members can be flushed with this.
+    $tags[] = "group_content_list:plugin:$plugin_id:group:$group_id";
+
+    // A specific entity gets added to any group using a specific plugin.
+    // E.g.: A user's list of memberships can be flushed with this.
+    $tags[] = "group_content_list:plugin:$plugin_id:entity:$entity_id";
+
+    return $tags;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields = parent::baseFieldDefinitions($entity_type);
+    $fields += static::ownerBaseFieldDefinitions($entity_type);
 
     $fields['gid'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Parent group'))
@@ -301,13 +310,9 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
         'weight' => -5,
       ]);
 
-    $fields['uid'] = BaseFieldDefinition::create('entity_reference')
+    $fields['uid']
       ->setLabel(t('Group content creator'))
       ->setDescription(t('The username of the group content creator.'))
-      ->setSetting('target_type', 'user')
-      ->setSetting('handler', 'default')
-      ->setDefaultValueCallback('Drupal\group\Entity\GroupContent::getCurrentUserId')
-      ->setTranslatable(TRUE)
       ->setDisplayConfigurable('view', TRUE)
       ->setDisplayConfigurable('form', TRUE);
 
@@ -334,18 +339,6 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
     }
 
     return $fields;
-  }
-
-  /**
-   * Default value callback for 'uid' base field definition.
-   *
-   * @see ::baseFieldDefinitions()
-   *
-   * @return array
-   *   An array of default values.
-   */
-  public static function getCurrentUserId() {
-    return [\Drupal::currentUser()->id()];
   }
 
   /**

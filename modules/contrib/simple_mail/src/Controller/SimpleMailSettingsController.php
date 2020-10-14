@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\simple_mail\Controller\SimpleMailSettingsController.
- */
-
 namespace Drupal\simple_mail\Controller;
 
 use Drupal\Core\Form\ConfigFormBase;
