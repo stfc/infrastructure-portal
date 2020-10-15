@@ -28,12 +28,7 @@ class GroupContentAccessControlHandler extends EntityAccessControlHandler {
   protected function checkCreateAccess(AccountInterface $account, array $context, $entity_bundle = NULL) {
     /** @var \Drupal\group\Entity\GroupContentTypeInterface $group_content_type */
     $group_content_type = GroupContentType::load($entity_bundle);
-    $content_type_plugin = $group_content_type->getContentPlugin();
-
-    if (!empty($context['create_mode']) && $content_type_plugin->definesEntityAccess()) {
-      return $content_type_plugin->createEntityAccess($context['group'], $account);
-    }
-    return $content_type_plugin->createAccess($context['group'], $account);
+    return $group_content_type->getContentPlugin()->createAccess($context['group'], $account);
   }
 
 }

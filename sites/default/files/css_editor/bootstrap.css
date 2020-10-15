@@ -254,7 +254,7 @@ header#navbar.navbar-default {
  border-bottom:3px solid grey;
  margin-bottom:10px !important;
 }
-ul.menu.menu--account.nav.navbar-nav.navbar-right>li:not(.dropdown){
+ul.menu.menu--account.nav.navbar-nav.navbar-right>li:not(.dropdown):not(.first){
   flex:1;
   max-width:50%;
   //min-width:320px;
@@ -274,7 +274,7 @@ ul.menu.menu--account.nav.navbar-nav.navbar-right>li:not(.dropdown){
  margin-top:22px;
 }
 /*USER MENU*/
-.user-logged-in .menu.menu--account a[href="/user/login"],.user-logged-in ul.menu.menu--account.nav.navbar-nav.navbar-right>li:not(.dropdown){
+.user-logged-in .menu.menu--account a[href="/user/login"],.user-logged-in ul.menu.menu--account.nav.navbar-nav.navbar-right>li:not(.dropdown), .menu.menu--account a[href="/about"]{
   display:none;
 }
 .label{

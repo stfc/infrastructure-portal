@@ -527,9 +527,9 @@ class LayoutBuilderEntityViewDisplay extends BaseEntityViewDisplay implements La
       // Builder component. It follows the structure prescribed by the
       // documentation of hook_quickedit_render_field().
       if (count($parts) === 6 && $parts[0] === 'layout_builder') {
-        list(, $delta, $component_uuid, $entity_id) = QuickEditIntegration::deconstructViewModeId($original_mode);
+        list($view_mode, $delta, $component_uuid, $entity_id) = QuickEditIntegration::deconstructViewModeId($original_mode);
         $entity = $this->entityTypeManager()->getStorage($this->getTargetEntityTypeId())->load($entity_id);
-        $sections = $this->getEntitySections($entity);
+        $sections = $this->getEntitySections($entity, $view_mode);
         if (isset($sections[$delta])) {
           $component = $sections[$delta]->getComponent($component_uuid);
           $plugin = $component->getPlugin();
