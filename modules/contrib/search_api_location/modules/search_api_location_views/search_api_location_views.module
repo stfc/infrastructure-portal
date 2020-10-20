@@ -26,7 +26,7 @@ function search_api_location_views_views_data_alter(&$data) {
         $table[$field_alias]['filter']['help'] = $field->getDescription();
         $table[$field_alias]['argument']['id'] = 'search_api_location_point';
 
-        // We currently have now way of knowing the alias of the distance pseudo
+        // We currently have no way of knowing the alias of the distance pseudo
         // field (e.g. Solr backend doesn't add any info when defining the
         // field).
         // So for now we just appending '__distance' to the field_id, but this
@@ -34,8 +34,9 @@ function search_api_location_views_views_data_alter(&$data) {
         /* @see \Drupal\search_api_solr\Plugin\search_api\backend\SearchApiSolrBackend::getBackendDefinedFields */
         $distance_field_alias = _search_api_location_views_get_field_alias($field_id . '__distance', $table);
 
-        // Set separate sort plugin for the distance psuedo field.
+        // Set separate sort and argument plugin for the distance psuedo field.
         $table[$distance_field_alias]['sort']['id'] = 'search_api_location_distance';
+        $table[$distance_field_alias]['argument']['id'] = 'search_api_location_radius';
 
         // Remove filtering on the pseudo distance field, as the location field
         // does this.

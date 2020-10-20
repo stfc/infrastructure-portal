@@ -1,0 +1,307 @@
+diff --git a/src/Plugin/Field/FieldType/AddressItem.php b/src/Plugin/Field/FieldType/AddressItem.php
+index ee9c5e4..b05a5bd 100644
+--- a/src/Plugin/Field/FieldType/AddressItem.php
++++ b/src/Plugin/Field/FieldType/AddressItem.php
+@@ -130,6 +130,31 @@ class AddressItem extends FieldItemBase implements AddressInterface {
+     $properties['family_name'] = DataDefinition::create('string')
+       ->setLabel(t('The family name.'));
+ 
++    // Computed full name properties.
++    $properties['country_name'] = DataDefinition::create('string')
++      ->setLabel(t('The full name of the country.'))
++      ->setComputed(TRUE)
++      ->setClass('\Drupal\address\TypedData\CountryName')
++      ->setSetting('property source', 'country_code');
++
++    $properties['administrative_area_name'] = DataDefinition::create('string')
++      ->setLabel(t('The full name of the top-level administrative subdivision of the country.'))
++      ->setComputed(TRUE)
++      ->setClass('\Drupal\address\TypedData\SubdivisionName')
++      ->setSetting('property source', 'administrative_area');
++
++    $properties['locality_name'] = DataDefinition::create('string')
++      ->setLabel(t('The full name of the locality (i.e. city).'))
++      ->setComputed(TRUE)
++      ->setClass('\Drupal\address\TypedData\SubdivisionName')
++      ->setSetting('property source', 'locality');
++
++    $properties['dependent_locality_name'] = DataDefinition::create('string')
++      ->setLabel(t('The full name of the dependent locality (i.e. neighbourhood).'))
++      ->setComputed(TRUE)
++      ->setClass('\Drupal\address\TypedData\SubdivisionName')
++      ->setSetting('property source', 'dependent_locality');
++
+     return $properties;
+   }
+ 
+diff --git a/src/Plugin/Field/FieldType/CountryItem.php b/src/Plugin/Field/FieldType/CountryItem.php
+index a3ba45b..230e126 100644
+--- a/src/Plugin/Field/FieldType/CountryItem.php
++++ b/src/Plugin/Field/FieldType/CountryItem.php
+@@ -47,6 +47,14 @@ class CountryItem extends FieldItemBase {
+   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
+     $properties['value'] = DataDefinition::create('string')
+       ->setLabel(t('Country'));
++
++    // Computed full name property.
++    $properties['country_name'] = DataDefinition::create('string')
++      ->setLabel(t('Country Full Name'))
++      ->setComputed(TRUE)
++      ->setClass('\Drupal\address\TypedData\CountryName')
++      ->setSetting('property source', 'value');
++
+     return $properties;
+   }
+ 
+diff --git a/src/TypedData/CountryName.php b/src/TypedData/CountryName.php
+new file mode 100644
+index 0000000..5d3da71
+--- /dev/null
++++ b/src/TypedData/CountryName.php
+@@ -0,0 +1,99 @@
++<?php
++
++namespace Drupal\address\TypedData;
++
++use Drupal\Core\TypedData\DataDefinitionInterface;
++use Drupal\Core\TypedData\TypedDataInterface;
++use Drupal\Core\TypedData\TypedData;
++use Drupal\Core\DependencyInjection\DependencySerializationTrait;
++use Symfony\Component\DependencyInjection\ContainerInterface;
++
++/**
++ * A computed property for the Country name.
++ *
++ * Required settings (below the definition's 'settings' key) are:
++ *  - property source: The property source of the parent to be processed text.
++ *    Examples: country_code.
++ */
++class CountryName extends TypedData {
++
++  use DependencySerializationTrait;
++
++  /**
++   * Cached processed value.
++   *
++   * @var string|null
++   */
++  protected $value = NULL;
++
++  /**
++   * The country repository.
++   *
++   * @var \CommerceGuys\Addressing\Country\CountryRepositoryInterface
++   */
++  protected $countryRepository;
++
++  /**
++   * {@inheritdoc}
++   */
++  public function __construct(DataDefinitionInterface $definition, $name = NULL, TypedDataInterface $parent = NULL) {
++    parent::__construct($definition, $name, $parent);
++
++    if ($definition->getSetting('property source') === NULL) {
++      throw new \InvalidArgumentException("The definition's 'property source' key has to specify the code of the address property to be processed.");
++    }
++
++    // Set the country respository.
++    // This uses the service since TypedData does not use container injection.
++    // See https://www.drupal.org/node/2053415.
++    $this->countryRepository = \Drupal::service('address.country_repository');
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function getValue() {
++    if (isset($this->value)) {
++      return $this->value;
++    }
++
++    // The address property source.
++    $property_name = $this->definition->getSetting('property source');
++
++    // The item is our parent.
++    $item = $this->getParent();
++
++    // Resolve the address property full name.
++    $this->value = $this->resolveAddressName($property_name, $item);
++
++    return $this->value;
++  }
++
++  /**
++   * Resolve an address property full name.
++   *
++   * @param string $property_name
++   *   The name of the address property.
++   * @param \Drupal\Core\TypedData\TypedDataInterface $parent
++   *   The parent object of the address property.
++   *
++   * @return string
++   *   The full name of the address property.
++   */
++  protected function resolveAddressName($property_name, TypedDataInterface $parent) {
++    if (!isset($parent) || !isset($parent->{$property_name})) {
++      return '';
++    }
++
++    $property_value = $parent->{$property_name};
++
++    // Avoid running on empty strings.
++    if (!isset($property_value) || $property_value === '') {
++      return '';
++    }
++
++    $countries = $this->countryRepository->getList();
++    return isset($countries[$property_value]) ? $countries[$property_value] : '';
++  }
++
++}
+diff --git a/src/TypedData/SubdivisionName.php b/src/TypedData/SubdivisionName.php
+new file mode 100644
+index 0000000..e15a3f2
+--- /dev/null
++++ b/src/TypedData/SubdivisionName.php
+@@ -0,0 +1,141 @@
++<?php
++
++namespace Drupal\address\TypedData;
++
++use Drupal\Core\TypedData\DataDefinitionInterface;
++use Drupal\Core\TypedData\TypedDataInterface;
++use Drupal\Core\TypedData\TypedData;
++use Drupal\Core\DependencyInjection\DependencySerializationTrait;
++use Symfony\Component\DependencyInjection\ContainerInterface;
++use CommerceGuys\Addressing\Locale;
++
++/**
++ * A computed property for the Subdivision.
++ *
++ * Required settings (below the definition's 'settings' key) are:
++ *  - property source: The property source of the parent to be processed text.
++ *    Examples: administrative_area, locality, dependent_locality.
++ */
++class SubdivisionName extends TypedData {
++
++  use DependencySerializationTrait;
++
++  /**
++   * Cached processed value.
++   *
++   * @var string|null
++   */
++  protected $value = NULL;
++
++  /**
++   * The subdivision repository.
++   *
++   * @var \CommerceGuys\Addressing\Subdivision\SubdivisionRepositoryInterface
++   */
++  protected $subdivisionRepository;
++
++  /**
++   * {@inheritdoc}
++   */
++  public function __construct(DataDefinitionInterface $definition, $name = NULL, TypedDataInterface $parent = NULL) {
++    parent::__construct($definition, $name, $parent);
++
++    if ($definition->getSetting('property source') === NULL) {
++      throw new \InvalidArgumentException("The definition's 'property source' key has to specify the code of the address property to be processed.");
++    }
++
++    // Set the subdivision respository.
++    // This uses the service since TypedData does not use container injection.
++    // See https://www.drupal.org/node/2053415.
++    $this->subdivisionRepository = \Drupal::service('address.subdivision_repository');
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function getValue() {
++    if (isset($this->value)) {
++      return $this->value;
++    }
++
++    // The address property source.
++    $property_name = $this->definition->getSetting('property source');
++
++    // The item is our parent.
++    $item = $this->getParent();
++
++    // Resolve the address property full name.
++    $this->value = $this->resolveAddressName($property_name, $item);
++
++    return $this->value;
++  }
++
++  /**
++   * Resolve an address property full name.
++   *
++   * @param string $property_name
++   *   The name of the address property.
++   * @param \Drupal\Core\TypedData\TypedDataInterface $parent
++   *   The parent object of the address property.
++   *
++   * @return string
++   *   The full name of the address property.
++   */
++  protected function resolveAddressName($property_name, TypedDataInterface $parent) {
++    if (!isset($parent) || !isset($parent->{$property_name})) {
++      return '';
++    }
++
++    $property_value = $parent->{$property_name};
++
++    // Avoid running on empty strings.
++    if (!isset($property_value) || $property_value === '') {
++      return '';
++    }
++
++    $address_parent_name = [];
++    switch ($property_name) {
++      case 'administrative_area':
++        $address_parent_names[] = 'country_code';
++        break;
++
++      case 'locality':
++        $address_parent_names[] = 'country_code';
++        $address_parent_names[] = 'administrative_area';
++        break;
++
++      case 'dependent_locality':
++        $address_parent_names[] = 'country_code';
++        $address_parent_names[] = 'administrative_area';
++        $address_parent_names[] = 'locality';
++        break;
++    }
++
++    $return = NULL;
++    if (!empty($address_parent_names)) {
++      $address_parent_values = [];
++      foreach ($address_parent_names as $address_parent_name) {
++        if (isset($parent->{$address_parent_name})) {
++          $address_parent_values[] = $parent->{$address_parent_name};
++        }
++        else {
++          // Exit if there are missing address parents.
++          return '';
++        }
++      }
++
++      /** @var \CommerceGuys\Addressing\Subdivision\Subdivision $subdivision */
++      $subdivision = $this->subdivisionRepository->get($property_value, $address_parent_values);
++      if ($subdivision) {
++        $use_local_name = FALSE;
++        if (method_exists($parent, 'getLocale')) {
++          $use_local_name = Locale::match($parent->getLocale(), $subdivision->getLocale());
++        }
++        $return = $use_local_name ? $subdivision->getLocalName() : $subdivision->getName();
++      }
++    }
++
++    return $return;
++  }
++
++}

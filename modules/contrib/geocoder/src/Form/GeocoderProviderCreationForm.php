@@ -132,7 +132,7 @@ class GeocoderProviderCreationForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state): void {
     if ($form_state->getValue('geocoder_provider')) {
       $form_state->setRedirect(
-        'geocoder.geocoder_provider.admin_add',
+        'entity.geocoder_provider.add_form',
         ['geocoder_provider_id' => $form_state->getValue('geocoder_provider')]
       );
     }

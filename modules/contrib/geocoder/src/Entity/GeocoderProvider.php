@@ -4,8 +4,8 @@ declare(strict_types = 1);
 
 namespace Drupal\geocoder\Entity;
 
-use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\LazyPluginCollection;
+use Drupal\Component\Plugin\PluginHelper;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
 use Drupal\geocoder\GeocoderProviderInterface;
@@ -39,9 +39,9 @@ use Drupal\geocoder\ProviderInterface;
  *   config_prefix = "geocoder_provider",
  *   admin_permission = "administer site configuration",
  *   links = {
- *     "collection" = "/admin/config/geocoder-provider",
- *     "edit-form" = "/admin/config/geocoder-provider/{geocoder_provider}",
- *     "delete-form" = "/admin/config/geocoder-provider/{geocoder_provider}/delete"
+ *     "collection" = "/admin/config/system/geocoder/geocoder-provider",
+ *     "edit-form" = "/admin/config/system/geocoder/geocoder-provider/manage/{geocoder_provider}",
+ *     "delete-form" = "/admin/config/system/geocoder/geocoder-provider/manage/{geocoder_provider}/delete"
  *   },
  *   entity_keys = {
  *     "id" = "id",
@@ -141,7 +141,7 @@ class GeocoderProvider extends ConfigEntityBase implements GeocoderProviderInter
    * {@inheritdoc}
    */
   public function isConfigurable(): bool {
-    return $this->getPlugin() instanceof ConfigurablePluginInterface;
+    return PluginHelper::isConfigurable($this->getPlugin());
   }
 
 }

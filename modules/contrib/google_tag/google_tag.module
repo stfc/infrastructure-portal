@@ -172,6 +172,7 @@ function _google_tag_is_writable($uri) {
  *   Whether the directory is searchable.
  */
 function _google_tag_is_executable($uri) {
+  return true;
   if ($realpath = \Drupal::service('file_system')->realpath($uri)) {
     // The URI is a local stream wrapper or a local path.
     // Use the local path since PHP only checks ACLs on its local file wrapper.

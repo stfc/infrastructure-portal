@@ -92,7 +92,7 @@ class GeocodeTest extends KernelTestBase {
    */
   public function testWithUnexpectedInput() {
     $input = ['animal' => 'llama'];
-    $this->setExpectedException(\InvalidArgumentException::class);
+    $this->expectException(\InvalidArgumentException::class);
     $this->sut->getParsedInput($input);
   }
 
@@ -103,7 +103,7 @@ class GeocodeTest extends KernelTestBase {
    */
   public function testWithNonArrayInput() {
     $input = ['llama'];
-    $this->setExpectedException(\InvalidArgumentException::class);
+    $this->expectException(\InvalidArgumentException::class);
     $this->sut->getParsedInput($input);
   }
 

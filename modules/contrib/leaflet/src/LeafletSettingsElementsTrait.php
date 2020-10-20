@@ -3,7 +3,6 @@
 namespace Drupal\leaflet;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\field\FieldConfigInterface;
 use Drupal\views\Plugin\views\ViewsPluginInterface;
 use Drupal\Core\Url;
 use Drupal\Component\Serialization\Json;
@@ -54,22 +53,22 @@ trait LeafletSettingsElementsTrait {
    */
   public static function getDefaultSettings() {
     return [
-      'multiple_map' => 0,
+      'multiple_map' => FALSE,
       'leaflet_map' => 'OSM Mapnik',
       'height' => 400,
       'height_unit' => 'px',
-      'hide_empty_map' => 0,
-      'disable_wheel' => 0,
-      'fullscreen_control' => 1,
-      'gesture_handling' => 0,
+      'hide_empty_map' => FALSE,
+      'disable_wheel' => FALSE,
+      'fullscreen_control' => TRUE,
+      'gesture_handling' => FALSE,
       'reset_map' => [
-        'control' => 0,
+        'control' => FALSE,
         'position' => 'topright',
       ],
       'popup' => FALSE,
       'popup_content' => '',
       'map_position' => [
-        'force' => 0,
+        'force' => FALSE,
         'center' => [
           'lat' => 0,
           'lon' => 0,
@@ -79,12 +78,14 @@ trait LeafletSettingsElementsTrait {
         'maxZoom' => 18,
         'zoomFiner' => 0,
       ],
+      'weight' => NULL,
       'icon' => [
         'iconType' => 'marker',
         'iconUrl' => '',
+        'shadowUrl' => '',
+        'className' => '',
         'iconSize' => ['x' => NULL, 'y' => NULL],
         'iconAnchor' => ['x' => NULL, 'y' => NULL],
-        'shadowUrl' => '',
         'shadowSize' => ['x' => NULL, 'y' => NULL],
         'shadowAnchor' => ['x' => NULL, 'y' => NULL],
         'popupAnchor' => ['x' => NULL, 'y' => NULL],
@@ -93,12 +94,12 @@ trait LeafletSettingsElementsTrait {
         'circle_marker_options' => '{"radius": 100, "color": "red", "fillColor": "#f03", "fillOpacity": 0.5}',
       ],
       'leaflet_markercluster' => [
-        'control' => 0,
+        'control' => FALSE,
         'options' => '{"spiderfyOnMaxZoom":true,"showCoverageOnHover":true,"removeOutsideVisibleBounds": false}',
       ],
       'path' => '{"color":"#3388ff","opacity":"1.0","stroke":true,"weight":3,"fill":"depends","fillColor":"*","fillOpacity":"0.2"}',
       'geocoder' => [
-        'control' => 0,
+        'control' => FALSE,
         'settings' => [
           'position' => 'topright',
           'input_size' => 25,
@@ -106,7 +107,7 @@ trait LeafletSettingsElementsTrait {
           'min_terms' => 4,
           'delay' => 800,
           'zoom' => 16,
-          'popup' => 0,
+          'popup' => FALSE,
           'options' => '',
         ],
       ],
@@ -326,6 +327,26 @@ trait LeafletSettingsElementsTrait {
   }
 
   /**
+   * Generate the weight Form Element.
+   *
+   * @param string $weight
+   *   The weight string definition.
+   *
+   * @return array
+   *   The Leaflet weight Form Element.
+   */
+  protected function generateWeightElement($weight) {
+    $default_settings = $this::getDefaultSettings();
+    return [
+      '#title' => $this->t('weight / zIndex Offset'),
+      '#type' => 'textfield',
+      '#size' => 30,
+      '#description' => $this->t('This option supports <b>Replacement Patterns</b> and should end up into an Integer (positive or negative value).<br>This will apply to each Leaflet Feature/Marker result, and might be used to dynamically set its position/visibility on top (or below) of each others.'),
+      '#default_value' => isset($weight) ? $weight : $default_settings['weight'],
+    ];
+  }
+
+  /**
    * Generate the Leaflet Icon Form Element.
    *
    * @param array $icon_options
@@ -395,6 +416,18 @@ trait LeafletSettingsElementsTrait {
       '#type' => 'textarea',
       '#rows' => 3,
       '#default_value' => isset($icon_options['shadowUrl']) ? $icon_options['shadowUrl'] : $default_settings['icon']['shadowUrl'],
+      '#states' => [
+        'visible' => [
+          $icon_type => ['value' => 'marker'],
+        ],
+      ],
+    ];
+
+    $element['className'] = [
+      '#title' => $this->t('Icon Class Name'),
+      '#description' => $this->t('A custom class name to assign to both icon and shadow images.<br>Supports <b>Replacement Patterns</b>'),
+      '#type' => 'textfield',
+      '#default_value' => isset($icon_options['className']) ? $icon_options['className'] : $default_settings['icon']['className'],
       '#states' => [
         'visible' => [
           $icon_type => ['value' => 'marker'],
@@ -510,18 +543,20 @@ trait LeafletSettingsElementsTrait {
     $element['iconSize'] = [
       '#title' => $this->t('Icon Size'),
       '#type' => 'fieldset',
-      '#description' => $this->t("Size of the icon image in pixels (if empty the natural icon image size will be used).<br>Note: Both the values shouldn't be null to be valid."),
+      '#description' => $this->t("Size of the icon image in pixels (if empty the natural icon image size will be used).<br>Both support <b>Replacement Patterns</b> and should end up into an Integer (positive value)"),
     ];
 
     $element['iconSize']['x'] = [
       '#title' => $this->t('Width'),
-      '#type' => 'number',
+      '#type' => 'textfield',
+      '#size' => 30,
       '#default_value' => isset($icon_options['iconSize']['x']) ? $icon_options['iconSize']['x'] : NULL,
     ];
 
     $element['iconSize']['y'] = [
       '#title' => $this->t('Height'),
-      '#type' => 'number',
+      '#type' => 'textfield',
+      '#size' => 30,
       '#default_value' => isset($icon_options['iconSize']['y']) ? $icon_options['iconSize']['y'] : NULL,
     ];
 
@@ -535,30 +570,36 @@ trait LeafletSettingsElementsTrait {
     $element['iconAnchor']['x'] = [
       '#title' => $this->t('X'),
       '#type' => 'number',
+      '#min' => -1000,
+      '#max' => 1000,
       '#default_value' => isset($icon_options['iconAnchor']) ? $icon_options['iconAnchor']['x'] : NULL,
     ];
 
     $element['iconAnchor']['y'] = [
       '#title' => $this->t('Y'),
       '#type' => 'number',
+      '#min' => -1000,
+      '#max' => 1000,
       '#default_value' => isset($icon_options['iconAnchor']) ? $icon_options['iconAnchor']['y'] : NULL,
     ];
 
     $element['shadowSize'] = [
       '#title' => $this->t('Shadow Size'),
       '#type' => 'fieldset',
-      '#description' => $this->t("Size of the shadow image in pixels (if empty the natural shadow image size will be used). <br>Note: Both the values shouldn't be null to be valid."),
+      '#description' => $this->t("Size of the shadow image in pixels (if empty the natural shadow image size will be used). <br>Both support <b>Replacement Patterns</b> and should end up into an Integer (positive value)"),
     ];
 
     $element['shadowSize']['x'] = [
       '#title' => $this->t('Width'),
-      '#type' => 'number',
+      '#type' => 'textfield',
+      '#size' => 30,
       '#default_value' => isset($icon_options['shadowSize']['x']) ? $icon_options['shadowSize']['x'] : NULL,
     ];
 
     $element['shadowSize']['y'] = [
       '#title' => $this->t('Height'),
-      '#type' => 'number',
+      '#type' => 'textfield',
+      '#size' => 30,
       '#default_value' => isset($icon_options['shadowSize']['y']) ? $icon_options['shadowSize']['y'] : NULL,
     ];
 
@@ -571,12 +612,16 @@ trait LeafletSettingsElementsTrait {
     $element['shadowAnchor']['x'] = [
       '#title' => $this->t('X'),
       '#type' => 'number',
+      '#min' => -1000,
+      '#max' => 1000,
       '#default_value' => isset($icon_options['shadowAnchor']) ? $icon_options['shadowAnchor']['x'] : NULL,
     ];
 
     $element['shadowAnchor']['y'] = [
       '#title' => $this->t('Y'),
       '#type' => 'number',
+      '#min' => -1000,
+      '#max' => 1000,
       '#default_value' => isset($icon_options['shadowAnchor']) ? $icon_options['shadowAnchor']['y'] : NULL,
     ];
 
@@ -590,12 +635,16 @@ trait LeafletSettingsElementsTrait {
     $element['popupAnchor']['x'] = [
       '#title' => $this->t('X'),
       '#type' => 'number',
+      '#min' => -1000,
+      '#max' => 1000,
       '#default_value' => isset($icon_options['popupAnchor']) ? $icon_options['popupAnchor']['x'] : NULL,
     ];
 
     $element['popupAnchor']['y'] = [
       '#title' => $this->t('Y'),
       '#type' => 'number',
+      '#min' => -1000,
+      '#max' => 1000,
       '#default_value' => isset($icon_options['popupAnchor']) ? $icon_options['popupAnchor']['y'] : NULL,
     ];
 

@@ -5,7 +5,7 @@ package: Queues
 core_version_requirement: ^8.8 || ^9
 configure: queue_ui.overview_form
 
-# Information added by Drupal.org packaging script on 2020-04-28
-version: '8.x-2.1'
+# Information added by Drupal.org packaging script on 2020-10-02
+version: '8.x-2.2'
 project: 'queue_ui'
-datestamp: 1588090052
+datestamp: 1601619132

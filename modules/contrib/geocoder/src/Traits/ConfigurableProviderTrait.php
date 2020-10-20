@@ -219,7 +219,7 @@ trait ConfigurableProviderTrait {
    * @throws \Drupal\Core\Config\Schema\SchemaIncompleteException
    *   Thrown when the plugin doesn't have a schema defined for its configurable
    *   parameters. These are expected to be present since this plugin implements
-   *   \Drupal\Component\Plugin\ConfigurablePluginInterface.
+   *   \Drupal\Component\Plugin\ConfigurableInterface.
    */
   protected function getConfigSchemaDefinition(): array {
     $plugin_id = $this->getPluginId();

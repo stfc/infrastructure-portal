@@ -38,7 +38,7 @@
     this.set_leaflet_map(lMap);
 
     // If map is initialised (or re-initialised) then use the new instance.
-    this.container.on('leaflet.map', $.proxy(function (event, _m, lMap) {
+    this.container.on('leafletMapInit', $.proxy(function (event, _m, lMap) {
       this.set_leaflet_map(lMap);
     }, this));
 

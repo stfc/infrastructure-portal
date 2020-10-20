@@ -1,0 +1,10 @@
+style:
+  version: VERSION
+  css:
+    theme:
+      assets/css/infraportal.style.css: {}
+  js:
+    assets/js/infraportal.script.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal

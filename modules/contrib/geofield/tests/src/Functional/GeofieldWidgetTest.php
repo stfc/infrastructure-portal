@@ -132,15 +132,6 @@ class GeofieldWidgetTest extends FieldTestBase {
     ];
     $this->drupalPostForm(NULL, $edit, $this->t('Save'));
     $this->assertFieldValues($entity, 'geofield_field', ['POINT (-2.1021 42.2257)']);
-
-    // Add invalid values.
-    $random = $this->randomMachineName();
-    $edit = [
-      'name[0][value]' => 'Invalid',
-      'geofield_field[0][value]' => $random,
-    ];
-    $this->drupalPostForm(NULL, $edit, $this->t('Save'));
-    $this->assertSession->pageTextContains('"' . $random . '" is not a valid geospatial content.');
   }
 
   /**

@@ -56,14 +56,13 @@ jobs:
       - name: Mkdocs build
         run: mkdocs build -v --site-dir gh-pages
 
-      - name: Install Sami
-        run: composer sami-install
+      - name: Install Doctum
+        run: composer doctum-install
 
-      - name: Sami build
-        # We have Sami parse errors so ignore return value: https://stackoverflow.com/questions/35452147/allow-non-zero-return-codes-in-travis-ci-yml
+      - name: Doctum build
         run: |
           rm -rf gh-pages/api
-          composer api || true
+          composer api
 
       - name: Checkout CNAME file
         # It got wiped and its needed.

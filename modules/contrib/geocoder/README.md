@@ -51,10 +51,11 @@ This is a complete rewrite of the Geocoder module, based on the
  or the website back-end/administration interface;
 * Eventually enable the submodules: ```geocoder_field``` and
   ```geocoder_geofield``` / ```geocoder_address```.
-* Create and configure one or more providers in the UI at
-  `admin/config/system/geocoder-provider`.
-* From the module configuration page `admin/config/system/geocoder` it is
-  possible to setup caching options.
+* Create and configure one or more providers at Configuration > System >
+  Geocoder > Providers:
+  `admin/config/system/geocoder/geocoder-provider`.
+* Configure caching options at Configuration > System > Geocoder:
+  `admin/config/system/geocoder`.
 
 # Submodules
 The geocoder submodules are needed to set-up and implement Geocode and Reverse
