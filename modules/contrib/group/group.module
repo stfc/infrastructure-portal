@@ -321,6 +321,7 @@ function group_entity_access(EntityInterface $entity, $operation, AccountInterfa
     ->loadByEntity($entity);
 
   // If the entity does not belong to any group, we have nothing to say.
+<<<<<<< HEAD
   //
   // @todo There is a slight performance boost to be had here. If we have a
   // plugin that adds content without access and one that adds the same content
@@ -330,10 +331,13 @@ function group_entity_access(EntityInterface $entity, $operation, AccountInterfa
   // with the user.group_permissions context and slightly worse performance. We
   // can fix this by only loading those group content entities that use the
   // plugins retrieved above.
+=======
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
   if (empty($group_contents)) {
     return AccessResult::neutral()->addCacheTags($plugin_cache_tags);
   }
 
+<<<<<<< HEAD
   $access = AccessResult::neutral();
   foreach ($plugin_ids as $plugin_id) {
     // For backwards compatibility reasons, if the group content enabler plugin
@@ -349,6 +353,99 @@ function group_entity_access(EntityInterface $entity, $operation, AccountInterfa
     $access = $access->orIf($handler->entityAccess($entity, $operation, $account, TRUE));
   }
 
+=======
+  $check_published = $entity->getEntityType()->entityClassImplements(EntityPublishedInterface::class);
+
+  // Index the group content per plugin ID.
+  $plugin_content = [];
+
+  /** @var \Drupal\group\Entity\GroupContentInterface[] $group_contents */
+  foreach ($group_contents as $group_content) {
+    // @todo Shows the need for a plugin ID base field.
+    $plugin_id = $group_content->getContentPlugin()->getPluginId();
+    $plugin_content[$plugin_id][] = $group_content;
+  }
+
+  // From this point on you need group to allow you to perform the operation. It
+  // suffices for any plugin to allow access.
+  $has_access = FALSE;
+  $owner_access = FALSE;
+  foreach ($plugin_ids as $plugin_id) {
+    if (empty($plugin_content[$plugin_id])) {
+      continue;
+    }
+
+    // For backwards compatibility reasons, if the group content enabler plugin
+    // used by the group content type does not specify a permission provider, we
+    // do not check access for that group content type. In 8.2.x all group
+    // content enabler plugins will get a permission handler by default, so this
+    // check can be safely removed then.
+    if (!$plugin_manager->hasHandler($plugin_id, 'permission_provider')) {
+      continue;
+    }
+
+    $handler = $plugin_manager->getPermissionProvider($plugin_id);
+    $admin_permission = $handler->getAdminPermission();
+    $any_permission = $handler->getPermission($operation, 'entity', 'any');
+    $own_permission = $handler->getPermission($operation, 'entity', 'own');
+    if ($check_published) {
+      $any_unpublished_permission = $handler->getPermission("$operation unpublished", 'entity', 'any');
+      $own_unpublished_permission = $handler->getPermission("$operation unpublished", 'entity', 'own');
+    }
+
+    foreach ($plugin_content[$plugin_id] as $group_content) {
+      $group = $group_content->getGroup();
+
+      if ($group->hasPermission($admin_permission, $account)) {
+        $has_access = TRUE;
+        break 2;
+      }
+      elseif(!$check_published) {
+        if ($any_permission !== FALSE && $group->hasPermission($any_permission, $account)) {
+          $has_access = TRUE;
+          break 2;
+        }
+        elseif($own_permission !== FALSE && $group->hasPermission($own_permission, $account) && $entity->getOwnerId() === $account->id()) {
+          $has_access = TRUE;
+          $owner_access = TRUE;
+          break 2;
+        }
+      }
+      else {
+        if ($entity->isPublished()) {
+          if ($any_permission !== FALSE && $group->hasPermission($any_permission, $account)) {
+            $has_access = TRUE;
+            break 2;
+          }
+          elseif($own_permission !== FALSE && $group->hasPermission($own_permission, $account) && $entity->getOwnerId() === $account->id()) {
+            $has_access = TRUE;
+            $owner_access = TRUE;
+            break 2;
+          }
+        }
+        else {
+          if ($any_unpublished_permission !== FALSE && $group->hasPermission($any_unpublished_permission, $account)) {
+            $has_access = TRUE;
+            break 2;
+          }
+          elseif($own_unpublished_permission !== FALSE && $group->hasPermission($own_unpublished_permission, $account) && $entity->getOwnerId() === $account->id()) {
+            $has_access = TRUE;
+            $owner_access = TRUE;
+            break 2;
+          }
+        }
+      }
+    }
+  }
+
+  $access = $has_access ? AccessResult::allowed() : AccessResult::forbidden();
+  if ($owner_access) {
+    $access->cachePerUser();
+  }
+  if ($owner_access || $check_published) {
+    $access->addCacheableDependency($entity);
+  }
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
   return $access
     ->addCacheTags($plugin_cache_tags)
     ->addCacheContexts(['user.group_permissions']);

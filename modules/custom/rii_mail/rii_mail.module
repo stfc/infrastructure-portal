@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  * Implements hook_ENTITY_TYPE_update().
  *
@@ -140,5 +140,3 @@ function rii_mail_node_update(Drupal\node\NodeInterface $node) {
     }   
   }
 }
-
-

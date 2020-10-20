@@ -29,5 +29,14 @@ services:
     factory: cache_factory:get
     arguments: [geocoder]
 
+<<<<<<< HEAD
+=======
+  geocoder.breadcrumb:
+    class: Drupal\geocoder\GeocoderBreadcrumbBuilder
+    arguments: ['@router.request_context', '@access_manager', '@router', '@path_processor_manager', '@config.factory',  '@title_resolver', '@current_user', '@path.current', '@path.matcher']
+    tags:
+      - { name: breadcrumb_builder, priority: 100 }
+
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
   geocoder.throttle:
     class: Drupal\geocoder\GeocoderThrottle

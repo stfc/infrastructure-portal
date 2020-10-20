@@ -1,0 +1,7 @@
+name: RII Forms 
+description: Custom module (made by Adam Laverack). Provides forms placed in blocks, which can be placed on RII pages for data managers to deny, approve, or request more info about the RII submission. 
+package: Custom
+
+type: module
+core: 8.x
+

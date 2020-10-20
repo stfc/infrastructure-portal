@@ -3,6 +3,10 @@
 namespace Drupal\leaflet;
 
 use Drupal\Core\Form\FormStateInterface;
+<<<<<<< HEAD
+=======
+use Drupal\field\FieldConfigInterface;
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 use Drupal\views\Plugin\views\ViewsPluginInterface;
 use Drupal\Core\Url;
 use Drupal\Component\Serialization\Json;
@@ -57,10 +61,17 @@ trait LeafletSettingsElementsTrait {
       'leaflet_map' => 'OSM Mapnik',
       'height' => 400,
       'height_unit' => 'px',
+<<<<<<< HEAD
       'hide_empty_map' => FALSE,
       'disable_wheel' => FALSE,
       'fullscreen_control' => TRUE,
       'gesture_handling' => FALSE,
+=======
+      'hide_empty_map' => 0,
+      'disable_wheel' => 0,
+      'fullscreen_control' => 1,
+      'gesture_handling' => 0,
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
       'reset_map' => [
         'control' => FALSE,
         'position' => 'topright',
@@ -99,7 +110,11 @@ trait LeafletSettingsElementsTrait {
       ],
       'path' => '{"color":"#3388ff","opacity":"1.0","stroke":true,"weight":3,"fill":"depends","fillColor":"*","fillOpacity":"0.2"}',
       'geocoder' => [
+<<<<<<< HEAD
         'control' => FALSE,
+=======
+        'control' => 0,
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
         'settings' => [
           'position' => 'topright',
           'input_size' => 25,
@@ -107,7 +122,11 @@ trait LeafletSettingsElementsTrait {
           'min_terms' => 4,
           'delay' => 800,
           'zoom' => 16,
+<<<<<<< HEAD
           'popup' => FALSE,
+=======
+          'popup' => 0,
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
           'options' => '',
         ],
       ],
@@ -423,6 +442,7 @@ trait LeafletSettingsElementsTrait {
       ],
     ];
 
+<<<<<<< HEAD
     $element['className'] = [
       '#title' => $this->t('Icon Class Name'),
       '#description' => $this->t('A custom class name to assign to both icon and shadow images.<br>Supports <b>Replacement Patterns</b>'),
@@ -435,6 +455,8 @@ trait LeafletSettingsElementsTrait {
       ],
     ];
 
+=======
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     $element['html'] = [
       '#title' => $this->t('Html'),
       '#type' => 'textarea',

@@ -65,31 +65,51 @@ class ItemDetailForm extends FormBase {
       $rows = [
         'id' => [
           'data' => [
+<<<<<<< HEAD
             'header' => $this->t('Item ID'),
+=======
+            'header' => t('Item ID'),
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
             'data' => $queue_item->item_id,
           ],
         ],
         'queue_name' => [
           'data' => [
+<<<<<<< HEAD
             'header' => $this->t('Queue name'),
+=======
+            'header' => t('Queue name'),
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
             'data' => $queue_item->name,
           ],
         ],
         'expire' => [
           'data' => [
+<<<<<<< HEAD
             'header' => $this->t('Expire'),
+=======
+            'header' => t('Expire'),
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
             'data' => ($queue_item->expire ? date(DATE_RSS, $queue_item->expire) : $queue_item->expire),
           ]
         ],
         'created' => [
           'data' => [
+<<<<<<< HEAD
             'header' => $this->t('Created'),
+=======
+            'header' => t('Created'),
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
             'data' => date(DATE_RSS, $queue_item->created),
           ],
         ],
         'data' => [
           'data' => [
+<<<<<<< HEAD
             'header' => ['data' => $this->t('Data'), 'style' => 'vertical-align:top'],
+=======
+            'header' => ['data' => t('Data'), 'style' => 'vertical-align:top'],
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
             'data' => $data,
           ],
         ],

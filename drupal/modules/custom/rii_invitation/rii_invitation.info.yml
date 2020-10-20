@@ -1,0 +1,6 @@
+name: RII Invitation
+description: Custom module (made by Adam Laverack). For the purposes of creating accounts for survey respondents, linking their RIs to their account, and inviting them to the website. 
+package: Custom
+
+type: module
+core: 8.x

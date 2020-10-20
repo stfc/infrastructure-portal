@@ -7,9 +7,18 @@ dependencies:
   - drupal:workflows
   - drupal:datetime
 # project: 'scheduled_publish'
+<<<<<<< HEAD
 core_version_requirement: ^8.8 || ^9
 
 # Information added by Drupal.org packaging script on 2020-09-23
 version: '8.x-3.9'
 project: 'scheduled_publish'
 datestamp: 1600847068
+=======
+core_version_requirement: ^8 || ^9
+
+# Information added by Drupal.org packaging script on 2020-07-07
+version: '8.x-3.8'
+project: 'scheduled_publish'
+datestamp: 1594126018
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95

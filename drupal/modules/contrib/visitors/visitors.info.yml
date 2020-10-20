@@ -1,0 +1,11 @@
+name: Visitors
+description: "This module used for displaying a visitors info."
+package: "Visitors"
+core: "8.x"
+type: module
+configure: visitors.admin
+
+# Information added by Drupal.org packaging script on 2019-10-30
+version: '8.x-2.4'
+project: 'visitors'
+datestamp: 1572448390

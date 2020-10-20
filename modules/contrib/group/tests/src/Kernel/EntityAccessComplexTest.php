@@ -628,7 +628,11 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
   public function testMemberUpdateAnyAccess() {
     $account = $this->createUser([], $this->permissions);
     $node_1 = $this->createNode(['type' => 'page']);
+<<<<<<< HEAD
     $node_2 = $this->createNode(['type' => 'page', 'status' => 0]);
+=======
+    $node_2 = $this->createNode(['type' => 'page']);
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     $node_3 = $this->createNode(['type' => 'page']);
 
     $this->groupTypeA->getMemberRole()->grantPermission('update any node_as_content:page entity')->save();
@@ -644,6 +648,7 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
     $group_b->addMember($this->getCurrentUser());
     $group_b->addMember($account);
 
+<<<<<<< HEAD
     $this->assertTrue($this->accessControlHandler->access($node_1, 'update'), 'Members can update any published grouped nodes.');
     $this->assertTrue($this->accessControlHandler->access($node_2, 'update'), 'Members can update any unpublished grouped nodes.');
     $this->assertTrue($this->accessControlHandler->access($node_3, 'update'), 'The ungrouped node can be updated.');
@@ -656,6 +661,20 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
     $this->setCurrentUser($this->createUser([], $this->permissions));
     $this->assertFalse($this->accessControlHandler->access($node_1, 'update'), 'Non-members cannot update published grouped nodes.');
     $this->assertFalse($this->accessControlHandler->access($node_2, 'update'), 'Non-members cannot update unpublished grouped nodes.');
+=======
+    $this->assertTrue($this->accessControlHandler->access($node_1, 'update'), 'Members can update any grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_2, 'update'), 'Members can update any grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'update'), 'The ungrouped node can be updated.');
+
+    $this->setCurrentUser($account);
+    $this->assertTrue($this->accessControlHandler->access($node_1, 'update'), 'Members can update any grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_2, 'update'), 'Members can update any grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'update'), 'The ungrouped node can be updated.');
+
+    $this->setCurrentUser($this->createUser([], $this->permissions));
+    $this->assertFalse($this->accessControlHandler->access($node_1, 'update'), 'Non-members cannot update grouped nodes.');
+    $this->assertFalse($this->accessControlHandler->access($node_2, 'update'), 'Non-members cannot update grouped nodes.');
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     $this->assertTrue($this->accessControlHandler->access($node_3, 'update'), 'The ungrouped node can be updated.');
   }
 
@@ -665,7 +684,11 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
   public function testNonMemberUpdateAnyAccess() {
     $account = $this->createUser([], $this->permissions);
     $node_1 = $this->createNode(['type' => 'page']);
+<<<<<<< HEAD
     $node_2 = $this->createNode(['type' => 'page', 'status' => 0]);
+=======
+    $node_2 = $this->createNode(['type' => 'page']);
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     $node_3 = $this->createNode(['type' => 'page']);
 
     $this->groupTypeA->getOutsiderRole()->grantPermission('update any node_as_content:page entity')->save();
@@ -679,6 +702,7 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
     $group_b->addContent($node_2, 'node_as_content:page');
     $group_b->addMember($account);
 
+<<<<<<< HEAD
     $this->assertTrue($this->accessControlHandler->access($node_1, 'update'), 'Non-members can update any published grouped nodes.');
     $this->assertTrue($this->accessControlHandler->access($node_2, 'update'), 'Non-members can update any unpublished grouped nodes.');
     $this->assertTrue($this->accessControlHandler->access($node_3, 'update'), 'The ungrouped node can be updated.');
@@ -691,6 +715,20 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
     $this->setCurrentUser($account);
     $this->assertFalse($this->accessControlHandler->access($node_1, 'update'), 'Members cannot update published grouped nodes.');
     $this->assertFalse($this->accessControlHandler->access($node_2, 'update'), 'Members cannot update unpublished grouped nodes.');
+=======
+    $this->assertTrue($this->accessControlHandler->access($node_1, 'update'), 'Non-members can update any grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_2, 'update'), 'Non-members can update any grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'update'), 'The ungrouped node can be updated.');
+
+    $this->setCurrentUser($this->createUser([], $this->permissions));
+    $this->assertTrue($this->accessControlHandler->access($node_1, 'update'), 'Non-members can update any grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_2, 'update'), 'Non-members can update any grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'update'), 'The ungrouped node can be updated.');
+
+    $this->setCurrentUser($account);
+    $this->assertFalse($this->accessControlHandler->access($node_1, 'update'), 'Members cannot update grouped nodes.');
+    $this->assertFalse($this->accessControlHandler->access($node_2, 'update'), 'Members cannot update grouped nodes.');
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     $this->assertTrue($this->accessControlHandler->access($node_3, 'update'), 'The ungrouped node can be updated.');
   }
 
@@ -700,21 +738,30 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
   public function testMemberUpdateOwnAccess() {
     $account = $this->createUser([], $this->permissions);
     $node_1 = $this->createNode(['type' => 'page']);
+<<<<<<< HEAD
     $node_2 = $this->createNode(['type' => 'page', 'status' => 0]);
     $node_3 = $this->createNode(['type' => 'page', 'uid' => $account->id()]);
     $node_4 = $this->createNode(['type' => 'page', 'uid' => $account->id(), 'status' => 0]);
     $node_5 = $this->createNode(['type' => 'page']);
+=======
+    $node_2 = $this->createNode(['type' => 'page', 'uid' => $account->id()]);
+    $node_3 = $this->createNode(['type' => 'page']);
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 
     $this->groupTypeA->getMemberRole()->grantPermission('update own node_as_content:page entity')->save();
     $this->groupTypeB->getMemberRole()->grantPermission('update own node_as_content:page entity')->save();
 
     $group_a = $this->createGroup(['type' => $this->groupTypeA->id()]);
     $group_a->addContent($node_1, 'node_as_content:page');
+<<<<<<< HEAD
     $group_a->addContent($node_2, 'node_as_content:page');
+=======
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     $group_a->addMember($this->getCurrentUser());
     $group_a->addMember($account);
 
     $group_b = $this->createGroup(['type' => $this->groupTypeB->id()]);
+<<<<<<< HEAD
     $group_b->addContent($node_3, 'node_as_content:page');
     $group_b->addContent($node_4, 'node_as_content:page');
     $group_b->addMember($this->getCurrentUser());
@@ -739,6 +786,25 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
     $this->assertFalse($this->accessControlHandler->access($node_3, 'update'), 'Members cannot update published grouped nodes.');
     $this->assertFalse($this->accessControlHandler->access($node_4, 'update'), 'Members cannot update unpublished grouped nodes.');
     $this->assertTrue($this->accessControlHandler->access($node_5, 'update'), 'The ungrouped node can be updated.');
+=======
+    $group_b->addContent($node_2, 'node_as_content:page');
+    $group_b->addMember($this->getCurrentUser());
+    $group_b->addMember($account);
+
+    $this->assertTrue($this->accessControlHandler->access($node_1, 'update'), 'Members can update their own grouped nodes.');
+    $this->assertFalse($this->accessControlHandler->access($node_2, 'update'), 'Members cannot update grouped nodes they do not own.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'update'), 'The ungrouped node can be updated.');
+
+    $this->setCurrentUser($account);
+    $this->assertFalse($this->accessControlHandler->access($node_1, 'update'), 'Members cannot update grouped nodes they do not own.');
+    $this->assertTrue($this->accessControlHandler->access($node_2, 'update'), 'Members can update their own grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'update'), 'The ungrouped node can be updated.');
+
+    $this->setCurrentUser($this->createUser([], $this->permissions));
+    $this->assertFalse($this->accessControlHandler->access($node_1, 'update'), 'Members cannot update grouped nodes.');
+    $this->assertFalse($this->accessControlHandler->access($node_2, 'update'), 'Members cannot update grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'update'), 'The ungrouped node can be updated.');
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
   }
 
   /**
@@ -747,16 +813,22 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
   public function testNonMemberUpdateOwnAccess() {
     $account = $this->createUser([], $this->permissions);
     $node_1 = $this->createNode(['type' => 'page']);
+<<<<<<< HEAD
     $node_2 = $this->createNode(['type' => 'page', 'status' => 0]);
     $node_3 = $this->createNode(['type' => 'page', 'uid' => $account->id()]);
     $node_4 = $this->createNode(['type' => 'page', 'uid' => $account->id(), 'status' => 0]);
     $node_5 = $this->createNode(['type' => 'page']);
+=======
+    $node_2 = $this->createNode(['type' => 'page', 'uid' => $account->id()]);
+    $node_3 = $this->createNode(['type' => 'page']);
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 
     $this->groupTypeA->getOutsiderRole()->grantPermission('update own node_as_content:page entity')->save();
     $this->groupTypeB->getOutsiderRole()->grantPermission('update own node_as_content:page entity')->save();
 
     $group_a = $this->createGroup(['type' => $this->groupTypeA->id()]);
     $group_a->addContent($node_1, 'node_as_content:page');
+<<<<<<< HEAD
     $group_a->addContent($node_2, 'node_as_content:page');
     $group_a->addMember($account);
 
@@ -784,6 +856,27 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
     $this->assertFalse($this->accessControlHandler->access($node_3, 'update'), 'Members cannot update published grouped nodes.');
     $this->assertFalse($this->accessControlHandler->access($node_4, 'update'), 'Members cannot update unpublished grouped nodes.');
     $this->assertTrue($this->accessControlHandler->access($node_5, 'update'), 'The ungrouped node can be updated.');
+=======
+    $group_a->addMember($account);
+
+    $group_b = $this->createGroup(['type' => $this->groupTypeB->id()]);
+    $group_b->addContent($node_2, 'node_as_content:page');
+    $group_b->addMember($account);
+
+    $this->assertTrue($this->accessControlHandler->access($node_1, 'update'), 'Non-members can update their own grouped nodes.');
+    $this->assertFalse($this->accessControlHandler->access($node_2, 'update'), 'Non-members cannot update grouped nodes they do not own.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'update'), 'The ungrouped node can be updated.');
+
+    $this->setCurrentUser($this->createUser([], $this->permissions));
+    $this->assertFalse($this->accessControlHandler->access($node_1, 'update'), 'Non-members cannot update grouped nodes they do not own.');
+    $this->assertFalse($this->accessControlHandler->access($node_2, 'update'), 'Non-members cannot update grouped nodes they do not own.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'update'), 'The ungrouped node can be updated.');
+
+    $this->setCurrentUser($account);
+    $this->assertFalse($this->accessControlHandler->access($node_1, 'update'), 'Members cannot update grouped nodes.');
+    $this->assertFalse($this->accessControlHandler->access($node_2, 'update'), 'Members cannot update grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'update'), 'The ungrouped node can be updated.');
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
   }
   
   /**
@@ -792,7 +885,11 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
   public function testMemberDeleteAnyAccess() {
     $account = $this->createUser([], $this->permissions);
     $node_1 = $this->createNode(['type' => 'page']);
+<<<<<<< HEAD
     $node_2 = $this->createNode(['type' => 'page', 'status' => 1]);
+=======
+    $node_2 = $this->createNode(['type' => 'page']);
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     $node_3 = $this->createNode(['type' => 'page']);
 
     $this->groupTypeA->getMemberRole()->grantPermission('delete any node_as_content:page entity')->save();
@@ -808,6 +905,7 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
     $group_b->addMember($this->getCurrentUser());
     $group_b->addMember($account);
 
+<<<<<<< HEAD
     $this->assertTrue($this->accessControlHandler->access($node_1, 'delete'), 'Members can delete any published grouped nodes.');
     $this->assertTrue($this->accessControlHandler->access($node_2, 'delete'), 'Members can delete any unpublished grouped nodes.');
     $this->assertTrue($this->accessControlHandler->access($node_3, 'delete'), 'The ungrouped node can be deleted.');
@@ -820,6 +918,20 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
     $this->setCurrentUser($this->createUser([], $this->permissions));
     $this->assertFalse($this->accessControlHandler->access($node_1, 'delete'), 'Non-members cannot delete published grouped nodes.');
     $this->assertFalse($this->accessControlHandler->access($node_2, 'delete'), 'Non-members cannot delete unpublished grouped nodes.');
+=======
+    $this->assertTrue($this->accessControlHandler->access($node_1, 'delete'), 'Members can delete any grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_2, 'delete'), 'Members can delete any grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'delete'), 'The ungrouped node can be deleted.');
+
+    $this->setCurrentUser($account);
+    $this->assertTrue($this->accessControlHandler->access($node_1, 'delete'), 'Members can delete any grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_2, 'delete'), 'Members can delete any grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'delete'), 'The ungrouped node can be deleted.');
+
+    $this->setCurrentUser($this->createUser([], $this->permissions));
+    $this->assertFalse($this->accessControlHandler->access($node_1, 'delete'), 'Non-members cannot delete grouped nodes.');
+    $this->assertFalse($this->accessControlHandler->access($node_2, 'delete'), 'Non-members cannot delete grouped nodes.');
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     $this->assertTrue($this->accessControlHandler->access($node_3, 'delete'), 'The ungrouped node can be deleted.');
   }
 
@@ -829,7 +941,11 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
   public function testNonMemberDeleteAnyAccess() {
     $account = $this->createUser([], $this->permissions);
     $node_1 = $this->createNode(['type' => 'page']);
+<<<<<<< HEAD
     $node_2 = $this->createNode(['type' => 'page', 'status' => 0]);
+=======
+    $node_2 = $this->createNode(['type' => 'page']);
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     $node_3 = $this->createNode(['type' => 'page']);
 
     $this->groupTypeA->getOutsiderRole()->grantPermission('delete any node_as_content:page entity')->save();
@@ -843,6 +959,7 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
     $group_b->addContent($node_2, 'node_as_content:page');
     $group_b->addMember($account);
 
+<<<<<<< HEAD
     $this->assertTrue($this->accessControlHandler->access($node_1, 'delete'), 'Non-members can delete any published grouped nodes.');
     $this->assertTrue($this->accessControlHandler->access($node_2, 'delete'), 'Non-members can delete any unpublished grouped nodes.');
     $this->assertTrue($this->accessControlHandler->access($node_3, 'delete'), 'The ungrouped node can be deleted.');
@@ -855,6 +972,20 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
     $this->setCurrentUser($account);
     $this->assertFalse($this->accessControlHandler->access($node_1, 'delete'), 'Members cannot delete published grouped nodes.');
     $this->assertFalse($this->accessControlHandler->access($node_2, 'delete'), 'Members cannot delete unpublished grouped nodes.');
+=======
+    $this->assertTrue($this->accessControlHandler->access($node_1, 'delete'), 'Non-members can delete any grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_2, 'delete'), 'Non-members can delete any grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'delete'), 'The ungrouped node can be deleted.');
+
+    $this->setCurrentUser($this->createUser([], $this->permissions));
+    $this->assertTrue($this->accessControlHandler->access($node_1, 'delete'), 'Non-members can delete any grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_2, 'delete'), 'Non-members can delete any grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'delete'), 'The ungrouped node can be deleted.');
+
+    $this->setCurrentUser($account);
+    $this->assertFalse($this->accessControlHandler->access($node_1, 'delete'), 'Members cannot delete grouped nodes.');
+    $this->assertFalse($this->accessControlHandler->access($node_2, 'delete'), 'Members cannot delete grouped nodes.');
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     $this->assertTrue($this->accessControlHandler->access($node_3, 'delete'), 'The ungrouped node can be deleted.');
   }
 
@@ -864,21 +995,30 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
   public function testMemberDeleteOwnAccess() {
     $account = $this->createUser([], $this->permissions);
     $node_1 = $this->createNode(['type' => 'page']);
+<<<<<<< HEAD
     $node_2 = $this->createNode(['type' => 'page', 'status' => 0]);
     $node_3 = $this->createNode(['type' => 'page', 'uid' => $account->id()]);
     $node_4 = $this->createNode(['type' => 'page', 'uid' => $account->id(), 'status' => 0]);
     $node_5 = $this->createNode(['type' => 'page']);
+=======
+    $node_2 = $this->createNode(['type' => 'page', 'uid' => $account->id()]);
+    $node_3 = $this->createNode(['type' => 'page']);
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 
     $this->groupTypeA->getMemberRole()->grantPermission('delete own node_as_content:page entity')->save();
     $this->groupTypeB->getMemberRole()->grantPermission('delete own node_as_content:page entity')->save();
 
     $group_a = $this->createGroup(['type' => $this->groupTypeA->id()]);
     $group_a->addContent($node_1, 'node_as_content:page');
+<<<<<<< HEAD
     $group_a->addContent($node_2, 'node_as_content:page');
+=======
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     $group_a->addMember($this->getCurrentUser());
     $group_a->addMember($account);
 
     $group_b = $this->createGroup(['type' => $this->groupTypeB->id()]);
+<<<<<<< HEAD
     $group_b->addContent($node_3, 'node_as_content:page');
     $group_b->addContent($node_4, 'node_as_content:page');
     $group_b->addMember($this->getCurrentUser());
@@ -903,6 +1043,25 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
     $this->assertFalse($this->accessControlHandler->access($node_3, 'delete'), 'Members cannot delete published grouped nodes.');
     $this->assertFalse($this->accessControlHandler->access($node_4, 'delete'), 'Members cannot delete unpublished grouped nodes.');
     $this->assertTrue($this->accessControlHandler->access($node_5, 'delete'), 'The ungrouped node can be deleted.');
+=======
+    $group_b->addContent($node_2, 'node_as_content:page');
+    $group_b->addMember($this->getCurrentUser());
+    $group_b->addMember($account);
+
+    $this->assertTrue($this->accessControlHandler->access($node_1, 'delete'), 'Members can delete their own grouped nodes.');
+    $this->assertFalse($this->accessControlHandler->access($node_2, 'delete'), 'Members cannot delete grouped nodes they do not own.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'delete'), 'The ungrouped node can be deleted.');
+
+    $this->setCurrentUser($account);
+    $this->assertFalse($this->accessControlHandler->access($node_1, 'delete'), 'Members cannot delete grouped nodes they do not own.');
+    $this->assertTrue($this->accessControlHandler->access($node_2, 'delete'), 'Members can delete their own grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'delete'), 'The ungrouped node can be deleted.');
+
+    $this->setCurrentUser($this->createUser([], $this->permissions));
+    $this->assertFalse($this->accessControlHandler->access($node_1, 'delete'), 'Members cannot delete grouped nodes.');
+    $this->assertFalse($this->accessControlHandler->access($node_2, 'delete'), 'Members cannot delete grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'delete'), 'The ungrouped node can be deleted.');
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
   }
 
   /**
@@ -911,16 +1070,22 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
   public function testNonMemberDeleteOwnAccess() {
     $account = $this->createUser([], $this->permissions);
     $node_1 = $this->createNode(['type' => 'page']);
+<<<<<<< HEAD
     $node_2 = $this->createNode(['type' => 'page', 'status' => 0]);
     $node_3 = $this->createNode(['type' => 'page', 'uid' => $account->id()]);
     $node_4 = $this->createNode(['type' => 'page', 'uid' => $account->id(), 'status' => 0]);
     $node_5 = $this->createNode(['type' => 'page']);
+=======
+    $node_2 = $this->createNode(['type' => 'page', 'uid' => $account->id()]);
+    $node_3 = $this->createNode(['type' => 'page']);
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 
     $this->groupTypeA->getOutsiderRole()->grantPermission('delete own node_as_content:page entity')->save();
     $this->groupTypeB->getOutsiderRole()->grantPermission('delete own node_as_content:page entity')->save();
 
     $group_a = $this->createGroup(['type' => $this->groupTypeA->id()]);
     $group_a->addContent($node_1, 'node_as_content:page');
+<<<<<<< HEAD
     $group_a->addContent($node_2, 'node_as_content:page');
     $group_a->addMember($account);
 
@@ -948,6 +1113,27 @@ class EntityAccessComplexTest extends GroupKernelTestBase {
     $this->assertFalse($this->accessControlHandler->access($node_3, 'delete'), 'Members cannot delete published grouped nodes.');
     $this->assertFalse($this->accessControlHandler->access($node_4, 'delete'), 'Members cannot delete unpublished grouped nodes.');
     $this->assertTrue($this->accessControlHandler->access($node_5, 'delete'), 'The ungrouped node can be deleted.');
+=======
+    $group_a->addMember($account);
+
+    $group_b = $this->createGroup(['type' => $this->groupTypeB->id()]);
+    $group_b->addContent($node_2, 'node_as_content:page');
+    $group_b->addMember($account);
+
+    $this->assertTrue($this->accessControlHandler->access($node_1, 'delete'), 'Non-members can delete their own grouped nodes.');
+    $this->assertFalse($this->accessControlHandler->access($node_2, 'delete'), 'Non-members cannot delete grouped nodes they do not own.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'delete'), 'The ungrouped node can be deleted.');
+
+    $this->setCurrentUser($this->createUser([], $this->permissions));
+    $this->assertFalse($this->accessControlHandler->access($node_1, 'delete'), 'Non-members cannot delete grouped nodes they do not own.');
+    $this->assertFalse($this->accessControlHandler->access($node_2, 'delete'), 'Non-members cannot delete grouped nodes they do not own.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'delete'), 'The ungrouped node can be deleted.');
+
+    $this->setCurrentUser($account);
+    $this->assertFalse($this->accessControlHandler->access($node_1, 'delete'), 'Members cannot delete grouped nodes.');
+    $this->assertFalse($this->accessControlHandler->access($node_2, 'delete'), 'Members cannot delete grouped nodes.');
+    $this->assertTrue($this->accessControlHandler->access($node_3, 'delete'), 'The ungrouped node can be deleted.');
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
   }
 
   /**

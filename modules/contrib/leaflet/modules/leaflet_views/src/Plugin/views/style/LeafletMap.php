@@ -596,7 +596,7 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
 
     // Generate Icon form element.
     $icon_options = $this->options['icon'];
-    $form['icon'] = $this->generateIconFormElement($icon_options);
+    $form['icon'] = $this->generateIconFormElement($icon_options, $form);
 
     // Set Map Marker Cluster Element.
     $this->setMapMarkerclusterElement($form, $this->options);
@@ -822,6 +822,7 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
             // Relates the feature with additional properties.
             foreach ($features as &$feature) {
 
+<<<<<<< HEAD
               // Attach pop-ups if we have a description field.
               // Add its entity id, so that it might be referenced from outside.
               $feature['entity_id'] = $entity->id();
@@ -839,10 +840,25 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
                 // we don't want double encoding.
                 $feature['label'] = !empty($this->options['name_field']) ? Html::decodeEntities(($this->rendered_fields[$result->index][$this->options['name_field']])) : '';
               }
+=======
+              // Add its entity id, so that it might be referenced from outside.
+              $feature['entity_id'] = $entity->id();
+              // Attach pop-ups if we have a description field.
+              if (isset($description)) {
+                $feature['popup'] = $description;
+              }
+              // Attach also titles, they might be used later on.
+              if ($this->options['name_field']) {
+                // Decode any entities because JS will encode them again and
+                // we don't want double encoding.
+                $feature['label'] = !empty($this->options['name_field']) ? Html::decodeEntities(($this->rendered_fields[$result->index][$this->options['name_field']])) : '';
+              }
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 
               // Eventually set the custom Marker icon (DivIcon, Icon Url or
               // Circle Marker).
               if ($feature['type'] === 'point' && isset($this->options['icon'])) {
+<<<<<<< HEAD
                 // Set Feature Icon properties.
                 $feature['icon'] = $this->options['icon'];
 
@@ -860,6 +876,9 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
                   $feature['icon']["shadowSize"]["y"] = $this->viewsTokenReplace($this->options["icon"]["shadowSize"]["y"], $tokens);
                 }
 
+=======
+                $feature['icon'] = $this->options['icon'];
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
                 switch ($icon_type) {
                   case 'html':
                     $feature['icon']['html'] = str_replace(["\n", "\r"], "", $this->viewsTokenReplace($this->options['icon']['html'], $tokens));
@@ -873,6 +892,7 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
                   default:
                     if (!empty($this->options['icon']['iconUrl'])) {
                       $feature['icon']['iconUrl'] = str_replace(["\n", "\r"], "", $this->viewsTokenReplace($this->options['icon']['iconUrl'], $tokens));
+<<<<<<< HEAD
                       // Generate correct Absolute iconUrl & shadowUrl, if not external.
                       if (!empty($feature['icon']['iconUrl'])) {
                         $feature['icon']['iconUrl'] = $this->leafletService->pathToAbsolute($feature['icon']['iconUrl']);
@@ -889,6 +909,12 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
                     // ShadowUrl Image sizes (if empty or invalid).
                     $this->leafletService-> setFeatureIconSizesIfEmptyOrInvalid($feature);
 
+=======
+                      if (!empty($this->options['icon']['shadowUrl'])) {
+                        $feature['icon']['shadowUrl'] = str_replace(["\n", "\r"], "", $this->viewsTokenReplace($this->options['icon']['shadowUrl'], $tokens));
+                      }
+                    }
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
                     break;
                 }
               }
@@ -899,11 +925,16 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
                 $feature['path'] = str_replace(["\n", "\r"], "", $this->viewsTokenReplace($this->options['path'], $tokens));
               }
 
+<<<<<<< HEAD
               // Associate dynamic className property (token based) to icon.
               $feature['icon']['className'] = !empty($this->options['icon']['className']) ? str_replace(["\n", "\r"], "", $this->viewsTokenReplace($this->options['icon']['className'], $tokens)) : '';
 
               // Allow modules to adjust the marker.
               $this->moduleHandler->alter('leaflet_views_feature', $feature, $result, $this->view->rowPlugin);
+=======
+              // Allow modules to adjust the marker.
+              \Drupal::moduleHandler()->alter('leaflet_views_feature', $feature, $result, $this->view->rowPlugin);
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
             }
 
             // Add new points to the whole basket.

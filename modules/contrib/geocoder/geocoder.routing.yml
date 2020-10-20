@@ -28,6 +28,17 @@ geocoder.api.reverse_geocode:
   options:
     no_cache: 'TRUE'
 
+<<<<<<< HEAD
+=======
+geocoder.geocoder_provider.admin_add:
+  path: '/admin/config/system/geocoder/geocoder-provider/add/{geocoder_provider_id}'
+  defaults:
+    _entity_form: 'geocoder_provider.add'
+    _title: 'Add'
+  requirements:
+    _permission: 'administer site configuration'
+
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 entity.geocoder_provider.collection:
   path: '/admin/config/system/geocoder/geocoder-provider'
   defaults:
@@ -37,7 +48,11 @@ entity.geocoder_provider.collection:
     _permission: 'administer site configuration'
 
 entity.geocoder_provider.add_form:
+<<<<<<< HEAD
   path: '/admin/config/system/geocoder/geocoder-provider/add/{geocoder_provider_id}'
+=======
+  path: '/admin/config/system/geocoder/geocoder-provider/add'
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
   defaults:
     _entity_form: 'geocoder_provider.add'
     _title: 'Add a Geocoder provider'

@@ -28,8 +28,11 @@
     // A FeatureGroup is required to store editable layers
     this.drawnItems = new L.LayerGroup();
     this.settings = widgetSettings;
+<<<<<<< HEAD
     this.settings.path_style = this.settings.path ? JSON.parse(this.settings.path) : {};
 
+=======
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     this.container = $(map_container).parent();
     this.json_selector = this.settings.jsonElement;
     this.layers = [];
@@ -38,7 +41,11 @@
     this.set_leaflet_map(lMap);
 
     // If map is initialised (or re-initialised) then use the new instance.
+<<<<<<< HEAD
     this.container.on('leafletMapInit', $.proxy(function (event, _m, lMap) {
+=======
+    this.container.on('leaflet.map', $.proxy(function (event, _m, lMap) {
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
       this.set_leaflet_map(lMap);
     }, this));
 
@@ -95,7 +102,10 @@
       let json_string = JSON.stringify(this.drawnItems.toGeoJSON());
       $(this.json_selector, this.container).val(json_string);
     }
+<<<<<<< HEAD
     this.container.trigger("change");
+=======
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
   };
 
   /**
@@ -110,6 +120,10 @@
    * Add/Set Listeners to the Drawn Map Layers.
    */
   Drupal.leaflet_widget.prototype.add_layer_listeners = function (layer) {
+<<<<<<< HEAD
+=======
+    let self = this;
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 
     // Listen to changes on the layer.
     layer.on('pm:edit', function(event) {
@@ -128,15 +142,26 @@
 
     // Listen to cut events on the layer.
     layer.on('pm:cut', function(event) {
+<<<<<<< HEAD
       this.drawnItems.removeLayer(event.originalLayer);
       this.drawnItems.addLayer(event.layer);
       this.update_text();
+=======
+      self.drawnItems.removeLayer(event.originalLayer);
+      self.drawnItems.addLayer(event.layer);
+      self.update_text();
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     }, this);
 
     // Listen to remove events on the layer.
     layer.on('pm:remove', function(event) {
+<<<<<<< HEAD
       this.drawnItems.removeLayer(event.layer);
       this.update_text();
+=======
+      self.drawnItems.removeLayer(event.layer);
+      self.update_text();
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     }, this);
 
   };
@@ -145,7 +170,10 @@
    * Update the leaflet map from text.
    */
   Drupal.leaflet_widget.prototype.update_map = function () {
+<<<<<<< HEAD
     let self = this;
+=======
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     let value = $(this.json_selector, this.container).val();
 
     // Nothing to do if we don't have any data.
@@ -172,9 +200,13 @@
     }, this);
 
     try {
+<<<<<<< HEAD
       let obj = L.geoJson(JSON.parse(value), {style: function (feature) {
         return self.settings.path_style;
       }});
+=======
+      let obj = L.geoJson(JSON.parse(value));
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
       // See https://github.com/Leaflet/Leaflet.draw/issues/398
       obj.eachLayer(function(layer) {
         if (typeof layer.getLayers === "function") {

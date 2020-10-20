@@ -4,6 +4,7 @@ namespace Drupal\Tests\group\Unit;
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Cache\Context\CacheContextsManager;
+<<<<<<< HEAD
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
@@ -18,6 +19,15 @@ use Drupal\group\Plugin\GroupContentEnablerManagerInterface;
 use Drupal\group\Plugin\GroupContentPermissionProviderInterface;
 use Drupal\Tests\UnitTestCase;
 use Drupal\user\EntityOwnerInterface;
+=======
+use Drupal\Core\Session\AccountInterface;
+use Drupal\group\Entity\GroupContentInterface;
+use Drupal\group\Entity\GroupInterface;
+use Drupal\group\Plugin\GroupContentAccessControlHandler;
+use Drupal\group\Plugin\GroupContentEnablerManagerInterface;
+use Drupal\group\Plugin\GroupContentPermissionProviderInterface;
+use Drupal\Tests\UnitTestCase;
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 use Prophecy\Argument;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -44,10 +54,15 @@ class GroupContentAccessControlHandlerTest extends UnitTestCase {
 
     $cache_context_manager = $this->prophesize(CacheContextsManager::class);
     $cache_context_manager->assertValidTokens(Argument::any())->willReturn(TRUE);
+<<<<<<< HEAD
     $entity_type_manager = $this->prophesize(EntityTypeManagerInterface::class);
     $this->container = $this->prophesize(ContainerInterface::class);
     $this->container->get('cache_contexts_manager')->willReturn($cache_context_manager->reveal());
     $this->container->get('entity_type.manager')->willReturn($entity_type_manager->reveal());
+=======
+    $this->container = $this->prophesize(ContainerInterface::class);
+    $this->container->get('cache_contexts_manager')->willReturn($cache_context_manager->reveal());
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     \Drupal::setContainer($this->container->reveal());
   }
 
@@ -290,6 +305,7 @@ class GroupContentAccessControlHandlerTest extends UnitTestCase {
   }
 
   /**
+<<<<<<< HEAD
    * Tests the entity operation access.
    *
    * @param \Closure $expected
@@ -519,6 +535,8 @@ class GroupContentAccessControlHandlerTest extends UnitTestCase {
   }
 
   /**
+=======
+>>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
    * Tests the entity create access.
    *
    * @param \Closure $expected
