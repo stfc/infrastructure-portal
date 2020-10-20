@@ -34,19 +34,24 @@ a {
 a:hover, a:focus {
     color:black;
 }
-
+/*unstyled links*/
+.accesspoint a,.accesspoint a:focus,.accesspoint a:hover{
+  color:black;
+  text-decoration:none;
+}
 /*TEXT BACKGROUND COLOR SCHEME*/
-.view-search article.rii.teaser, .case-study .teaser, .case-study .mobile-teaser, .teaser .block-field-blocknodecase-studytitle, .mobile-teaser .block-field-blocknodecase-studytitle, .case-study .layout__region--second, .rii .layout__region--second section:not(.block-field-blocknoderiifield-uk-postcode-geofield){
+.view-search article.rii.teaser, .case-study .teaser, .case-study .mobile-teaser, .teaser .block-field-blocknodecase-studytitle, .mobile-teaser .block-field-blocknodecase-studytitle, .case-study .layout__region--second, .rii .layout__region--second section:not(.block-field-blocknoderiifield-uk-postcode-geofield), .accesspoint{
     background-color: #f5f5f5 !important;
     color:black !important;
 }
 .teaser .block-field-blocknodecase-studytitle a, h2 a{
     color:black !important;
 }
-.teaser .block-field-blocknodecase-studytitle:hover{
-  background-color:#E8E8E8;
+.teaser .block-field-blocknodecase-studytitle:hover,.teaser .block-field-blocknodecase-studytitle:hover:focus, .accesspoint:hover, .accesspoint:focus{
+  background-color:#E8E8E8 !important;
   color:black !important;
 }
+
 /*PSEUDO-LINK COLOR SCHEME*/
 .field--name-field-macro-domains .field--item,.field--name-field-keywords .field--item{
    background-color: #F5F5F5;
@@ -270,8 +275,13 @@ ul.menu.menu--account.nav.navbar-nav.navbar-right>li:not(.dropdown):not(.first){
     place-items: center;
     min-height:fit-content;
 }
-#edit-submit-search,  #edit-submit-search--2{
+#edit-submit-search, #edit-submit-search--2{
  margin-top:22px;
+}
+@media(max-width:780px){
+#edit-submit-search, #edit-submit-search--2{
+ width:100%;
+}
 }
 /*USER MENU*/
 .user-logged-in .menu.menu--account a[href="/user/login"],.user-logged-in ul.menu.menu--account.nav.navbar-nav.navbar-right>li:not(.dropdown), .menu.menu--account a[href="/about"]{
@@ -625,6 +635,45 @@ background-image:url("/sites/default/files/2020-09/ellipsis-h-solid.svg");
 	width:00%;
     margin-bottom:2%;
     margin-top:0%;
+}
+/*homepage CSS*/
+#block-exposedformsearchpage-1{
+    background-color:#e8e8e8;
+    padding-bottom:52px;
+    padding-top:30px;
+}
+.accesspoint-list {
+    list-style: none;
+    margin-top:30px;
+    display: inline-flex;
+    gap:10px;
+     width:100%;
+    flex-wrap:wrap;
+   //margin-left:-15px;
+}
+@media(min-width:780px){
+.accesspoint{
+   display:grid;
+   text-align:center;
+   place-items:center;
+   flex: 0 1 32%;
+   min-height:20em;
+   min-width:230px;
+}
+}
+@media(max-width:780px){
+.accesspoint{
+   display:grid;
+   text-align:center;
+   place-items:center;
+   flex: 0 1 96%;
+   min-width:320px;
+}
+}
+
+.accesspoint a{
+width:100%;
+height:100%;
 }
 /*HOMEPAGE BANNER*/
 .view-homepage-banner {
