@@ -1,9 +1,14 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\mailsystem\MailsystemManager.
+ */
+
 namespace Drupal\mailsystem;
 
 use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
-use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Mail\MailInterface;
 use Drupal\Core\Mail\MailManager;
 use Drupal\Core\Theme\ThemeInitializationInterface;
@@ -22,8 +27,6 @@ class MailsystemManager extends MailManager {
   const MAILSYSTEM_MODULES_CONFIG = 'modules';
 
   /**
-   * The theme manager.
-   *
    * @var \Drupal\Core\Theme\ThemeManagerInterface
    */
   protected $themeManager;
@@ -58,7 +61,7 @@ class MailsystemManager extends MailManager {
   /**
    * {@inheritdoc}
    */
-  public function mail($module, $key, $to, $langcode, $params = [], $reply = NULL, $send = TRUE) {
+  public function mail($module, $key, $to, $langcode, $params = array(), $reply = NULL, $send = TRUE) {
     // Switch the theme to the configured mail theme.
     $mail_theme = $this->getMailTheme();
     $current_active_theme = $this->themeManager->getActiveTheme();
@@ -113,17 +116,17 @@ class MailsystemManager extends MailManager {
     $plugin_id = NULL;
 
     // List of message ids which can be configured.
-    $message_id_list = [
+    $message_id_list = array(
       self::MAILSYSTEM_MODULES_CONFIG . '.' . $module . '.' . $key . '.' . $type,
       self::MAILSYSTEM_MODULES_CONFIG . '.' . $module . '.none.' . $type,
       self::MAILSYSTEM_MODULES_CONFIG . '.' . $module . '.' . $type,
       'defaults.' . $type,
-      'defaults',
-    ];
+      'defaults'
+    );
 
     $config = $this->configFactory->get('mailsystem.settings');
 
-    foreach ($message_id_list as $message_id) {
+    foreach($message_id_list as $message_id) {
       $plugin_id = $config->get($message_id);
       if (!is_null($plugin_id)) {
         break;
@@ -138,8 +141,8 @@ class MailsystemManager extends MailManager {
       }
       else {
         throw new InvalidPluginDefinitionException($plugin_id,
-          new FormattableMarkup('Class %class does not implement interface %interface',
-            ['%class' => get_class($plugin), '%interface' => 'Drupal\Core\Mail\MailInterface']
+          SafeMarkup::format('Class %class does not implement interface %interface',
+            array('%class' => get_class($plugin), '%interface' => 'Drupal\Core\Mail\MailInterface')
           )
         );
       }
@@ -156,11 +159,9 @@ class MailsystemManager extends MailManager {
       case 'default':
         $theme = $this->configFactory->get('system.theme')->get('default');
         break;
-
       case 'current':
         $theme = $this->themeManager->getActiveTheme()->getName();
         break;
-
       case 'domain':
         // Fetch the theme for the current domain.
         // @todo: Reimplement this as soon as module port or similar module is around.

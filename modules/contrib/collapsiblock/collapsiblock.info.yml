@@ -4,7 +4,6 @@ description: 'Makes individual blocks collapsible.'
 package: 'User interface'
 core: '8.x'
 core_version_requirement: ^8 || ^9
-<<<<<<< HEAD
 configure: collapsiblock.global_settings
 # version: VERSION
 
@@ -12,11 +11,3 @@ configure: collapsiblock.global_settings
 version: '3.0.0'
 project: 'collapsiblock'
 datestamp: 1599195574
-=======
-# version: VERSION
-
-# Information added by Drupal.org packaging script on 2020-04-28
-version: '8.x-2.1'
-project: 'collapsiblock'
-datestamp: 1588032524
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95

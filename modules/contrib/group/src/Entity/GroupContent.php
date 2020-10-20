@@ -237,24 +237,8 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
   /**
    * {@inheritdoc}
    */
-<<<<<<< HEAD
   public function getListCacheTagsToInvalidate() {
     $tags = parent::getListCacheTagsToInvalidate();
-=======
-  protected function invalidateTagsOnSave($update) {
-    parent::invalidateTagsOnSave($update);
-    // Always invalidate our custom list cache tags, even for new entities.
-    if (!$update) {
-      Cache::invalidateTags($this->getCacheTagsToInvalidate());
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getCacheTagsToInvalidate() {
-    $tags = parent::getCacheTagsToInvalidate();
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 
     $group_id = $this->get('gid')->target_id;
     $entity_id = $this->get('entity_id')->target_id;

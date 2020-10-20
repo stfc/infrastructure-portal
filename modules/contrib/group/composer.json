@@ -17,11 +17,7 @@
   "license": "GPL-2.0-or-later",
   "minimum-stability": "dev",
   "require": {
-<<<<<<< HEAD
     "drupal/core": "^8.9 || ^9",
-=======
-    "drupal/core": "^8.8 || ^9",
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     "drupal/entity": "^1.0",
     "drupal/variationcache": "^1.0"
   }

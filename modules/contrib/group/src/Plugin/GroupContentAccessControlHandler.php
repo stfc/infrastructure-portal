@@ -3,19 +3,13 @@
 namespace Drupal\group\Plugin;
 
 use Drupal\Core\Access\AccessResult;
-<<<<<<< HEAD
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
-=======
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 use Drupal\Core\Session\AccountInterface;
 use Drupal\group\Access\GroupAccessResult;
 use Drupal\group\Entity\GroupContentInterface;
 use Drupal\group\Entity\GroupInterface;
-<<<<<<< HEAD
 use Drupal\user\EntityOwnerInterface;
-=======
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -31,7 +25,6 @@ class GroupContentAccessControlHandler extends GroupContentHandlerBase implement
   protected $permissionProvider;
 
   /**
-<<<<<<< HEAD
    * The entity type manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
@@ -39,8 +32,6 @@ class GroupContentAccessControlHandler extends GroupContentHandlerBase implement
   protected $entityTypeManager;
 
   /**
-=======
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
    * {@inheritdoc}
    */
   public static function createInstance(ContainerInterface $container, $plugin_id, array $definition) {
@@ -53,10 +44,7 @@ class GroupContentAccessControlHandler extends GroupContentHandlerBase implement
     /** @var static $instance */
     $instance = parent::createInstance($container, $plugin_id, $definition);
     $instance->permissionProvider = $manager->getPermissionProvider($plugin_id);
-<<<<<<< HEAD
     $instance->entityTypeManager = $container->get('entity_type.manager');
-=======
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     return $instance;
   }
 
@@ -66,24 +54,14 @@ class GroupContentAccessControlHandler extends GroupContentHandlerBase implement
   public function relationAccess(GroupContentInterface $group_content, $operation, AccountInterface $account, $return_as_object = FALSE) {
     $result = AccessResult::neutral();
 
-<<<<<<< HEAD
     // Check if the account is the owner.
     $is_owner = $group_content->getOwnerId() === $account->id();
-=======
-    // Check if the account is the owner and an owner permission is supported.
-    $is_owner = $group_content->getOwnerId() === $account->id();
-    $own_permission = $this->permissionProvider->getPermission($operation, 'relation', 'own');
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 
     // Add in the admin permission and filter out the unsupported permissions.
     $permissions = [$this->permissionProvider->getAdminPermission()];
     $permissions[] = $this->permissionProvider->getPermission($operation, 'relation', 'any');
-<<<<<<< HEAD
     $own_permission = $this->permissionProvider->getPermission($operation, 'relation', 'own');
     if ($is_owner) {
-=======
-    if ($is_owner && $own_permission) {
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
       $permissions[] = $own_permission;
     }
     $permissions = array_filter($permissions);
@@ -97,10 +75,7 @@ class GroupContentAccessControlHandler extends GroupContentHandlerBase implement
     // user. We also need to add the relation as a dependency because if its
     // owner changes, someone might suddenly gain or lose access.
     if ($own_permission) {
-<<<<<<< HEAD
       // @todo Not necessary if admin, could boost performance here.
-=======
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
       $result->cachePerUser()->addCacheableDependency($group_content);
     }
 
@@ -118,7 +93,6 @@ class GroupContentAccessControlHandler extends GroupContentHandlerBase implement
   /**
    * {@inheritdoc}
    */
-<<<<<<< HEAD
   public function entityAccess(EntityInterface $entity, $operation, AccountInterface $account, $return_as_object = FALSE) {
     /** @var \Drupal\group\Entity\Storage\GroupContentStorageInterface $storage */
     $storage = $this->entityTypeManager->getStorage('group_content');
@@ -207,12 +181,6 @@ class GroupContentAccessControlHandler extends GroupContentHandlerBase implement
     // You cannot create target entities if the plugin does not support it.
     if (empty($this->definition['entity_access'])) {
       return $return_as_object ? AccessResult::neutral() : FALSE;
-=======
-  public function entityCreateAccess(GroupInterface $group, AccountInterface $account, $return_as_object = FALSE) {
-    // You cannot create target entities if the plugin does not support it.
-    if (empty($this->definition['entity_access'])) {
-      return AccessResult::neutral();
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     }
 
     $permission = $this->permissionProvider->getEntityCreatePermission();

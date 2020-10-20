@@ -78,17 +78,10 @@ class InspectForm extends FormBase {
         'table' => [
           '#type' => 'table',
           '#header' => [
-<<<<<<< HEAD
             'id' => $this->t('Item ID'),
             'expires' => $this->t('Expires'),
             'created' => $this->t('Created'),
             'operations' => $this->t('Operations'),
-=======
-            'id' => t('Item ID'),
-            'expires' => t('Expires'),
-            'created' => t('Created'),
-            'operations' => t('Operations'),
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
           ],
           '#rows' => $rows
         ],

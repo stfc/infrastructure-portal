@@ -37,12 +37,9 @@ class GroupMembershipPermissionProvider extends GroupContentPermissionProvider {
     return FALSE;
   }
 
-<<<<<<< HEAD
   /**
    * {@inheritdoc}
    */
-=======
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
   public function buildPermissions() {
     $permissions = parent::buildPermissions();
 

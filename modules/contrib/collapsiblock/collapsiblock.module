@@ -80,10 +80,6 @@ function collapsiblock_block_view_alter(array &$build, BlockPluginInterface $blo
     return;
   }
 
-  if (empty($build['#block'])) {
-    return;
-  }
-
   $block_entity = $build['#block'];
   $action = $block_entity->getThirdPartySetting('collapsiblock', 'collapse_action');
 

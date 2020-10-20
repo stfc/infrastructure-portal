@@ -206,19 +206,11 @@ class GeofieldItem extends FieldItemBase {
         $geo_php_wrapper = \Drupal::service('geofield.geophp');
         /* @var \Geometry|null $geometry */
         $geometry = $geo_php_wrapper->load($value);
-<<<<<<< HEAD
         return $geometry instanceof \Geometry ? $geometry->isEmpty() : TRUE;
       }
     }
     catch (\Exception $e) {
       watchdog_exception('geofield get value exception', $e);
-=======
-        return isset($geometry) ? $geometry->isEmpty() : TRUE;
-      }
-    }
-    catch (\Exception $e) {
-      watchdog_exception('geofield_mising_data_exception', $e);
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     }
     return TRUE;
   }

@@ -2,10 +2,7 @@
 
 namespace Drupal\group\Plugin;
 
-<<<<<<< HEAD
 use Drupal\Core\Entity\EntityInterface;
-=======
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 use Drupal\Core\Session\AccountInterface;
 use Drupal\group\Entity\GroupContentInterface;
 use Drupal\group\Entity\GroupInterface;
@@ -57,7 +54,6 @@ interface GroupContentAccessControlHandlerInterface {
   public function relationCreateAccess(GroupInterface $group, AccountInterface $account, $return_as_object = FALSE);
 
   /**
-<<<<<<< HEAD
    * Checks access to an operation on the entity.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
@@ -80,8 +76,6 @@ interface GroupContentAccessControlHandlerInterface {
   public function entityAccess(EntityInterface $entity, $operation, AccountInterface $account, $return_as_object = FALSE);
 
   /**
-=======
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
    * Checks access to create an entity.
    *
    * @param \Drupal\group\Entity\GroupInterface $group

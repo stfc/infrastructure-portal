@@ -334,7 +334,6 @@ class LeafletService {
   }
 
   /**
-<<<<<<< HEAD
    * Set Feature Icon Size & Shadow Size If Empty or Invalid.
    *
    * @param $feature
@@ -376,8 +375,6 @@ class LeafletService {
   }
 
   /**
-=======
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
    * Check if an array has all values empty.
    *
    * @param array $array

@@ -4,10 +4,7 @@ namespace Drupal\queue_ui\Plugin\QueueUI;
 
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-<<<<<<< HEAD
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-=======
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 use Drupal\queue_ui\QueueUIBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -20,10 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class DatabaseQueue extends QueueUIBase implements ContainerFactoryPluginInterface {
-<<<<<<< HEAD
   use StringTranslationTrait;
-=======
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 
   /**
    * @var \Drupal\Core\Database\Database
@@ -68,15 +62,9 @@ class DatabaseQueue extends QueueUIBase implements ContainerFactoryPluginInterfa
    */
   public function getOperations() {
     return [
-<<<<<<< HEAD
       'view' => $this->t('View'),
       'release' => $this->t('Release'),
       'delete' => $this->t('Delete'),
-=======
-      'view' => t('View'),
-      'release' => t('Release'),
-      'delete' => t('Delete'),
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     ];
   }
 

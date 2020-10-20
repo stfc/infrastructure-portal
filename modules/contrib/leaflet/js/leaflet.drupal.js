@@ -40,17 +40,12 @@
           // allow other modules to get access to it via trigger.
           // NOTE: don't change this trigger arguments print, for back porting
           // compatibility.
-<<<<<<< HEAD
           $(document).trigger('leafletMapInit', [data.map, data.lMap, mapid]);
           // (Keep also the pre-existing event for back port compatibility)
           $(document).trigger('leaflet.map', [data.map, data.lMap, mapid]);
 
 
 
-=======
-          $(document).trigger('leaflet.map', [data.map, data.lMap, mapid]);
-
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
         });
       });
     }
@@ -377,7 +372,6 @@
   };
 
   Drupal.Leaflet.prototype.create_icon = function(options) {
-<<<<<<< HEAD
     let icon_options = {
       iconUrl: options.iconUrl,
     };
@@ -406,34 +400,6 @@
     }
 
     return new L.Icon(icon_options);
-=======
-    let icon = new L.Icon({iconUrl: options.iconUrl});
-
-    // Override applicable marker defaults.
-    if (options.iconSize) {
-      icon.options.iconSize = new L.Point(parseInt(options.iconSize.x), parseInt(options.iconSize.y));
-    }
-    if (options.iconAnchor && options.iconAnchor.x && options.iconAnchor.y) {
-      icon.options.iconAnchor = new L.Point(parseFloat(options.iconAnchor.x), parseFloat(options.iconAnchor.y));
-    }
-    if (options.popupAnchor && options.popupAnchor.x && options.popupAnchor.y) {
-      icon.options.popupAnchor = new L.Point(parseInt(options.popupAnchor.x), parseInt(options.popupAnchor.y));
-    }
-    if (options.shadowUrl) {
-      icon.options.shadowUrl = options.shadowUrl;
-    }
-    if (options.shadowSize && options.shadowSize.x && options.shadowSize.y) {
-      icon.options.shadowSize = new L.Point(parseInt(options.shadowSize.x), parseInt(options.shadowSize.y));
-    }
-    if (options.shadowAnchor && options.shadowAnchor.x && options.shadowAnchor.y) {
-      icon.options.shadowAnchor = new L.Point(parseInt(options.shadowAnchor.x), parseInt(options.shadowAnchor.y));
-    }
-    if (options.className) {
-      icon.options.className = options.className;
-    }
-
-    return icon;
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
   };
 
   Drupal.Leaflet.prototype.create_divicon = function (options) {
@@ -456,7 +422,6 @@
     let latLng = new L.LatLng(marker.lat, marker.lon);
     self.bounds.push(latLng);
     let lMarker;
-<<<<<<< HEAD
     let marker_title = marker.label ? marker.label.replace(/<[^>]*>/g, '').trim() : '';
     let options = {
       title: marker_title,
@@ -464,24 +429,6 @@
       alt: marker_title,
     };
 
-=======
-    let tooltip = marker.label ? marker.label.replace(/<[^>]*>/g, '').trim() : '';
-    let options = {
-      title: tooltip
-    };
-
-    if (marker.alt !== undefined) {
-      options.alt = marker.alt;
-    }
-
-    function checkImage(imageSrc, setIcon, logError) {
-      let img = new Image();
-      img.src = imageSrc;
-      img.onload = setIcon;
-      img.onerror = logError;
-    }
-
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     lMarker = new L.Marker(latLng, options);
 
     if (marker.icon) {
@@ -500,7 +447,6 @@
         lMarker = new L.CircleMarker(latLng, options);
       }
       else if (marker.icon.iconUrl) {
-<<<<<<< HEAD
         marker.icon.iconSize = marker.icon.iconSize || {};
         marker.icon.iconSize.x = marker.icon.iconSize.x || this.naturalWidth;
         marker.icon.iconSize.y = marker.icon.iconSize.y || this.naturalHeight;
@@ -511,26 +457,6 @@
         }
         let icon = self.create_icon(marker.icon);
         lMarker.setIcon(icon);
-=======
-        checkImage(marker.icon.iconUrl,
-          // Success loading image.
-          function() {
-            marker.icon.iconSize = marker.icon.iconSize || {};
-            marker.icon.iconSize.x = marker.icon.iconSize.x || this.naturalWidth;
-            marker.icon.iconSize.y = marker.icon.iconSize.y || this.naturalHeight;
-            if (marker.icon.shadowUrl) {
-              marker.icon.shadowSize = marker.icon.shadowSize || {};
-              marker.icon.shadowSize.x = marker.icon.shadowSize.x || this.naturalWidth;
-              marker.icon.shadowSize.y = marker.icon.shadowSize.y || this.naturalHeight;
-            }
-            let icon = self.create_icon(marker.icon);
-            lMarker.setIcon(icon);
-          },
-          // Error loading image.
-          function(err) {
-            console.log("Leaflet: The Icon Image doesn't exist at the requested path: " + marker.icon.iconUrl);
-          });
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
       }
     }
 

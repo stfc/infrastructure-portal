@@ -180,33 +180,8 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
     $elements = parent::settingsForm($form, $form_state);
     $field_name = $this->fieldDefinition->getName();
 
-<<<<<<< HEAD
     // Set Replacement Patterns Element.
     $this->setReplacementPatternsElement($elements);
-=======
-    if ($this->moduleHandler->moduleExists('token')) {
-
-      $elements['replacement_patterns'] = [
-        '#type' => 'details',
-        '#title' => 'Replacement patterns',
-        '#description' => $this->t('The following replacement tokens are available for the "Popup Content and the Icon Options":'),
-      ];
-
-      $elements['replacement_patterns']['token_help'] = [
-        '#theme' => 'token_tree_link',
-        '#token_types' => [$this->fieldDefinition->getTargetEntityTypeId()],
-      ];
-    }
-    else {
-      $elements['replacement_patterns']['#description'] = $this->t('The @token_link is needed to browse and use @entity_type entity token replacements.', [
-        '@token_link' => $this->link->generate(t('Token module'), Url::fromUri('https://www.drupal.org/project/token', [
-          'absolute' => TRUE,
-          'attributes' => ['target' => 'blank'],
-        ])),
-        '@entity_type' => $this->fieldDefinition->getTargetEntityTypeId(),
-      ]);
-    }
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 
     if ($field_cardinality !== 1) {
       $elements['multiple_map'] = [
@@ -258,11 +233,7 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
 
     // Generate Icon form element.
     $icon_options = $settings['icon'];
-<<<<<<< HEAD
     $elements['icon'] = $this->generateIconFormElement($icon_options);
-=======
-    $elements['icon'] = $this->generateIconFormElement($icon_options, $form);
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 
     // Set Map Marker Cluster Element.
     $this->setMapMarkerclusterElement($elements, $settings);
@@ -353,11 +324,7 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
         $build = [];
         if ($this->getSetting('popup_content')) {
           $bubbleable_metadata = new BubbleableMetadata();
-<<<<<<< HEAD
           $popup_content = $this->token->replace($this->getSetting('popup_content'), $tokens, ['clear' => TRUE], $bubbleable_metadata);
-=======
-          $popup_content = $this->token->replace($this->getSetting('popup_content'), $token_context, ['clear' => TRUE], $bubbleable_metadata);
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
           $build[] = [
             '#markup' => $popup_content,
           ];
@@ -394,7 +361,6 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
       // Eventually set the custom Marker icon (DivIcon, Icon Url or
       // Circle Marker).
       if ($feature['type'] === 'point' && isset($settings['icon'])) {
-<<<<<<< HEAD
 
         // Set Feature Icon properties.
         $feature['icon'] = $settings['icon'];
@@ -416,26 +382,15 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
         switch ($icon_type) {
           case 'html':
             $feature['icon']['html'] = $this->token->replace($settings['icon']['html'], $tokens);
-=======
-        $feature['icon'] = $settings['icon'];
-        switch ($icon_type) {
-          case 'html':
-            $feature['icon']['html'] = $this->token->replace($settings['icon']['html'], $token_context);
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
             $feature['icon']['html_class'] = isset($settings['icon']['html_class']) ? $settings['icon']['html_class'] : '';
             break;
 
           case 'circle_marker':
-<<<<<<< HEAD
             $feature['icon']['options'] = $this->token->replace($settings['icon']['circle_marker_options'], $tokens);
-=======
-            $feature['icon']['options'] = $this->token->replace($settings['icon']['circle_marker_options'], $token_context);
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
             break;
 
           default:
             if (!empty($settings['icon']['iconUrl'])) {
-<<<<<<< HEAD
               $feature['icon']['iconUrl'] = str_replace(["\n", "\r"], "", $this->token->replace($settings['icon']['iconUrl'], $tokens));
               if (!empty($feature['icon']['iconUrl'])) {
                 // Generate Absolute iconUrl , if not external.
@@ -455,21 +410,6 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
             $this->leafletService-> setFeatureIconSizesIfEmptyOrInvalid($feature);
             break;
         }
-=======
-              $feature['icon']['iconUrl'] = !empty($settings['icon']['iconUrl']) > 0 ? $this->token->replace($settings['icon']['iconUrl'], $token_context) : '';
-              if (!empty($settings['icon']['shadowUrl'])) {
-                $feature['icon']['shadowUrl'] = !empty($settings['icon']['shadowUrl']) > 0 ? $this->token->replace($settings['icon']['shadowUrl'], $token_context) : '';
-              }
-            }
-            break;
-        }
-      }
-
-      // Associate dynamic path properties (token based) to the feature,
-      // in case of not point.
-      if ($feature['type'] !== 'point') {
-        $feature['path'] = str_replace(["\n", "\r"], "", $this->token->replace($settings['path'], $token_context));
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
       }
 
       // Associate dynamic path properties (token based) to the feature,

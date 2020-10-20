@@ -2,10 +2,7 @@
 
 namespace Drupal\group\QueryAccess;
 
-<<<<<<< HEAD
 use Drupal\Core\Cache\Cache;
-=======
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Query\SelectInterface;
@@ -241,14 +238,10 @@ class EntityQueryAlter implements ContainerInjectionInterface {
     $this->cacheableMetadata->addCacheContexts(['user.group_permissions']);
     $calculated_permissions = $this->permissionCalculator->calculatePermissions($this->currentUser);
 
-<<<<<<< HEAD
     // We only check unpublished vs published for "view" right now. If we ever
     // start supporting other operations, we need to remove the "view" check.
     $check_published = $operation === 'view' && $entity_type->entityClassImplements(EntityPublishedInterface::class);
 
-=======
-    $check_published = $entity_type->entityClassImplements(EntityPublishedInterface::class);
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
     $owner_key = $entity_type->getKey('owner');
     $published_key = $entity_type->getKey('published');
 
@@ -555,18 +548,13 @@ class EntityQueryAlter implements ContainerInjectionInterface {
    */
   protected function applyCacheability() {
     $request = $this->requestStack->getCurrentRequest();
-<<<<<<< HEAD
     if ($request->isMethodCacheable() && $this->renderer->hasRenderContext() && $this->hasCacheableMetadata()) {
-=======
-    if ($request->isMethodCacheable() && $this->renderer->hasRenderContext()) {
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
       $build = [];
       $this->cacheableMetadata->applyTo($build);
       $this->renderer->render($build);
     }
   }
 
-<<<<<<< HEAD
   /**
    * Check if the cacheable metadata is not empty.
    *
@@ -581,6 +569,4 @@ class EntityQueryAlter implements ContainerInjectionInterface {
       || count($this->cacheableMetadata->getCacheTags()) > 0;
   }
 
-=======
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
 }
