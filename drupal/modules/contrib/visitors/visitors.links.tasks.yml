@@ -1,5 +1,0 @@
-visitors.node_tab:
-  base_route: node.view
-  route_name: visitors.node
-  title: 'Visitors'
-  weight: 100

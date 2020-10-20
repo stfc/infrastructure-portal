@@ -1,4 +1,0 @@
-administer nagios ignore:
-  title: 'Administer nagios ignore'
-  description: 'Select modules to be ignored by nagios.'
-  restrict access: TRUE

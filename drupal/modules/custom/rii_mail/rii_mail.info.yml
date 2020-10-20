@@ -1,9 +1,0 @@
-name: RII Mail 
-description: Custom module (made by Adam Laverack) to automatically send mails such as approval requests and notifications on state change of an RII content item. 
-package: Custom
-
-type: module
-core: 8.x
-
-dependencies:
-  - simple_mail:simple_mail
