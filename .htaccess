@@ -113,23 +113,16 @@ AddEncoding gzip svgz
   #
   # If your site is running in a VirtualDocumentRoot at http://example.com/,
   # uncomment the following line:
-  # RewriteBase /
-
-<<<<<<< HEAD
-<<<<<<< HEAD
+  # RewriteBase
 	#RewriteCond %{SERVER_PORT} 80 
 	#RewriteRule ^(.*)$ https://www.infraportal.org.uk/$1 [R,L]
-=======
   # Redirect common PHP files to their new locations.
   RewriteCond %{REQUEST_URI} ^(.*)?/(install.php) [OR]
   RewriteCond %{REQUEST_URI} ^(.*)?/(rebuild.php)
   RewriteCond %{REQUEST_URI} !core
   RewriteRule ^ %1/core/%2 [L,QSA,R=301]
->>>>>>> ca7e00e50634fae43855b6e4a52caf59e87f7c95
-=======
-	RewriteCond %{SERVER_PORT} 80 
-	RewriteRule ^(.*)$ https://www.infraportal.org.uk/$1 [R,L]
->>>>>>> parent of 4f42b7a... beta-201020
+  RewriteCond %{SERVER_PORT} 80 
+  RewriteRule ^(.*)$ https://www.infraportal.org.uk/$1 [R,L]
 
   # Rewrite install.php during installation to see if mod_rewrite is working
   RewriteRule ^core/install.php core/install.php?rewrite=ok [QSA,L]
