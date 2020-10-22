@@ -8,6 +8,7 @@
  font-size: 18px;
  font-family: Arial;
 }
+
 /*HEADINGS COLOR SCHEME */
 h1{
   color:black;
@@ -34,7 +35,15 @@ a {
 a:hover, a:focus {
     color:black;
 }
-
+/* CONTENT FEEDBACK*/
+.content_feedback_link a {
+  color:white !important;
+  text-decoration:none;
+}
+.content_feedback_link {
+  background-color:#cc0000 !important;
+  z-index:2;
+}
 /*TEXT BACKGROUND COLOR SCHEME*/
 .view-search article.rii.teaser, .case-study .teaser, .case-study .mobile-teaser, .teaser .block-field-blocknodecase-studytitle, .mobile-teaser .block-field-blocknodecase-studytitle, .case-study .layout__region--second, .rii .layout__region--second section:not(.block-field-blocknoderiifield-uk-postcode-geofield), .accesspoint{
     background-color: #f5f5f5 !important;
