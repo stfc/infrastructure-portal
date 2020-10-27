@@ -1,0 +1,15 @@
+content_feedback_list.content:
+  title: 'Content Feedbacks'
+  route_name: content_feedback_list.content
+  base_route: system.admin_content
+
+content_feedback_list.content_open:
+  title: 'Open'
+  route_name: content_feedback_list.content
+  parent_id: content_feedback_list.content
+
+content_feedback_list.content_resolved:
+  title: 'Resolved'
+  route_name: content_feedback_list.content_resolved
+  parent_id: content_feedback_list.content
+  weight: 1

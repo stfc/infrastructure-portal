@@ -1,0 +1,9 @@
+content_feedback.settings:
+  type: config_object
+  label: 'Node types settings'
+  mapping:
+    content_types:
+      label: 'Node types to display content feedback link'
+      type: sequence
+      sequence:
+        type: string

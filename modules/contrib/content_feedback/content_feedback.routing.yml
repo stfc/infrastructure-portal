@@ -1,0 +1,49 @@
+content_feedback.settings:
+  path: '/admin/config/content/feedback'
+  defaults:
+    _form: '\Drupal\content_feedback\Form\ContentFeedbackSettingsForm'
+    _title: 'Content Feedback Settings'
+  requirements:
+    _permission: 'administer content feedback settings'
+
+content_feedback_list.content:
+  path: '/admin/content/feedbacks'
+  defaults: 
+    _controller: '\Drupal\content_feedback\Controller\AdminFeedbackController::content'
+    _title: 'Content Feedbacks'
+    type: 'open'
+  requirements: 
+    _permission: 'manage content feedback submissions'
+
+content_feedback_list.content_resolved:
+  path: '/admin/content/feedbacks/resolved'
+  defaults:
+    _controller: '\Drupal\content_feedback\Controller\AdminFeedbackController::content'
+    _title: 'Content Feedbacks'
+    type: 'resolved'
+  requirements:
+    _permission: 'manage content feedback submissions'
+
+content_feedback_add.form:
+  path: '/content-feedback'
+  defaults:
+    _title: 'Feedback'
+    _form: '\Drupal\content_feedback\Form\AddContentFeedback'
+  requirements:
+    _permission: 'access content feedback form'
+
+content_feedback_edit.form:
+  path: '/admin/content/feedback/edit/{id}'
+  defaults:
+    _title: 'Edit Content Feedback'
+    _form: '\Drupal\content_feedback\Form\EditContentFeedback'
+  requirements:
+    _permission: 'manage content feedback submissions'
+
+content_feedback_delete.form:
+  path: '/admin/content/feedback/delete/{id}'
+  defaults:
+    _title: 'Delete Content Feedback'
+    _form: '\Drupal\content_feedback\Form\DeleteContentFeedback'
+  requirements:
+    _permission: 'manage content feedback submissions'
