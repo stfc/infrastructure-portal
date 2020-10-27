@@ -1,0 +1,13 @@
+administer content feedback settings:
+  title: 'Administer content feedback settings'
+  description: 'Administer content feedback display settings'
+  restrict access: true
+
+manage content feedback submissions:
+  title: 'Manage content feedback submissions'
+  description: 'Manage content feedback submissions.'
+  restrict access: true
+
+access content feedback form:
+  title: 'Use content feedback form'
+  description: 'Access the content feedback form'

@@ -48,7 +48,10 @@
         "drupal/vbo_export": "^3.2",
         "drupal/views_bulk_operations": "^3.9",
         "drupal/recaptcha": "^3.0",
-        "wikimedia/composer-merge-plugin": "^1.4"
+        "wikimedia/composer-merge-plugin": "^1.4",
+        "drupal/content_feedback": "^1.3",
+        "geocoder-php/nominatim-provider": "^5.2",
+        "drupal/views_slideshow": "^4.8"
     },    
     "minimum-stability": "dev",
     "prefer-stable": true,

@@ -1,0 +1,101 @@
+<?php
+
+/**
+ * @file
+ * Add content feedback link to pages.
+ */
+
+use Drupal\Core\Url;
+use Drupal\node\Entity\Node;
+use Drupal\Component\Serialization\Json;
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_page_bottom().
+ */
+function content_feedback_page_bottom(array &$page_bottom) {
+  $user_access = \Drupal::currentUser()->hasPermission('access content feedback form');
+  if ($user_access && content_feedback_access_block()) {
+    $config = \Drupal::config('content_feedback.settings');
+    $dialog = [
+      'dialogClass' => 'token-tree-dialog',
+      'draggable' => TRUE,
+    ];
+
+    if ($config->get('dialog_size') == 1) {
+      $options = array_merge($dialog, ['autoResize' => TRUE]);
+    }
+    else {
+      $options = array_merge($dialog, ['width' => $config->get('dialog_width') . '%']);
+    }
+
+    $contentFeedbackBlock = [
+      '#type' => 'container',
+      '#attributes' => [
+        'class' => ['content_feedback_link bottom'],
+      ],
+      'link' => [
+        '#type' => 'link',
+        '#title' => t('Feedback'),
+        '#url' => Url::fromRoute('content_feedback_add.form'),
+        '#attributes' => [
+          'class' => ['use-ajax'],
+          'data-dialog-type' => 'modal',
+          'data-dialog-options' => Json::encode($options),
+        ],
+      ],
+    ];
+    $page_bottom['feedback'] = $contentFeedbackBlock;
+  }
+
+}
+
+/**
+ * Implements hook_page_attachments().
+ */
+function content_feedback_page_attachments(array &$attachments) {
+  if (\Drupal::currentUser()->hasPermission('access content feedback form')) {
+    $attachments['#attached']['library'][] = 'content_feedback/content-feedback-link';
+    $attachments['#attached']['library'][] = 'core/drupal.ajax';
+  }
+}
+
+/**
+ * Check user access to content feedback block.
+ *
+ * @return bool
+ *   Access check. Default is FALSE.
+ */
+function content_feedback_access_block() {
+  $current_path = \Drupal::service('path.current')->getPath();
+  $alias = \Drupal::service('path_alias.manager')->getAliasByPath($current_path);
+  $config = \Drupal::config('content_feedback.settings');
+  $path_matches = \Drupal::service('path.matcher')->matchPath($alias, $config->get('disable'));
+  $types = (!empty($config->get('content_types'))) ? $config->get('content_types') : [];
+
+  if (!$path_matches) {
+    if ($config->get('global') == 1) {
+      return TRUE;
+    }
+    elseif ($config->get('global') == 0 && $node = \Drupal::routeMatch()->getParameter('node')) {
+      if (is_numeric($node)) {
+        $node = Node::load($node);
+      }
+      if (in_array($node->getType(), $types)) {
+        return TRUE;
+      }
+    }
+  }
+
+  return FALSE;
+}
+
+/**
+ * Implements hook_help().
+ */
+function content_feedback_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'admin/config/content/feedback':
+      return t('Set the basic configuration for content feedback');
+  }
+}
