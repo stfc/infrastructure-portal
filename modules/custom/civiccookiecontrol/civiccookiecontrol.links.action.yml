@@ -1,0 +1,23 @@
+entity.cookiecategory.add_form:
+  route_name: 'entity.cookiecategory.add_form'
+  title: 'Add Cookie Category'
+  appears_on:
+    - entity.cookiecategory.collection
+
+entity.necessarycookie.add_form:
+  route_name: 'entity.necessarycookie.add_form'
+  title: 'Add Necessary Cookie'
+  appears_on:
+    - entity.necessarycookie.collection
+
+entity.excludedcountry.add_form:
+  route_name: 'entity.excludedcountry.add_form'
+  title: 'Add Excluded Country'
+  appears_on:
+    - entity.excludedcountry.collection
+
+entity.altlanguage.add_form:
+  route_name: 'entity.altlanguage.add_form'
+  title: 'Add Alternative Language'
+  appears_on:
+    - entity.altlanguage.collection

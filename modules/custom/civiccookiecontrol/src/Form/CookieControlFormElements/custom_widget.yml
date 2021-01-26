@@ -1,0 +1,303 @@
+civiccookiecontrol_font_family:
+  '#type': 'textfield'
+  '#title': 'Font Family'
+  '#placeholder': 'Arial'
+  '#default_value': 'civiccookiecontrol_font_family'
+  '#description': "The CSS font-family that you'd like to use for the entire module."
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+  'cookieVersion': [8,9]
+civiccookiecontrol_font_size_title:
+  '#type': 'textfield'
+  '#title': 'Font Size Title'
+  '#default_value': 'civiccookiecontrol_font_size_headers'
+  '#placeholder': '1.2'
+  '#description': "The CSS font-size that you'd like to use for the main (h2) title when the module is opened."
+  '#suffix': 'em'
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+      'value': 'COMMUNITY'
+  'cookieVersion': [8,9]
+civiccookiecontrol_font_size_headers:
+  '#type': 'textfield'
+  '#title': 'Font Size Headers'
+  '#default_value': 'civiccookiecontrol_font_size_headers'
+  '#placeholder': '1'
+  '#suffix': 'em'
+  '#description': "The CSS font-size that you'd like to use for the sub (h3) titles when the module is opened."
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+  'cookieVersion': [8,9]
+civiccookiecontrol_font_size:
+  '#type': 'textfield'
+  '#title': 'Font Size Headers'
+  '#default_value': 'civiccookiecontrol_font_size'
+  '#placeholder': '0.8'
+  '#suffix': 'em'
+  '#description': "The CSS font-size that you'd like to use throughout the module for body text."
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+  'cookieVersion': [8,9]
+civiccookiecontrol_font_color:
+  '#type': 'textfield'
+  '#title': 'Font Color'
+  '#placeholder': '#fff'
+  '#default_value': 'civiccookiecontrol_font_color'
+  '#attributes':
+    'class': ['colorfield']
+  '#description': "The CSS color that you'd like to use for all text and icons within the module."
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+  'cookieVersion': [8,9]
+civiccookiecontrol_background_color:
+  '#type': 'textfield'
+  '#title': 'Background Color'
+  '#default_value': 'civiccookiecontrol_background_color'
+  '#placeholder': '#00a0e0'
+  '#description': "The CSS background-color that you'd like to use throughout the module."
+  '#attributes':
+    class: ['colorfield']
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+  'cookieVersion': [8,9]
+civiccookiecontrol_accept_text_color:
+  '#type': 'textfield'
+  '#title': 'Accept Text Color'
+  '#default_value': 'civiccookiecontrol_accept_text_color'
+  '#placeholder': '#000'
+  '#attributes':
+    'class': ['colorfield']
+  '#description': "The CSS color that you'd like to use for the text within the module's primary 'accept' buttons."
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+  'cookieVersion': [8,9]
+civiccookiecontrol_accept_background_color:
+  '#type': 'textfield'
+  '#title': 'Accept Button Background Color'
+  '#default_value': ''
+  '#attributes':
+    'class': ['colorfield']
+  '#placeholder': '#000'
+  '#description': "The CSS background-color that you'd like to use for the module's primary 'accept' buttons."
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+  'cookieVersion': [8,9]
+civiccookiecontrol_reject_text_color:
+  '#type': 'textfield'
+  '#title': 'Reject Text Color'
+  '#default_value': 'civiccookiecontrol_reject_text_color'
+  '#placeholder': '#000'
+  '#attributes':
+    'class': ['colorfield']
+  '#description': "The CSS color that you'd like to use for the text within the module's primary 'reject' buttons."
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+  'cookieVersion': [9]
+civiccookiecontrol_reject_background_color:
+  '#type': 'textfield'
+  '#title': 'Reject Button Background Color'
+  '#default_value': ''
+  '#attributes':
+    'class': ['colorfield']
+  '#placeholder': '#000'
+  '#description': "The CSS background-color that you'd like to use for the module's primary 'reject' buttons."
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+  'cookieVersion': [9]
+civiccookiecontrol_toggle_text:
+  '#type': 'textfield'
+  '#title': 'Toggle Text Color'
+  '#default_value': 'civiccookiecontrol_toggle_text'
+  '#placeholder': '#000'
+  '#attributes':
+    'class': ['colorfield']
+  '#description': "The CSS color that you'd like to apply to the toggle button's text."
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_toggle_color:
+  '#type': 'textfield'
+  '#title': 'Toggle Slider Color'
+  '#placeholder': '#f0f0f0'
+  '#attributes':
+    'class': ['colorfield']
+  '#default_value': 'civiccookiecontrol_toggle_color'
+  '#description': "The CSS background-color that you'd like to use for the movable part of the toggle slider."
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_toggle_background:
+  '#type': 'textfield'
+  '#title': 'Toggle Background Color'
+  '#placeholder': '#fff'
+  '#attributes':
+    'class': ['colorfield']
+  '#default_value': 'civiccookiecontrol_toggle_background'
+  '#description': "The CSS background-color that you'd like to use for the toggle background."
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_alert_text:
+  '#type': 'textfield'
+  '#title': 'Alert text colour'
+  '#placeholder': '#fff'
+  '#attributes':
+    'class': ['colorfield']
+  '#description': "The CSS color that you'd like to use within the alert areas, such as to announce manual user actions for third party cookies."
+  '#default_value': 'civiccookiecontrol_alert_text'
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+             'value': 'COMMUNITY'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_alert_background:
+  '#type': 'textfield'
+  '#title': 'Alert background colour'
+  '#placeholder': '#111125'
+  '#attributes':
+    'class': ['colorfield']
+  '#description': "The CSS background-color that you'd like to use to highlight the alert areas, such as to announce manual user actions for third party cookies."
+  '#default_value': 'civiccookiecontrol_alert_background'
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_button_icon:
+  '#type': 'textfield'
+  '#title': 'Button Icon (url)'
+  '#default_value': 'civiccookiecontrol_button_icon'
+  '#placeholder': ''
+  '#description': "The URL address of an image you'd like to use instead of the CIVIC C icon in the bottom corner."
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_button_icon_width:
+  '#type': 'textfield'
+  '#title': 'Button Icon Width'
+  '#default_value': 'civiccookiecontrol_button_icon_width'
+  '#placeholder': '64'
+  '#suffix': 'px'
+  '#description': "If Button Icon exists, the css width that you'd like this image to be sized to."
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+      ':input[name=civiccookiecontrol_button_icon]':
+        'value': ''
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_button_icon_height:
+  '#type': 'textfield'
+  '#title': 'Button Icon Height'
+  '#default_value': 'civiccookiecontrol_button_icon_height'
+  '#placeholder': '64'
+  '#suffix': 'px'
+  '#description': "If Button Icon exists, the css height that you'd like this image to be sized to."
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+      ':input[name=civiccookiecontrol_button_icon]':
+        'value': ''
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_remove_icon:
+  '#type': 'radios'
+  '#title': 'Remove Icon'
+  '#options':
+    'true': 'Yes'
+    'false': 'No'
+  '#default_value': 'civiccookiecontrol_remove_icon'
+  '#description': "Whether or not to remove the button icon entirely. Please note, if you do this, you will need to present an alternative trigger to run the module's open() function."
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+  'boolOptions': true
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_remove_about_text:
+  '#type': 'radios'
+  '#title': 'Remove About Text'
+  '#options':
+    'true': 'Yes'
+    'false': 'No'
+  '#default_value': 'civiccookiecontrol_remove_about_text'
+  '#description': "Whether or not to remove the 'About this tool' link to CIVIC at the bottom of the module."
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+  'needsApiValidation': true
+  'boolOptions': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_locale_mode:
+  '#type': 'radios'
+  '#title': 'Locale used for current visitor'
+  '#options':
+    'drupal': "Use drupal's current language"
+    'browser': "Use browser's current language"
+  '#default_value': 'civiccookiecontrol_locale_mode'
+  '#description': "If alternative languages are setted the current language to decide which translation to used will be retrieved using this setting."
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+  'needsApiValidation': true
+  'cookieVersion': [9]
+civiccookiecontrol_debug:
+  '#type': 'radios'
+  '#title': 'Print Cookie Control configuration object in console.'
+  '#options':
+    'true': 'Yes'
+    'false': 'No'
+  '#default_value': 'civiccookiecontrol_debug'
+  '#description': "Prints Cookie Control configuration object in console for debugging reasons."
+  'needsApiValidation': true
+  'boolOptions': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_drupal_admin:
+  '#type': 'radios'
+  '#title': "Display cookie control in Drupal backend."
+  '#options':
+    'true': 'Yes'
+    'false': 'No'
+  '#default_value': 'civiccookiecontrol_drupal_admin'
+  '#description': "Displays Cookie Control widget in the drupal backend."
+  'needsApiValidation': true
+  'boolOptions': true
+  'cookieVersion': [8,9]

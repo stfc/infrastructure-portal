@@ -1,0 +1,12 @@
+name: 'Civic Cookie Control'
+description: 'Enables you to comply with UK and EU law on cookies'
+package: Civic
+core: 8.x
+core_version_requirement: ^8 || ^9
+libraries:
+  - civiccokiecontrol/civiccookiecontrol
+  - civiccokiecontrol/civiccookiecontrol.settings
+version: 8.x-4.2-rc1
+type: module
+configure: cookiecontrol.admin_overview
+

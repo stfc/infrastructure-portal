@@ -1,0 +1,19 @@
+{
+    "name": "drupal/page_specific_class",
+    "description": "Add classes in body tag for specific pages.",
+    "type": "drupal-module",
+    "homepage": "https://www.drupal.org/project/page_specific_class",
+    "authors": [
+        {
+            "name": "Hardik Patel",
+            "email": "hplord12@gmail.com",
+            "homepage": "https://www.drupal.org/u/hardik_patel_12",
+            "role": "Maintainer"
+        }
+    ],
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/page_specific_class",
+        "source": "https://cgit.drupalcode.org/page_specific_class"
+    },
+    "license": "GPL-2.0+"
+}

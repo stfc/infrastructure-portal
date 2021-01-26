@@ -1,0 +1,3 @@
+administer civiccookiecontrol:
+  title: 'Administer Civic Cookie Control'
+  description: 'Allows a user to configure setting of Civic Cookie Control plugin.'

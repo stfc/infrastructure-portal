@@ -244,11 +244,17 @@ function geocoder_field_entity_presave(EntityInterface $entity) {
       /* @var \Geocoder\Model\AddressCollection|\Geometry $geo_collection */
       switch ($geocoder['method']) {
         case 'geocode':
+          // Allow others modules to adjust the address string.
+          Drupal::service('module_handler')->alter('geocode_entity_field_address_string', $value['value'], $field);
+
           $failure_status_message = t("Unable to geocode '@text'.", ['@text' => isset($value['value']) ? $value['value'] : '']);
           $geo_collection = isset($value['value']) ? \Drupal::service('geocoder')->geocode($value['value'], $providers) : NULL;
           break;
 
         case 'reverse_geocode':
+          // Allow others modules to adjust the Coordinates to Reverse Geocode.
+          Drupal::service('module_handler')->alter('reverse_geocode_entity_field_coordinates', $value['lat'], $value['lon'], $field);
+
           $failure_status_message = t('Unable to reverse geocode the <em>@field_name</em> value.', ['@field_name' => $field_name]);
           $geo_collection = isset($value['lat']) && isset($value['lon']) ? \Drupal::service('geocoder')->reverse($value['lat'], $value['lon'], $providers) : NULL;
           break;

@@ -1,0 +1,31 @@
+diff --git a/modules/charts_api_example/src/Controller/ChartsApiExample.php b/modules/charts_api_example/src/Controller/ChartsApiExample.php
+index 09e6f5d..134fad0 100644
+--- a/modules/charts_api_example/src/Controller/ChartsApiExample.php
++++ b/modules/charts_api_example/src/Controller/ChartsApiExample.php
+@@ -55,7 +55,20 @@ class ChartsApiExample extends ControllerBase implements ContainerInjectionInter
+       'three_dimensional' => FALSE,
+       'title_position' => 'out',
+       'legend_position' => 'right',
+-      //'grouping'   => TRUE,
++      'data_labels'=> $this->chartSettings['data_labels'],
++      'grouping'   => TRUE,
++      'colors'   => $this->chartSettings['colors'],
++      'min'   => $this->chartSettings['min'],
++      'max'   => $this->chartSettings['max'],
++      'yaxis_prefix'   => $this->chartSettings['yaxis_prefix'],
++      'yaxis_suffix'   => $this->chartSettings['yaxis_suffix'],
++      'data_markers'   => $this->chartSettings['data_markers'],
++      'red_from'   => $this->chartSettings['red_from'],
++      'red_to'   => $this->chartSettings['red_to'],
++      'yellow_from'   => $this->chartSettings['yellow_from'],
++      'yellow_to'   => $this->chartSettings['yellow_to'],
++      'green_from'   => $this->chartSettings['green_from'],
++      'green_to'   => $this->chartSettings['green_to'],
+     ];
+ 
+     // Sample data format.
+@@ -114,3 +127,4 @@ class ChartsApiExample extends ControllerBase implements ContainerInjectionInter
+   }
+ 
+ }
++

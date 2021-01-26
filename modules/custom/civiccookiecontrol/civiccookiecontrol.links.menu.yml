@@ -1,0 +1,5 @@
+cookiecontrol.admin_overview:
+  title: 'Civic Cookie Control'
+  description: 'Configure Civic CookieControl'
+  route_name: 'cookiecontrol.admin_overview'
+  parent: system.admin_config

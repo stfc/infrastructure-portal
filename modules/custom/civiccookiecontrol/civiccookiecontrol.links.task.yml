@@ -1,0 +1,41 @@
+civiccookiecontrol.admin_overview.form:
+  route_name: cookiecontrol.admin_overview
+  base_route: cookiecontrol.admin_overview
+  title: 'Cookie Control Settings'
+  weight: 10
+
+civiccookiecontrol.iab1.form:
+  route_name: cookiecontrol.iab1
+  base_route: cookiecontrol.admin_overview
+  title: 'Cookie Control IAB V1.0 Settings'
+  weight: 20
+
+civiccookiecontrol.iab2.form:
+  route_name: cookiecontrol.iab2
+  base_route: cookiecontrol.admin_overview
+  title: 'Cookie Control IAB V2.0 Settings'
+  weight: 20
+
+civiccookiecontrol.cookiecategories.form:
+  route_name: entity.cookiecategory.collection
+  base_route: cookiecontrol.admin_overview
+  title: 'Cookie Control Categories'
+  weight: 30
+
+civiccookiecontrol.necessarycookies.form:
+  route_name: entity.necessarycookie.collection
+  base_route: cookiecontrol.admin_overview
+  title: 'Cookie Control Necessary Cookies'
+  weight: 40
+
+civiccookiecontrol.excludedcountries.form:
+  route_name: entity.excludedcountry.collection
+  base_route: cookiecontrol.admin_overview
+  title: 'Cookie Control Excluded Countries'
+  weight: 50
+
+civiccookiecontrol.altlanguages.form:
+  route_name: entity.altlanguage.collection
+  base_route: cookiecontrol.admin_overview
+  title: 'Cookie Control Alternative Languages'
+  weight: 60

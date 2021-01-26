@@ -1,0 +1,6 @@
+page_specific_class.settings:
+  type: config_object
+  mapping:
+    url_with_class:
+      type: string
+      label: 'Url with class'

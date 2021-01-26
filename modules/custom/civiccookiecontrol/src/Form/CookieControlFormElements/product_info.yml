@@ -1,0 +1,83 @@
+civiccookiecontrol_product:
+  '#title': 'Product License Type'
+  '#type': 'hidden'
+  '#default_value': 'civiccookiecontrol_product'
+  '#description': 'The type of obtained Cookie Control License that is tied to your API Key.'
+  'needsApiValidation': false
+  'cookieVersion': [8,9]
+civiccookiecontrol_mode:
+  '#title': ' Determines the mode in which Cookie Control runs.'
+  '#type': 'radios'
+  '#options':
+    'GDPR': 'GDPR'
+    'CCPA': 'CCPA'
+  '#default_value': 'civiccookiecontrol_mode'
+  '#description': 'The mode in which Cookie Control runs.'
+  'needsApiValidation': true
+  'cookieVersion': [9]
+civiccookiecontrol_log_consent:
+  '#title': "Log user's granting or revoking of consent."
+  '#type': 'radios'
+  '#options':
+    'true': 'Yes'
+    'false': 'No'
+  '#default_value': 'civiccookiecontrol_log_consent'
+  '#description': "Whether or not Cookie Control should record the user's granting or revoking of consent. Please note, this is also dependent on you haven agreed with CIVIC's data processor agreement. You need to sign in and accept the data processor agreement otherwise setting this option will have no effect."
+  'needsApiValidation': true
+  'boolOptions': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_encode_cookie:
+  '#title': "Encode Cookie."
+  '#type': 'radios'
+  '#options':
+    'true': 'Yes'
+    'false': 'No'
+  '#default_value': 'civiccookiecontrol_encode_cookie'
+  '#description': "Determines whether or not the value of Cookie Control's own cookie should be encoded as a Uniform Resource Identifier (URI) component."
+  'needsApiValidation': true
+  'boolOptions': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_sub_domains:
+  '#title': "Make Cookie Control's own Cookie accessible to all subdomains."
+  '#type': 'radios'
+  '#options':
+    'true': 'Yes'
+    'false': 'No'
+  '#default_value': 'civiccookiecontrol_sub_domains'
+  '#description': "Determines whether Cookie Control's own cookie is saved to the top level domain, and therefore accessible on all sub domains, or disabled and saved only to the request host."
+  'needsApiValidation': true
+  'boolOptions': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_same_site_cookie:
+  '#title': ' Same Site Cookie.'
+  '#type': 'radios'
+  '#options':
+    'true': 'Yes'
+    'false': 'No'
+  '#default_value': 'civiccookiecontrol_same_site_cookie'
+  '#description': "If set to 'Yes' the CookieControl cookie will be marked with the SameSite:Secure flag. Otherwise it will be flagged with SameSite:None, which however will mean that in some browsers Cookie Control will not work unless your site is served over HTTPS."
+  'needsApiValidation': true
+  'boolOptions': true
+  'cookieVersion': [9]
+civiccookiecontrol_same_site_value:
+  '#title': ' Value of the SameSite flag for the CookieControl cookie'
+  '#type': 'radios'
+  '#options':
+    'Strict': 'Strict'
+    'Lax': 'Lax'
+  '#default_value': 'civiccookiecontrol_same_site_value'
+  '#description': 'Used in conjuction with the Same Site Cookie property, it controls the value of the SameSite flag for the CookieControl cookie.'
+  '#states':
+    'visible':
+      ':input[name=civiccookiecontrol_same_site_cookie]':
+        'value': 1
+  'needsApiValidation': true
+  'cookieVersion': [9]
+civiccookiecontrol_consent_cookie_expiry:
+  '#type': 'textfield'
+  '#title': 'Consent cookie expiration(days).'
+  '#default_value': '90'
+  '#description': 'Controls how many days the consent of the user will be remembered for. Defaults to 90 days. This setting will apply globally to all categories.'
+  '#required': true
+  'needsApiValidation': true
+  'cookieVersion': [8,9]

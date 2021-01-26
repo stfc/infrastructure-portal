@@ -1,0 +1,205 @@
+civiccookiecontrol.altlanguage.*:
+  type: config_entity
+  label: 'Cookie Control Alternative Languages'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    uuid:
+      type: string
+      label: 'UUID'
+    altLanguageIsoCode:
+      type: label
+      label: 'Alternative Language Iso Code'
+    altLanguageMode:
+      type: string
+      label: 'Language mode for alternative language'
+    altLanguageLocation:
+      type: string
+      label: 'Language location for alternative locale'
+    altLanguageTitle:
+      type: string
+      label: 'Title in Alternative Language'
+    altLanguageIntro:
+      type: string
+      label: 'Intro in Alternative Language'
+    altLanguageAcceptSettings:
+      type: string
+      label: 'Accept Settings text in Alternative Language'
+    altLanguageRejectSettings:
+      type: string
+      label: 'Reject Settings text in Alternative Language'
+    altLanguageNecessaryTitle:
+      type: string
+      label: 'Necessary Cookies Title in Alternative Language'
+    altLanguageNecessaryDescription:
+      type: text
+      label: 'Necessary Cookies Description in Alternative Language'
+    altLanguageOn:
+      type: string
+      label: 'On Text in Alternative Language'
+    altLanguageOff:
+      type: string
+      label: 'Off Text in Alternative Language'
+    altLanguageNotifyTitle:
+      type: string
+      label: 'Notify Title in Alternative Language'
+    altLanguageNotifyDescription:
+      type: text
+      label: 'Notify Description Text in Alternative Language'
+    altLanguageAccept:
+      type: string
+      label: 'Accept Text in Alternative Language'
+    altLanguageReject:
+      type: string
+      label: 'Reject Text in Alternative Language'
+    altLanguageAcceptRecommended:
+      type: string
+      label: 'Accept Recommended Settings Text in Alternative Language'
+    altLanguageSettings:
+      type: string
+      label: 'Settings Text in Alternative Language'
+    altLanguageThirdPartyTitle:
+      type: string
+      label: 'Third Party Title in Alternative Language'
+    altLanguageThirdPartyDescription:
+      type: text
+      label: 'Third Party Description in Alternative Language'
+    altLanguageOptionalCookies:
+      type: string
+      label: 'Optional Cookies Translations'
+    altLanguageStmtDescrText:
+      type: string
+      label: 'Statement Description Text'
+    altLanguageStmtNameText:
+      type: string
+      label: 'Statement Name Text'
+    altLanguageStmtUrl:
+      type: string
+      label: 'Statement Url'
+    altLanguageStmtDate:
+      type: string
+      label: 'Statement Updated Date'
+    altLanguageCloseLabel:
+      type: string
+      label: 'Close Label in Alternative language'
+    altLanguageAccessibilityAlert:
+      type: string
+      label: 'Accessibility Alert in Alternative language'
+    altLanguageIabLabelText:
+      type: string
+      label: 'IAB Label in Alternative Language'
+    altLanguageIabDescriptionText:
+      type: text
+      label: 'IAB Description in Alternative Language'
+    altLanguageIabConfigureText:
+      type: string
+      label: 'IAB Configure Text in Alternative Language'
+    altLanguageIabPanelTitleText:
+      type: string
+      label: 'IAB Panel Title in Alternative Language'
+    altLanguageIabPanelIntroText:
+        type: text
+        label: 'IAB Panel Introduction Text in Alternative Language'
+    altLanguageIabAboutIabText:
+        type: text
+        label: 'About IAB Text in Alternative Language'
+    altLanguageIabIabNameText:
+      type: text
+      label: 'IAB Name Text in Alternative Language'
+    altLanguageIabIabLinkText:
+      type: string
+      label: 'IAB Link in Alternative Language'
+    altLanguageIabPanelBackText:
+      type: string
+      label: 'IAB Panel Back Text in Alternative Language'
+    altLanguageIabVendorTitleText:
+      type: string
+      label: 'IAB Vendor Title Text in Alternative Language'
+    altLanguageIabVendorConfigureText:
+      type: string
+      label: 'IAB Vendor Configure Text in Alternative Language'
+    altLanguageIabVendorBackText:
+      type: string
+      label: 'IAB Back to Vendor purposes title in Alternative Language'
+    altLanguageIabAcceptAllText:
+      type: string
+      label: 'IAB Accept All Label in Alternative Language'
+    altLanguageIabRejectAllText:
+      type: string
+      label: 'IAB Reject All Label in Alternative Language'
+    altLanguageIabBackText:
+      type: string
+      label: 'IAB Back Button Label in Alternative Language'
+    altLanguageIabPanelIntro1:
+      type: string
+      label: 'IAB Panel Intro 1 Alternative Language'
+    altLanguageIabPanelIntro2:
+      type: string
+      label: 'IAB Panel Intro 2 Alternative Language'
+    altLanguageIabPanelIntro3:
+      type: string
+      label: 'IAB Panel Intro 3 Alternative Language'
+    altLanguageIabAboutIab:
+      type: string
+      label: 'IAB About IAB in Alternative Language'
+    altLanguageIabName:
+      type: string
+      label: 'IAB Name in Alternative Language'
+    altLanguageIabLink:
+      type: string
+      label: 'IAB Link in Alternative Language'
+    altLanguageIabPurposes:
+      type: string
+      label: 'IAB Purposes in Alternative Language'
+    altLanguageIabSpecialPurposes:
+      type: string
+      label: 'IAB SPecial in Alternative Language'
+    altLanguageIabFeatures:
+      type: string
+      label: 'IAB Features in Alternative Language'
+    altLanguageIabSpecialFeatures:
+      type: string
+      label: 'IAB Special Features in Alternative Language'
+    altLanguageIabDataUse:
+      type: string
+      label: 'IAB Data Use in Alternative Language'
+    altLanguageIabVendors:
+      type: string
+      label: 'IAB Vendors in Alternative Language'
+    altLanguageIabOn:
+      type: string
+      label: 'IAB On in Alternative Language'
+    altLanguageIabOff:
+      type: string
+      label: 'IAB Off in Alternative Language'
+    altLanguageIabPurposeLegitimateInterest:
+      type: string
+      label: 'IAB Purpose Legitimate Interest in Alternative Language'
+    altLanguageIabVendorLegitimateInterest:
+      type: string
+      label: 'IAB Vendor Legitimate Interest in Alternative Language'
+    altLanguageIabObjectPurposeLegitimateInterest:
+      type: string
+      label: 'IAB Object purpose Legitimate Interest in Alternative Language'
+    altLanguageIabObjectVendorLegitimateInterest:
+      type: string
+      label: 'IAB Object Vendor Legitimate Interest in Alternative Language'
+    altLanguageIabRelyConsent:
+      type: string
+      label: 'IAB Rely Consent in Alternative Language'
+    altLanguageIabRelyLegitimateInterest:
+      type: string
+      label: 'IAB Rely Legitimate Interest in Alternative Language'
+    altLanguageIabSavePreferences:
+      type: string
+      label: 'IAB Save preferences in Alternative Language'
+    altLanguageIabAcceptAll:
+      type: string
+      label: 'IAB Accept All in Alternative Language'
+    altLanguageIabRejectAll:
+      type: string
+      label: 'IAB Reject All in Alternative Language'
+    langcode:
+      type: string
+      label: ‘Language code’

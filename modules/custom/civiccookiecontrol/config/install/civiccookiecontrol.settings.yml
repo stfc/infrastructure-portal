@@ -1,0 +1,75 @@
+civiccookiecontrol_api_key: ''
+civiccookiecontrol_api_key_version: 9
+civiccookiecontrol_product: 'COMMUNITY'
+civiccookiecontrol_mode: 'GDPR'
+civiccookiecontrol_popup: true
+civiccookiecontrol_same_site_cookie: true
+civiccookiecontrol_accept_behaviour: 'all'
+civiccookiecontrol_close_on_global_change: true
+civiccookiecontrol_initial_state: 'OPEN'
+civiccookiecontrol_notify_once: false
+civiccookiecontrol_reject_button: false
+civiccookiecontrol_layout: 'SLIDEOUT'
+civiccookiecontrol_on_text: 'On'
+civiccookiecontrol_off_text: 'Off'
+civiccookiecontrol_accept_recommended: 'Accept Recommended Settings'
+civiccookiecontrol_accept_settings: 'I Accept'
+civiccookiecontrol_reject_settings: 'I Do Not Accept'
+civiccookiecontrol_accept_text: 'I Accept'
+civiccookiecontrol_reject_text: 'I Reject'
+civiccookiecontrol_setting_text: 'Cookie Preferences'
+civiccookiecontrol_widget_position: 'LEFT'
+civiccookiecontrol_widget_theme: 'LIGHT'
+civiccookiecontrol_remove_icon: false
+civiccookiecontrol_remove_about_text: false
+civiccookiecontrol_font_color: ''
+civiccookiecontrol_font_size_title: ''
+civiccookiecontrol_font_size_intro: ''
+civiccookiecontrol_font_size_headers: ''
+civiccookiecontrol_font_size: ''
+civiccookiecontrol_font_family: ''
+civiccookiecontrol_alert_text: ''
+civiccookiecontrol_alert_background: ''
+civiccookiecontrol_log_consent: false
+civiccookiecontrol_encode_cookie: false
+civiccookiecontrol_notify_dismiss_button: true
+civiccookiecontrol_same_site_value: 'Strict'
+civiccookiecontrol_sub_domains: true
+civiccookiecontrol_background_color: ''
+civiccookiecontrol_accept_text_color: ''
+civiccookiecontrol_accept_background_color: ''
+civiccookiecontrol_reject_text_color: ''
+civiccookiecontrol_reject_background_color: ''
+civiccookiecontrol_toggle_text: ''
+civiccookiecontrol_toggle_color: ''
+civiccookiecontrol_toggle_background: ''
+civiccookiecontrol_button_icon: ''
+civiccookiecontrol_button_icon_width: ''
+civiccookiecontrol_button_icon_height: ''
+civiccookiecontrol_title_text: 'This site uses cookies to store information on your computer.'
+civiccookiecontrol_intro_text: 'Some of these cookies are essential to make our site work and others help us to improve by giving us some insight into how the site is being used.'
+civiccookiecontrol_necessary_title_text: 'Necessary Cookies'
+civiccookiecontrol_necessary_desc_text: 'Necessary cookies enable core functionality. The website cannot function properly without these cookies, and can only be disabled by changing your browser preferences.'
+civiccookiecontrol_notify_title_text: 'Your choice regarding cookies on this site'
+civiccookiecontrol_notify_desc_text: 'We use cookies to optimise site functionality and give you the best possible experience.'
+civiccookiecontrol_third_party_title_text: 'Warning: Some cookies require your attention.'
+civiccookiecontrol_third_party_desc_text: 'Consent for the following cookies could not be automatically revoked. Please follow the link(s) below to opt out manually.'
+civiccookiecontrol_consent_cookie_expiry: '90'
+civiccookiecontrol_privacynode: ''
+civiccookiecontrol_debug: false
+civiccookiecontrol_stmt_descr: ''
+civiccookiecontrol_stmt_name: ''
+civiccookiecontrol_stmt_date: ''
+civiccookiecontrol_toggle_type: 'slider'
+civiccookiecontrol_close_style: 'icon'
+civiccookiecontrol_settings_style: 'button'
+civiccookiecontrol_access_key: 'C'
+civiccookiecontrol_highlight_focus: false
+civiccookiecontrol_overlay: true
+civiccookiecontrol_onload: ''
+civiccookiecontrol_close_label: 'Close'
+civiccookiecontrol_accessibility_alert: 'This site uses cookies to store information. Press accesskey C to learn more about your options.'
+civiccookiecontrol_drupal_admin: false
+civiccookiecontrol_locale_mode: 'browser'
+civiccookiecontrol_landmark: 'Cookie preferences.'
+civiccookiecontrol_corner_button: 'Set cookie preferences.'

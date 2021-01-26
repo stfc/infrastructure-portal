@@ -1,0 +1,31 @@
+services:
+  civiccookiecontrol.necessaryCookieForm:
+    class: \Drupal\civiccookiecontrol\Form\NecessaryCookieForm
+    arguments: ['@entity_type.manager', '@cache.data']
+  civiccookiecontrol.IAB1Settings:
+    class: \Drupal\civiccookiecontrol\Form\IAB1Settings
+    arguments: ['@config.factory','@config.factory', '@cache.data']
+  civiccookiecontrol.IAB2Settings:
+    class: \Drupal\civiccookiecontrol\Form\IAB2Settings
+    arguments: ['@config.factory','@config.factory', '@cache.data', '@router.builder']
+  civiccookiecontrol.CCCStepsManager:
+    class: \Drupal\civiccookiecontrol\Form\Steps\CCCStepsManager
+    arguments: []
+  civiccookiecontrol.CivicCookieControlSettings:
+    class: \Drupal\civiccookiecontrol\Form\CivicCookieControlSettings
+    arguments: ['@entity_type.manager','@country_manager', '@config.factory', '@cache.data', '@router.builder', '@file_system', '@tempstore.private']
+  civiccookiecontrol.CCCLicenseInfo:
+    class: \Drupal\civiccookiecontrol\Form\Steps\CCCLicenseInfo
+    arguments: ['@country_manager', '@config.factory', '@file_system', '@tempstore.private']
+  civiccookiecontrol.CCCSettings:
+    class: \Drupal\civiccookiecontrol\Form\Steps\CCCSettings
+    arguments: ['@country_manager', '@config.factory', '@file_system', '@tempstore.private']
+  civiccookiecontrol.CookieCategoryForm:
+    class: \Drupal\civiccookiecontrol\Form\CookieCategoryForm
+    arguments: ['@entity_type.manager','@cache.data', '@router.builder']
+  civiccookiecontrol.ExcludedCountryForm:
+    class: \Drupal\civiccookiecontrol\Form\ExcludedCountryForm
+    arguments: ['@entity_type.manager','@cache.data']
+  civiccookiecontrol.AltLanguageForm:
+    class: \Drupal\civiccookiecontrol\Form\AltLanguageForm
+    arguments: ['@entity_type.manager','@cache.data']

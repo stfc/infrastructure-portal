@@ -147,3 +147,16 @@ function bootstrap_theme_registry_alter(&$data, &$context1 = NULL, &$context2 = 
 function bootstrap_theme_suggestions_alter(&$data, &$context1 = NULL, &$context2 = NULL) {
   Bootstrap::alter(__FUNCTION__, $data, $context1, $context2);
 }
+
+/*
+*
+*/
+function bootstrap_preprocess_html(&$variables) {
+
+  $request = \Drupal::request();
+  $route_match = \Drupal::routeMatch();
+  $title = \Drupal::service('title_resolver')->getTitle($request, $route_match->getRouteObject());
+
+  $css_title = \Drupal\Component\Utility\Html::cleanCssIdentifier($title);
+  $variables['attributes']['class'][] = strtolower($css_title);
+}

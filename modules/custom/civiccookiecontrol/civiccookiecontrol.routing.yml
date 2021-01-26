@@ -1,0 +1,151 @@
+cookiecontrol.admin_overview:
+  path: '/admin/config/system/cookiecontrol'
+  defaults:
+    _title: 'Cookie Control'
+    _form: \Drupal\civiccookiecontrol\Form\CivicCookieControlSettings
+  requirements:
+    _permission: 'administer civiccookiecontrol'
+
+cookiecontrol.iab1:
+  path: '/admin/config/system/cookiecontrol/iab1'
+  defaults:
+    _title: 'Cookie Control - IAB V1.0'
+    _form: \Drupal\civiccookiecontrol\Form\IAB1Settings
+  requirements:
+    _custom_access: '\Drupal\civiccookiecontrol\Access\CookieControlAccess::checkIAB1Access'
+
+cookiecontrol.iab2:
+  path: '/admin/config/system/cookiecontrol/iab2'
+  defaults:
+    _title: 'Cookie Control - IAB V2.0'
+    _form: \Drupal\civiccookiecontrol\Form\IAB2Settings
+  requirements:
+    _custom_access: '\Drupal\civiccookiecontrol\Access\CookieControlAccess::checkIAB2Access'
+
+entity.cookiecategory.collection:
+  path: '/admin/config/system/cookiecontrol/cookiecategory'
+  defaults:
+    _entity_list: 'cookiecategory'
+    _title: 'Cookie Categories Configuration'
+  requirements:
+    _custom_access: '\Drupal\civiccookiecontrol\Access\CookieControlAccess::checkIAB2EnabledAccess'
+
+entity.cookiecategory.add_form:
+  path: '/admin/config/system/cookiecontrol/cookiecategory/add'
+  defaults:
+    _entity_form: 'cookiecategory.add'
+    _title: 'Add Cookie Category'
+  requirements:
+    _permission: 'administer civiccookiecontrol'
+
+entity.cookiecategory.edit_form:
+  path: '/admin/config/system/cookiecontrol/cookiecategory/{cookiecategory}'
+  defaults:
+    _entity_form: 'cookiecategory.edit'
+    _title: 'Edit Cookie Category'
+  requirements:
+    _permission: 'administer civiccookiecontrol'
+
+entity.cookiecategory.delete_form:
+  path: '/admin/config/system/cookiecontrol/cookiecategory/{cookiecategory}/delete'
+  defaults:
+    _entity_form: 'cookiecategory.delete'
+    _title: 'Delete Cookie Category'
+  requirements:
+    _permission: 'administer civiccookiecontrol'
+
+entity.necessarycookie.collection:
+  path: '/admin/config/cookiecontrol/system/necessarycookie'
+  defaults:
+    _entity_list: 'necessarycookie'
+    _title: 'Necessary Cookies Configuration'
+  requirements:
+    _custom_access: '\Drupal\civiccookiecontrol\Access\CookieControlAccess::checkAccess'
+
+entity.necessarycookie.add_form:
+  path: '/admin/config/system/cookiecontrol/necessarycookie/add'
+  defaults:
+    _entity_form: 'necessarycookie.add'
+    _title: 'Necessary Cookie Category'
+  requirements:
+    _permission: 'administer civiccookiecontrol'
+
+entity.necessarycookie.edit_form:
+  path: '/admin/config/system/cookiecontrol/necessarycookie/{necessarycookie}'
+  defaults:
+    _entity_form: 'necessarycookie.edit'
+    _title: 'Edit Necessary Cookie'
+  requirements:
+    _permission: 'administer civiccookiecontrol'
+
+entity.necessarycookie.delete_form:
+  path: '/admin/config/system/cookiecontrol/necessarycookie/{necessarycookie}/delete'
+  defaults:
+    _entity_form: 'necessarycookie.delete'
+    _title: 'Delete Necessary Cookie'
+  requirements:
+    _permission: 'administer civiccookiecontrol'
+
+entity.excludedcountry.collection:
+  path: '/admin/config/system/cookiecontrol/excludedcountry'
+  defaults:
+    _entity_list: 'excludedcountry'
+    _title: 'Excluded Country Configuration'
+  requirements:
+    _custom_access: '\Drupal\civiccookiecontrol\Access\CookieControlAccess::checkAccess'
+
+entity.excludedcountry.add_form:
+  path: '/admin/config/system/cookiecontrol/excludedcountry/add'
+  defaults:
+    _entity_form: 'excludedcountry.add'
+    _title: 'Add Excluded Country'
+  requirements:
+    _permission: 'administer civiccookiecontrol'
+
+entity.excludedcountry.edit_form:
+  path: '/admin/config/system/cookiecontrol/excludedcountry/{excludedcountry}'
+  defaults:
+    _entity_form: 'excludedcountry.edit'
+    _title: 'Edit Excluded Country'
+  requirements:
+    _permission: 'administer civiccookiecontrol'
+
+entity.excludedcountry.delete_form:
+  path: '/admin/config/system/cookiecontrol/excludedcountry/{excludedcountry}/delete'
+  defaults:
+    _entity_form: 'excludedcountry.delete'
+    _title: 'Delete Excluded Country'
+  requirements:
+    _permission: 'administer civiccookiecontrol'
+
+entity.altlanguage.collection:
+  path: '/admin/config/system/cookiecontrol/altlanguage'
+  defaults:
+    _entity_list: 'altlanguage'
+    _title: 'Alternative Language Configuration'
+  requirements:
+    _custom_access: '\Drupal\civiccookiecontrol\Access\CookieControlAccess::checkAccess'
+
+entity.altlanguage.add_form:
+  path: '/admin/config/system/cookiecontrol/altlanguage/add'
+  defaults:
+    _entity_form: 'altlanguage.add'
+    _title: 'Add Alternative Language'
+  requirements:
+    _permission: 'administer civiccookiecontrol'
+
+entity.altlanguage.edit_form:
+  path: '/admin/config/system/cookiecontrol/altlanguage/{altlanguage}'
+  defaults:
+    _entity_form: 'altlanguage.edit'
+    _title: 'Edit Alternative Language'
+  requirements:
+    _permission: 'administer civiccookiecontrol'
+
+entity.altlanguage.delete_form:
+  path: '/admin/config/system/cookiecontrol/altlanguage/{altlanguage}/delete'
+  defaults:
+    _entity_form: 'altlanguage.delete'
+    _title: 'Delete Alternative Language'
+  requirements:
+    _permission: 'administer civiccookiecontrol'

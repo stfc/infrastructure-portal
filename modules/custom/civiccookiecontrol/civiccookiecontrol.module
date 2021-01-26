@@ -1,0 +1,162 @@
+<?php
+
+/**
+ * @file
+ * Implements the display of the Cookie Control pop-up dialog.
+ *
+ * Module developed by Civic UK www.civicuk.com.
+ * JavaScript developed by Civic UK www.civicuk.com.
+ */
+
+use Drupal\civiccookiecontrol\CCCConfig\CCCConfigFactory;
+use Drupal\Component\Serialization\Json;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Link;
+
+/**
+ * Implements hook_help().
+ */
+function civiccookiecontrol_help($route_name, RouteMatchInterface $route_match)
+{
+    switch ($route_name) {
+        case 'help.page.civiccookiecontrol':
+            $output = '';
+            $output .= '<h3>' . t('About') . '</h3>';
+            $output .= "<p> With an elegant  user-interface that doesn't hurt the look and feel of your site, Cookie Control is a mechanism for controlling user consent for the use of cookies on their computer.</p>"
+                . "<p> For more information, please visit Civic's Cookie Control pages" . ' at: <a href="http://www.civicuk.com/cookie-law/index" title="Cookie Control by Civic" target="_blank">http://www.civicuk.com/cookie-law/index</a></p>'
+                . '<a class="civic" href="http://www.civicuk.com/cookie-law/pricing" target="_blank">Get Your API Key</a><p>';
+            return $output;
+    }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function civiccookiecontrol_theme()
+{
+    return [
+        'page__admin__config__system__cookiecontrol' => [
+            'render element' => 'form',
+            'template' => 'page--admin--config--system--cookiecontrol',
+        ],
+        'page__admin__config__cookiecontrol__system__necessarycookie' => [
+            'render element' => 'page',
+            'template' => 'page--admin--config--cookiecontrol--system--necessarycookie',
+        ],
+        'page__admin__config__system__cookiecontrol__cookiecategory' => [
+            'render element' => 'page',
+            'template' => 'page--admin--config--system--cookiecontrol--cookiecategory',
+        ],
+        'page__admin__config__system__cookiecontrol__excludedcountry' => [
+            'render element' => 'page',
+            'template' => 'page--admin--config--system--cookiecontrol--excludedcountry',
+        ],
+        'page__admin__config__system__cookiecontrol__altlanguage' => [
+            'render element' => 'page',
+            'template' => 'page--admin--config--system--cookiecontrol--altlanguage',
+        ],
+    ];
+}
+
+/**
+ * Implements hook_link_alter().
+ */
+function civiccookiecontrol_link_alter(&$variables)
+{
+
+    if ( array_key_exists('data-drupal-link-system-path', $variables['options']['attributes']) &&
+        (strpos($variables['options']['attributes']['data-drupal-link-system-path'], 'admin/config/system/cookiecontrol/cookiecategory/add') !== FALSE ||
+        strpos($variables['options']['attributes']['data-drupal-link-system-path'], 'admin/config/system/cookiecontrol/necessarycookie/add') !== FALSE ||
+        strpos($variables['options']['attributes']['data-drupal-link-system-path'], 'admin/config/system/cookiecontrol/excludedcountry/add') !== FALSE ||
+        strpos($variables['options']['attributes']['data-drupal-link-system-path'], 'admin/config/system/cookiecontrol/altlanguage/add') !== FALSE)
+    ) {
+        $variables['options']['attributes']['class'][] = 'use-ajax';
+        // off_canvas could be used as an alternative.
+        $variables['options']['attributes']['data-dialog-type'][] = 'dialog';
+        $variables['options']['attributes']['data-dialog-options'][] = Json::encode(['width' => 700]);
+    }
+}
+
+/**
+ * Implements hook_page_attachments().
+ */
+function civiccookiecontrol_page_attachments(array &$page)
+{
+    $cccConfig = \Drupal::config('civiccookiecontrol.settings');
+
+    if ((\Drupal::config('iab.settings')->get('iabCMP')==true) || (\Drupal::config('iab2.settings')->get('iabCMP')==true)) {
+        $page['#attached']['library'][] = 'civiccookiecontrol/civiccookiecontrol' . $cccConfig->get('civiccookiecontrol_api_key_version') .'.header';
+    }else{
+        $page['#attached']['library'][] = 'civiccookiecontrol/civiccookiecontrol' . $cccConfig->get('civiccookiecontrol_api_key_version');
+    }
+    $page['#attached']['library'][] = 'civiccookiecontrol/civiccookiecontrol.settings';
+    $page['#attached']['library'][] = 'civiccookiecontrol/civiccookiecontrol.admin_css';
+    // don't render on admin pages or excluded paths.
+    $route = \Drupal::routeMatch()->getRouteObject();
+    $is_admin = \Drupal::service('router.admin_context')->isAdminRoute($route);
+
+    $page['#attached']['drupalSettings']['path'] = [
+        'civiccookiecontrol_path' => drupal_get_path('module', 'civiccookiecontrol'),
+    ];
+    if (!$is_admin || $cccConfig->get('civiccookiecontrol_drupal_admin')) {
+        $page['#attached']['drupalSettings']['civiccookiecontrol'] = CCCConfigFactory::get_cccconfig($cccConfig->get('civiccookiecontrol_api_key_version'))->get_cccconfig_json();// _load_cookie_config();
+    }
+}
+
+/**
+ * Function to check if cookie categories are defined.
+ */
+function _check_cookie_categories()
+{
+    $cookieCategories = \Drupal::entityTypeManager()
+    ->getStorage('cookiecategory')
+    ->loadMultiple();
+
+    if (empty($cookieCategories) && (\Drupal\civiccookiecontrol\Access\CookieControlAccess::checkApiKey())) {
+        $messenger = \Drupal::messenger();
+        $messenger->deleteAll();
+        $messenger->addMessage(t('You need to add at least <b>one</b> <a href="/admin/config/system/cookiecontrol/cookiecategory">Cookie Category</a> for the Cookie Control module to properly operate.'), $messenger::TYPE_ERROR);
+    }
+}
+
+/**
+ * Function to check if a configuration element is empty.
+ */
+function _check_if_empty($configElement)
+{
+    if (is_array($configElement) && !empty($configElement)) {
+        return $configElement;
+    }
+
+    if ($configElement != "" || !empty($configElement)) {
+        return $configElement;
+    }
+}
+
+/**
+ * Implements hook_preprocess().
+ */
+/**
+ * Implements hook_preprocess().
+ */
+function civiccookiecontrol_preprocess_page__admin__config__system__cookiecontrol(&$variables)
+{
+    if (\Drupal\civiccookiecontrol\Access\CookieControlAccess::checkApiKey()) {
+        $variables['ccc_messages'] = t('Cookie Control will load with its own preset styling and text configuration. You can customize your widget initial state, position, theme and text with the following options.');
+    }else{
+        $variables['ccc_messages'] = t('Please provide a valid Cookie Control API key to proceed.');
+    }
+}
+
+
+function civiccookiecontrol_js_alter(&$js) {
+  foreach ($js as $path => &$values) {
+    if ((strpos($values['data'], 'https://cc.cdn.civiccomputing.com/8/cookieControl-8.x.min.js') !== FALSE) ||
+       (strpos($values['data'], 'https://cc.cdn.civiccomputing.com/9/cookieControl-9.2.min.js') !== FALSE))
+    {
+      $values['preprocess'] = 0;
+      $values['cache'] = 0;
+    }
+  }
+}
+

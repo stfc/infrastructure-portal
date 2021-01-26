@@ -1,0 +1,29 @@
+diff --git a/token.tokens.inc b/token.tokens.inc
+index 4b43404..801b710 100755
+--- a/token.tokens.inc
++++ b/token.tokens.inc
+@@ -375,6 +375,7 @@ function token_token_info() {
+   $info['tokens']['random']['number'] = [
+     'name' => t('Number'),
+     'description' => t('A random number from 0 to @max.', ['@max' => mt_getrandmax()]),
++    'dynamic' => TRUE,
+   ];
+   $info['tokens']['random']['hash'] = [
+     'name' => t('Hash'),
+@@ -1019,6 +1020,16 @@ function token_tokens($type, array $tokens, array $data = [], array $options = [
+       }
+     }
+ 
++    // [random:number:*] dynamic token.
++    if ($value_tokens = \Drupal::token()->findWithPrefix($tokens, 'number')) {
++      foreach ($value_tokens as $key => $original) {
++        if (!isset($key)) {
++          $key = mt_getrandmax();
++        }
++        $replacements[$original] = mt_rand(0, $key);
++      }
++    }
++
+     // [custom:hash:*] dynamic token.
+     if ($hash_tokens = \Drupal::token()->findWithPrefix($tokens, 'hash')) {
+       $algos = hash_algos();

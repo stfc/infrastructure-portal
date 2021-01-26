@@ -1,0 +1,255 @@
+civiccookiecontrol_initial_state:
+  '#title': 'Pop up by default'
+  '#type': 'radios'
+  '#options':
+    'OPEN': 'Open'
+    'CLOSED': 'Closed'
+    'NOTIFY': 'Notify'
+    'TOP': 'Top'
+  '#cc9options':
+    'BOX': 'Box'
+  '#default_value': 'civiccookiecontrol_initial_state'
+  '#description': "Choose whether the Cookie Control user interface (UI) is open by default on page load. This makes it much more explicit that you're seeking user's consent for the use of cookies and may be a safer option in terms of compliance."
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_layout:
+  '#title': 'Layout'
+  '#type': 'radios'
+  '#options':
+    'SLIDEOUT': 'Slideout'
+    'POPUP': 'Popup'
+  '#default_value': 'civiccookiecontrol_layout'
+  '#description': "Choose the layout of the Cookie Control user interface (UI)."
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_notify_once:
+  '#title': "Display cookie control's initial state only once."
+  '#type': 'radios'
+  '#options':
+    'true': 'Yes'
+    'false': 'No'
+  '#default_value': 'civiccookiecontrol_notify_once'
+  '#description': "Determines whether the module only shows its initialState once, or if it continues to replay on subsequent page loads until the user has directly interacted with it - by either toggling on / off a category, accepting the recommended settings, or dismissing the module."
+  'needsApiValidation': true
+  'boolOptions': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_reject_button:
+  '#title': "Display reject button."
+  '#type': 'radios'
+  '#options':
+    'true': 'Yes'
+    'false': 'No'
+  '#default_value': 'civiccookiecontrol_reject_button'
+  '#description': "Determines whether the module shows a reject button alongside the accept button on the notification bar, or alongside the 'accept recommended settings' button when the panel is open. Should the user click this, all optionalCookies will be revoked."
+  'needsApiValidation': true
+  'boolOptions': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_toggle_type:
+  '#type': 'radios'
+  '#title': 'Toggle Type'
+  '#options':
+    'slider': 'Slider'
+    'checkbox': 'Checkbox'
+  '#default_value': 'civiccookiecontrol_toggle_type'
+  '#description': "Determines the control toggle for each item within optionalCookies. Possible values are either slider or checkbox."
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_accept_behaviour:
+  '#type': 'radios'
+  '#title': 'Accept Behaviour'
+  '#options':
+    'all': 'All'
+    'recommended': 'Recommended'
+  '#default_value': 'civiccookiecontrol_accept_behaviour'
+  '#description': "This property is used to control what will happen when the user clicks on either of the 'Accept' or 'Accept recommended settings' buttons. By default all cookie purposes will be accepted."
+  'needsApiValidation': true
+  'cookieVersion': [9]
+civiccookiecontrol_close_on_global_change:
+  '#title': ' Close on Global change.'
+  '#type': 'radios'
+  '#options':
+    'true': 'Yes'
+    'false': 'No'
+  '#default_value': 'civiccookiecontrol_close_on_global_change'
+  '#description': 'If set to "No" the Cookie Control main window will remain open when the user clicks on either of the accept or reject buttons, and the user will have to explicitly close it using the X close icon at the top right, or the close button.'
+  'needsApiValidation': true
+  'boolOptions': true
+  'cookieVersion': [9]
+civiccookiecontrol_close_style:
+  '#type': 'radios'
+  '#title': 'Close Style'
+  '#options':
+    'icon': 'Icon'
+    'labelled': 'Labelled'
+    'button': 'Button'
+  '#default_value': 'civiccookiecontrol_close_style'
+  '#description': "Determines the closing behaviour of the module. Possible values are either icon, labelled or button."
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_notify_dismiss_button:
+  '#title': "Notify Dismiss Button."
+  '#type': 'radios'
+  '#options':
+    'true': 'Yes'
+    'false': 'No'
+  '#default_value': 'civiccookiecontrol_notify_dismiss_button'
+  '#description': "Set this to \"No\" if you are using the notify interface and don't wish to show the (X) close icon on it."
+  'needsApiValidation': true
+  'boolOptions': true
+  'cookieVersion': [9]
+civiccookiecontrol_close_label:
+  '#type': 'textfield'
+  '#title': 'Close Label'
+  '#default_value': 'civiccookiecontrol_close_label'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_settings_style:
+  '#type': 'radios'
+  '#title': 'Settings Style'
+  '#options':
+    'button': 'Button'
+    'link': 'Link'
+  '#default_value': 'civiccookiecontrol_settings_style'
+  '#description': "Determines the appearance of the settings button on the notification bar. Possible values are either button or link."
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_widget_position:
+  '#type': 'radios'
+  '#title': 'Widget Position'
+  '#default_value': 'LEFT'
+  '#options':
+    'LEFT': 'Left'
+    'RIGHT': 'Right'
+  '#description': "Determines the side of the display Cookie Control will occupy."
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_widget_theme:
+  '#type': 'radios'
+  '#title': 'Widget theme'
+  '#default_value': 'LIGHT'
+  '#options':
+    'LIGHT': 'Light'
+    'DARK': 'Dark'
+  '#description': "Determines the appearance of Cookie Control."
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_title_text:
+  '#type': 'textarea'
+  '#title': 'Title Text'
+  '#default_value': 'civiccookiecontrol_title_text'
+  '#description': 'On window-style widgets, this text appears as the first sentence of the window. On bar-style widgets, this is the only text visible on the bar before it is expanded.'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_intro_text:
+  '#type': 'text_format'
+  '#title': 'Introductory Text'
+  '#default_value': 'civiccookiecontrol_intro_text'
+  '#description': 'Some short, sharp copy to introduce the role of cookies on your site. On window-style widgets, this text is concatenated to the title and appears together. On bar-style widgets, this is the first text displayed in the widget when the information panel is visible.'
+  '#format': 'full_html'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_necessary_title_text:
+  '#type': 'textarea'
+  '#title': 'Necessary Title Text'
+  '#default_value': 'civiccookiecontrol_necessary_title_text'
+  '#description': 'Title for necessary cookies section.'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_necessary_desc_text:
+  '#type': 'text_format'
+  '#title': 'Necessary Description Text'
+  '#default_value': 'civiccookiecontrol_necessary_desc_text'
+  '#description': 'Necessary cookies enable core functionality such as page navigation and access to secure areas. The website cannot function properly without these cookies, and can only be disabled by changing your browser preferences.'
+  '#format': 'full_html'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_notify_title_text:
+  '#type': 'textarea'
+  '#title': 'Notify Title Text'
+  '#default_value': 'civiccookiecontrol_notify_title_text'
+  '#description': 'Your choice regarding cookies on this site'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_notify_desc_text:
+  '#type': 'text_format'
+  '#title': 'Notify Description Text'
+  '#default_value': 'We use cookies to optimise site functionality and give you the best possible experience.'
+  'needsApiValidation': true
+  '#format': 'full_html'
+  'cookieVersion': [8,9]
+civiccookiecontrol_third_party_title_text:
+  '#type': 'textarea'
+  '#title': 'Third Party Cookies Title Text'
+  '#default_value': 'civiccookiecontrol_third_party_title_text'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_third_party_desc_text:
+  '#type': 'text_format'
+  '#title': 'Third Party Cookies Description Text'
+  '#default_value': 'civiccookiecontrol_third_party_desc_text'
+  'needsApiValidation': true
+  '#format': 'full_html'
+  'cookieVersion': [8,9]
+civiccookiecontrol_on_text:
+  '#type': 'textfield'
+  '#title': 'On Text'
+  '#default_value': 'civiccookiecontrol_on_text'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_off_text:
+  '#type': 'textfield'
+  '#title': 'Off Text'
+  '#default_value': 'civiccookiecontrol_off_text'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_accept_recommended:
+  '#type': 'textfield'
+  '#title': 'Accept Recommended Settings Text'
+  '#default_value': 'civiccookiecontrol_accept_recommended'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_accept_settings:
+  '#type': 'textfield'
+  '#title': 'Accept Settings Text'
+  '#placeholder': 'I Accept'
+  '#default_value': 'civiccookiecontrol_accept_settings'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_reject_settings:
+  '#type': 'textfield'
+  '#title': 'Reject Settings Text'
+  '#placeholder': 'Reject All'
+  '#default_value': 'civiccookiecontrol_reject_settings'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_accept_text:
+  '#type': 'textfield'
+  '#title': 'Accept Text'
+  '#default_value': 'civiccookiecontrol_accept_text'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_reject_text:
+  '#type': 'textfield'
+  '#title': 'Reject Text'
+  '#default_value': 'civiccookiecontrol_reject_text'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_setting_text:
+  '#type': 'textfield'
+  '#title': 'Settings Text'
+  '#default_value': 'civiccookiecontrol_setting_text'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_accessibility_alert:
+  '#type': 'textfield'
+  '#title': 'Accessibility Alert'
+  '#default_value': 'civiccookiecontrol_accessibility_alert'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_onload:
+  '#type': 'textarea'
+  '#title': 'On Load'
+  '#default_value': 'civiccookiecontrol_onload'
+  '#description': 'Defines a function to be triggered after the module initiates the defined configuration.'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]

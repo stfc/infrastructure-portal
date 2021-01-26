@@ -1,0 +1,55 @@
+<?php
+use Drupal\search_api\Query\QueryInterface;
+use Drupal\Core\Database\Database;
+/**
+ * Alter a search query before it gets executed.
+ *
+ * The hook is invoked after all enabled processors have preprocessed the query.
+ *
+ * @param \Drupal\search_api\Query\QueryInterface $query
+ *   The query that will be executed.
+ */
+function search_api_stats_search_api_query_alter(QueryInterface &$query) {
+  $user = Drupal::currentUser();
+  $language = Drupal::languageManager()->getCurrentLanguage();
+  $database = Database::getConnection();
+  $index = $query->getIndex();
+  if (!empty($index)) {
+    $server = $index->get('server');
+  }
+
+  if (empty($index) || empty($server)) {
+    return;
+  }
+
+  $originalKeys = $query->getOriginalKeys();
+  $lowerOriginalKeys = mb_strtolower($originalKeys);
+  $keywords = trim($lowerOriginalKeys);
+  //to avoid to insert empty keywords value into database.
+  if (!empty($keywords)) {
+    $database->insert('search_api_stats')->fields(
+      array(
+        's_name' => $server,
+        'i_name' => $index->id(),
+        'timestamp' => \Drupal::time()->getRequestTime(),
+        'uid' => $user->id(),
+        'sid' => session_id(),
+        'keywords' => $keywords,
+        'filters' => '',
+        'sort' => '',
+        'language' => $language->getId()
+      )
+    )->execute();
+  }
+}
+
+/**
+ * Implements of hook_views_api().
+ */
+function search_api_stats_views_api() {
+  return array(
+    'api' => 3.0,
+    'path' => drupal_get_path('module','search_api_stats') . '/includes/views',
+  );
+}
+

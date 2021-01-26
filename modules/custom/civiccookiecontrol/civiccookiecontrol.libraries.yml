@@ -1,0 +1,56 @@
+# A simple script using jquery ui accordion.
+
+civiccookiecontrol8.header:
+  version: 8.3
+  header: true
+  js:
+    https://cc.cdn.civiccomputing.com/8/cookieControl-8.x.min.js: {type: external, minified: true}
+
+civiccookiecontrol8:
+  version: 8.3
+  js:
+    https://cc.cdn.civiccomputing.com/8/cookieControl-8.x.min.js: {type: external, minified: true}
+
+civiccookiecontrol9.header:
+  version: 9.1
+  header: true
+  js:
+    https://cc.cdn.civiccomputing.com/9/cookieControl-9.2.min.js: {type: external, minified: true}
+
+civiccookiecontrol9:
+  version: 9.1
+  js:
+    https://cc.cdn.civiccomputing.com/9/cookieControl-9.2.min.js: {type: external, minified: true}
+
+civiccookiecontrol.settings:
+  js:
+    js/cookieControlSettings.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+
+civiccookiecontrol.admin:
+  js:
+    js/cookieControlAdmin.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+
+civiccookiecontrol.lct:
+  js:
+    js/cookieControlLicenseType.js: {}
+
+civiccookiecontrol.admin_css:
+  css:
+    component:
+      css/cookiecontrol.css: {}
+
+civiccookiecontrol.minicolors:
+  version: 2.3.4
+  js:
+    https://cdnjs.cloudflare.com/ajax/libs/jquery-minicolors/2.3.4/jquery.minicolors.min.js: {type: external, minified: true}
+  css:
+    component:
+      https://cdnjs.cloudflare.com/ajax/libs/jquery-minicolors/2.3.4/jquery.minicolors.min.css: {type: external, minified: true}

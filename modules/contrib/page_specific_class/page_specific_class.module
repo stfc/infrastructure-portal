@@ -1,0 +1,74 @@
+<?php
+
+/**
+ * @file
+ * This file adds a class to the body tag page-wise.
+ */
+
+use Drupal\Core\Url;
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_preprocess_html().
+ */
+function page_specific_class_preprocess_html(&$variables) {
+
+  // Get current path.
+  $current_path = \Drupal::service('path.current')->getPath();
+  // Get path from alias.
+  $current_path = \Drupal::service('path_alias.manager')->getPathByAlias($current_path);
+
+  // Get settings from page specific class settings.
+  $config = \Drupal::config('page_specific_class.settings');
+  if (!empty($config->get('url_with_class'))) {
+    $enteredArr = explode(PHP_EOL, $config->get('url_with_class'));
+
+    foreach ($enteredArr as $values) {
+      $urlWithClassArr = explode("|", $values);
+      $url = trim(strtolower($urlWithClassArr[0]));
+      if (isset($urlWithClassArr[1])) {
+        $class = trim($urlWithClassArr[1]);
+        $classes_array = explode(' ', $class);
+        $front_page = \Drupal::service('path.matcher')->isFrontPage();
+        $enteredPath = \Drupal::service('path_alias.manager')->getPathByAlias($url);
+
+        // If current path and entered path by user in page class setting match,
+        // then only add respective class.
+        if ($current_path == $enteredPath) {
+          foreach ($classes_array as $class) {
+            $variables['attributes']['class'][] = Html::cleanCssIdentifier($class, []);
+          }
+        }
+
+        // If current page matches with home page or user entered path for all,
+        // pages then only add respective class.
+        elseif (($front_page) && ($enteredPath == "/<front>") || ($enteredPath == "/*")) {
+          foreach ($classes_array as $class) {
+            $variables['attributes']['class'][] = Html::cleanCssIdentifier($class, []);
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_help().
+ */
+function page_specific_class_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+
+    case 'help.page.page_specific_class':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t("Page Specific Class allows users to add classes to body of any page through the configuration interface. Hooray for more powerful page theming!") . '</p>';
+
+      $output .= '<h3>' . t('Usage') . '</h3>';
+      $output .= '<dl>';
+      $output .= '<dt>' . t('To add a class to a body tag of page, simply visit that  configuration page at <a href=":configure_link">Configure</a>.', [':configure_link' => Url::fromRoute('page_specific_class.settings')->toString()]) . '</dt>';
+      $output .= '</dl>';
+
+      return $output;
+  }
+}

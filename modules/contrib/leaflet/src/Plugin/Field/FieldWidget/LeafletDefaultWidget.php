@@ -164,12 +164,11 @@ class LeafletDefaultWidget extends GeofieldDefaultWidget {
       ],
       'toolbar' => [
         'position' => 'topright',
-        'drawMarker' => TRUE,
+        'marker' => 'defaultMarker',
         'drawPolyline' => TRUE,
         'drawRectangle' => TRUE,
         'drawPolygon' => TRUE,
         'drawCircle' => FALSE,
-        'drawCircleMarker' => FALSE,
         'editMode' => TRUE,
         'dragMode' => TRUE,
         'cutPolygon' => FALSE,
@@ -276,10 +275,16 @@ class LeafletDefaultWidget extends GeofieldDefaultWidget {
       '#default_value' => $toolbar_settings['position'] ?? $default_settings['toolbar']['position'],
     ];
 
-    $form['toolbar']['drawMarker'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Adds button to draw markers.'),
-      '#default_value' => $toolbar_settings['drawMarker'] ?? $default_settings['toolbar']['drawMarker'],
+    $form['toolbar']['marker'] = [
+      '#type' => 'radios',
+      '#title' => $this->t('Marker button.'),
+      '#options' => [
+        'none' => $this->t('None'),
+        'defaultMarker' => $this->t('Default marker'),
+        'circleMarker' => $this->t('Circle marker'),
+      ],
+      '#description' => $this->t('Use <b>Default marker</b> for default Point Marker. In case of <b>Circle marker</b> size can be changed by setting the <em>radius</em> property in <strong>Path Geometries Options</strong> below'),
+      '#default_value' => $toolbar_settings['marker'] ?? $default_settings['toolbar']['marker'],
     ];
     $form['toolbar']['drawPolyline'] = [
       '#type' => 'checkbox',
@@ -306,12 +311,12 @@ class LeafletDefaultWidget extends GeofieldDefaultWidget {
       '#disabled' => TRUE,
     ];
 
-    $form['toolbar']['drawCircleMarker'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Adds button to draw circle marker. (unsupported by GeoJSON'),
-      '#default_value' => $toolbar_settings['drawCircleMarker'] ?? $default_settings['toolbar']['drawCircleMarker'],
-      '#disabled' => TRUE,
-    ];
+//    $form['toolbar']['drawCircleMarker'] = [
+//      '#type' => 'checkbox',
+//      '#title' => $this->t('Adds button to draw circle marker. (unsupported by GeoJSON'),
+//      '#default_value' => $toolbar_settings['drawCircleMarker'] ?? $default_settings['toolbar']['drawCircleMarker'],
+//      '#disabled' => TRUE,
+//    ];
 
     $form['toolbar']['editMode'] = [
       '#type' => 'checkbox',
@@ -364,7 +369,6 @@ class LeafletDefaultWidget extends GeofieldDefaultWidget {
     FormStateInterface $form_state
   ) {
     $element = parent::formElement($items, $delta, $element, $form, $form_state);
-    $settings = $this->getSettings();
 
     // Determine map settings and add map element.
     $map_settings = $this->getSetting('map');
@@ -401,6 +405,9 @@ class LeafletDefaultWidget extends GeofieldDefaultWidget {
       $js_settings['locate'] = TRUE;
       unset($map['settings']['center']);
     }
+
+    // Allow other modules to add/alter the map js settings.
+    $this->moduleHandler->alter('leaflet_default_widget', $map, $this);
 
     $element['map'] = $this->leafletService->leafletRenderMap($map, [], $map_settings['height'] . 'px');
     $element['map']['#weight'] = -1;

@@ -826,8 +826,8 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
               // Add its entity id, so that it might be referenced from outside.
               $feature['entity_id'] = $entity->id();
 
-              // Add its entity id, so that it might be referenced from outside.
-              $feature['weight'] = !empty($this->options['zIndex']) ? intval(str_replace(["\n", "\r"], "", $this->viewsTokenReplace($this->options['zIndex'], $tokens))) : NULL;
+              // Generate the weight feature property (falls back to natural result ordering).
+              $feature['weight'] = !empty($this->options['weight']) ? intval(str_replace(["\n", "\r"], "", $this->viewsTokenReplace($this->options['weight'], $tokens))) : $id;
 
               // Attach pop-ups if we have a description field.
               if (isset($description)) {

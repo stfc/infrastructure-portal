@@ -44,7 +44,7 @@ class SearchApiRptTest extends UnitTestCase {
     $this->assertInstanceOf(FacetInterface::class, $built_facet);
 
     $results = $built_facet->getResults();
-    $this->assertInternalType('array', $results);
+    $this->assertTrue(is_array($results));
 
     foreach ($original_results as $k => $result) {
       $this->assertInstanceOf(ResultInterface::class, $results[$k]);
@@ -82,7 +82,7 @@ class SearchApiRptTest extends UnitTestCase {
     $this->assertInstanceOf(FacetInterface::class, $built_facet);
 
     $results = $built_facet->getResults();
-    $this->assertInternalType('array', $results);
+    $this->assertTrue(is_array($results));
 
     foreach ($original_results as $k => $result) {
       $this->assertInstanceOf(ResultInterface::class, $results[$k]);
@@ -111,7 +111,7 @@ class SearchApiRptTest extends UnitTestCase {
     $this->assertInstanceOf(FacetInterface::class, $built_facet);
 
     $results = $built_facet->getResults();
-    $this->assertInternalType('array', $results);
+    $this->assertTrue(is_array($results));
     $this->assertEmpty($results);
   }
 
