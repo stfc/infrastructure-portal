@@ -1,0 +1,51 @@
+civiccookiecontrol_access_key:
+  '#type': 'textfield'
+  '#title': 'Access Key'
+  '#default_value': 'C'
+  '#description': 'Remaps the accesskey that the module is assigned to.'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_highlight_focus:
+  '#type': 'radios'
+  '#title': 'Use accentuated styling to highlight elements in focus.'
+  '#options':
+    'true': 'Yes'
+    'false': 'No'
+  '#default_value': 'civiccookiecontrol_highlight_focus'
+  '#description': "Determines if the module should use more accentuated styling to highlight elements in focus, or use the browser's outline default. If enabled, this property uses CSS filters to invert the module's colours. This should hopefully mean that a higher visual contrast is achieved, even with a custom branding."
+  'needsApiValidation': true
+  'boolOptions': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_overlay:
+  '#type': 'radios'
+  '#title': 'Use an overlay to accentuate the presence of an open notification bar or panel and discourage use of the main site while these elements are open'
+  '#options':
+    'true': 'Yes'
+    'false': 'No'
+  '#default_value': 'civiccookiecontrol_overlay'
+  '#description': "Determines if the module should use an overlay to accentuate the presence of an open notification bar or panel and discourage use of the main site while these elements are open. This property is recommended for accessibility purposes and enabled by default. Even if disabled, interaction with the site behind is not possible if the popup layout is enabled."
+  'needsApiValidation': true
+  'boolOptions': true
+  'cookieVersion': [9]
+civiccookiecontrol_corner_button:
+  '#type': 'textfield'
+  '#title': 'Corner Button (used by screen readers)'
+  '#default_value': 'civiccookiecontrol_corner_button'
+  '#description': 'Text to describe the Cookie Control widget corner button for screen readers.'
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+  'needsApiValidation': true
+  'cookieVersion': [9]
+civiccookiecontrol_landmark:
+  '#type': 'textfield'
+  '#title': 'Landmark (used by screen readers)'
+  '#default_value': 'civiccookiecontrol_landmark'
+  '#description': 'Text to describe the Cookie Control preferences area for screen readers.'
+  '#states':
+    'invisible':
+      ':input[name=civiccookiecontrol_product]':
+        'value': 'COMMUNITY'
+  'needsApiValidation': true
+  'cookieVersion': [9]

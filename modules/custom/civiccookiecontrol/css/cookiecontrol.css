@@ -1,0 +1,91 @@
+div.warning {
+  background: #fff9b6;
+}
+
+.ccc-container a {
+  text-decoration: none;
+  color: #f7941f;
+}
+.ccc-container a:hover {
+  text-decoration: underline;
+  color: #f7941f;
+}
+
+.ccc-container p {
+  margin: 10px 0;
+  line-height: 1.5em;
+}
+
+.ccc-container .civic {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 20px 0;
+  background: #f7941f;
+  color: #fff;
+  font-weight: 700;
+}
+
+.ccc-container .civic:hover {
+  color: #fff;
+}
+
+.ccc-container label {
+  font-weight: 700;
+}
+.ccc-container label span {
+  color: #f7941f;
+}
+.ccc-container input[type="radio"] {
+  margin: 0 5px 0 20px;
+}
+.ccc-container input[type="radio"].first {
+  margin-left: 0;
+}
+
+.ccc-container hr {
+  height: 1px;
+  color: #eaeaea;
+  background: #eaeaea;
+  border: 0px;
+  margin: 10px 0;
+}
+
+.ccc-container {
+  width: 95%;
+  margin: 0 5% 0 0;
+}
+
+.ccc-container header h1 {
+  line-height: 50px;
+  padding-left: 60px;
+  background: url(../images/ccc-logo.png) no-repeat;
+}
+
+div.form-type-textfield {
+  display: inline;
+}
+
+div.form-type-radio {
+  display: inline;
+  margin: 0 5px 0 20px;
+}
+
+.container-inline .form-item {
+  display: inline;
+}
+
+span.fieldset-title {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 120%;
+  color: grey;
+}
+
+.minicolors-theme-default {
+  width: 412px !important;
+  height: 30px !important;
+}
+
+.minicolors-input {
+  height: 30px !important;
+  width: 412px !important;
+}

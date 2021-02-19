@@ -7,7 +7,8 @@
 
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\geofield\Plugin\Field\FieldType\GeofieldItem;
-use \Drupal\Core\Entity\ContentEntityBase;
+use Drupal\Core\Entity\ContentEntityBase;
+use Drupal\leaflet\Plugin\Field\FieldWidget\LeafletDefaultWidget;
 
 /**
  * Define map definitions to be used when rendering a map.
@@ -102,6 +103,22 @@ function hook_leaflet_map_info_alter(array &$map_info) {
 }
 
 /**
+ * Alter the Leaflet Map Default Widget settings.
+ *
+ * Allow other modules to add/alter the map js settings.
+ *
+ * @param array $map_settings
+ *   The array of geofield map element settings.
+ * @param Drupal\leaflet\Plugin\Field\FieldWidget\LeafletDefaultWidget $leafletDefaultWidget
+ *   The Leaflet default Widget.
+ * */
+function hook_leaflet_default_widget_alter(array &$map_settings, LeafletDefaultWidget $leafletDefaultWidget) {
+  // Make custom alterations to $map_settings, eventually using the $items
+  // context.
+}
+
+
+/**
  * Adjust the array representing a leaflet formatter feature/marker.
  *
  * @param array $feature
@@ -121,7 +138,6 @@ function hook_leaflet_formatter_feature_alter(array $feature, GeofieldItem $item
   // Make custom alterations to $map_settings, eventually using the $items
   // context.
 }
-
 
 /**
  * Alter the Leaflet Map Default Formatter settings.

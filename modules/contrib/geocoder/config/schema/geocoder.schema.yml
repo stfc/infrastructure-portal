@@ -315,6 +315,12 @@ geocoder_provider.configuration.yandex:
   type: geocoder_provider_configuration
   label: 'Yandex arguments'
   mapping:
+    apiKey:
+      type: string
+      label: 'Yandex Geocoding API key'
+      description: '<a href="https://developer.tech.yandex.ru/" target="blank">Get your API key</a>'
     toponym:
       type: string
+      nullable: true
       label: 'Toponym'
+      description: 'Only for reverse geocoding (optional)'

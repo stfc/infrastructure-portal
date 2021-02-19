@@ -6,6 +6,7 @@ namespace Drupal\geocoder;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Geocoder\Model\AddressCollection;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 
 /**
  * Provides a geocoder factory class.
@@ -27,28 +28,41 @@ class Geocoder implements GeocoderInterface {
   protected $providerPluginManager;
 
   /**
+   * The module handler to invoke the alter hook.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
    * Constructs a geocoder factory class.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   A config factory for retrieving required config objects.
    * @param \Drupal\geocoder\ProviderPluginManager $provider_plugin_manager
    *   The geocoder provider plugin manager service.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, ProviderPluginManager $provider_plugin_manager) {
+  public function __construct(ConfigFactoryInterface $config_factory, ProviderPluginManager $provider_plugin_manager, ModuleHandlerInterface $module_handler) {
     $this->config = $config_factory->get('geocoder.settings');
     $this->providerPluginManager = $provider_plugin_manager;
+    $this->moduleHandler = $module_handler;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function geocode(string $data, array $providers) {
+  public function geocode(string $address_string, array $providers) {
+    // Allow others modules to adjust the address string.
+    $this->moduleHandler->alter('geocode_address_string', $address_string);
+
     /** @var \Drupal\geocoder\GeocoderProviderInterface $provider */
     foreach ($providers as $provider) {
       try {
-        $result = $provider->getPlugin()->geocode($data);
+        $result = $provider->getPlugin()->geocode($address_string);
         if (!isset($result) || $result->isEmpty()) {
-          throw new \Exception(sprintf('Unable to geocode "%s" with the %s provider.', $data, $provider->id()));
+          throw new \Exception(sprintf('Unable to geocode "%s" with the %s provider.', $address_string, $provider->id()));
         }
         return $result;
       }
@@ -63,6 +77,9 @@ class Geocoder implements GeocoderInterface {
    * {@inheritdoc}
    */
   public function reverse(string $latitude, string $longitude, array $providers): ?AddressCollection {
+    // Allow others modules to adjust the coordinates.
+    $this->moduleHandler->alter('reverse_geocode_coordinates', $latitude, $longitude);
+
     /** @var \Drupal\geocoder\GeocoderProviderInterface $provider */
     foreach ($providers as $provider) {
       try {

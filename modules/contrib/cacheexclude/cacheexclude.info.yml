@@ -1,0 +1,11 @@
+name: Cache Exclude
+type: module
+description: 'Exclude certain pages from being cached.'
+core: '8.x'
+core_version_requirement: ^8 || ^9
+configure: cacheexclude.settings
+
+# Information added by Drupal.org packaging script on 2020-10-19
+version: '8.x-1.0'
+project: 'cacheexclude'
+datestamp: 1603086554

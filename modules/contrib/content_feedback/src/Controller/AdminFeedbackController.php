@@ -35,6 +35,7 @@ class AdminFeedbackController extends ControllerBase {
       ],
       'email' => $this->t('Email'),
       'path' => $this->t('Location'),
+      ['data' => $this->t('FeedbackCat'), 'field'=>'category','sort'=> 'asc'],
       'ipaddress' => $this->t('IP Address'),
       'message' => $this->t('Feedback'),
       'operations' => $this->t('Actions'),
@@ -60,13 +61,13 @@ class AdminFeedbackController extends ControllerBase {
         $submitDate = DrupalDateTime::createFromTimestamp($content->updated,
           new \DateTimeZone(date_default_timezone_get())
         );
-
         $rows[] = [
           'data' => [
             $submitDate->format('m/d/Y - H:i'),
             $content->name,
             $content->email,
             $content->path,
+            $content->category,
             $content->ipaddress,
             $content->message,
             $actionLinks,

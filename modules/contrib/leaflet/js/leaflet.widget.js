@@ -70,6 +70,14 @@
         });
       }
 
+      // Adjust toolbar to show defaultMarker or circleMarker.
+      this.settings.toolbarSettings.drawMarker = false;
+      this.settings.toolbarSettings.drawCircleMarker = false;
+      if (this.settings.toolbarSettings.marker === "defaultMarker") {
+        this.settings.toolbarSettings.drawMarker = 1;
+      } else if (this.settings.toolbarSettings.marker === "circleMarker") {
+        this.settings.toolbarSettings.drawCircleMarker = 1;
+      }
       map.pm.addControls(this.settings.toolbarSettings);
 
       map.on('pm:create', function(event){
@@ -102,7 +110,7 @@
    * Set visibility and readonly attribute of the input element.
    */
   Drupal.leaflet_widget.prototype.update_input_state = function () {
-    $('.form-item.form-type-textarea', this.container).toggle(!this.settings.inputHidden);
+    $('.form-item.form-type-textarea, .form-item.form-type--textarea', this.container).toggle(!this.settings.inputHidden);
     $(this.json_selector, this.container).prop('readonly', this.settings.inputReadonly);
   };
 
@@ -148,33 +156,37 @@
     let self = this;
     let value = $(this.json_selector, this.container).val();
 
+    // Always clear the layers in drawnItems on map updates.
+    this.drawnItems.clearLayers();
+
     // Nothing to do if we don't have any data.
     if (value.length === 0) {
 
       // If no layer available, locate the user position.
-      if (this.settings.locate) {
+      if (this.settings.locate && !this.settings.map_position.force) {
         this.map.locate({setView: true, maxZoom: 18});
       }
 
-      // Remove all Layers from the Map.
-      this.drawnItems.eachLayer(function(layer) {
-        this.map.removeLayer(layer);
-      }, this);
-
-      // Clear Layer Group.
-      this.drawnItems.clearLayers();
       return;
     }
 
-    // Remove all Layers from the Map.
-    this.drawnItems.eachLayer(function(layer) {
-      this.map.removeLayer(layer);
-    }, this);
-
     try {
-      let obj = L.geoJson(JSON.parse(value), {style: function (feature) {
-        return self.settings.path_style;
-      }});
+      let layerOpts = {
+        style: function (feature) {
+          return self.settings.path_style;
+        }
+      };
+      // Use circleMarkers if specified.
+      if (self.settings.toolbarSettings.marker === "circleMarker") {
+        layerOpts.pointToLayer = function (feature, latlng) {
+          return L.circleMarker(latlng);
+        };
+      }
+      // Apply styles to pm drawn items.
+      this.map.pm.setGlobalOptions({
+        pathOptions: self.settings.path_style
+      });
+      let obj = L.geoJson(JSON.parse(value), layerOpts);
       // See https://github.com/Leaflet/Leaflet.draw/issues/398
       obj.eachLayer(function(layer) {
         if (typeof layer.getLayers === "function") {

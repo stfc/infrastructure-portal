@@ -1,0 +1,10 @@
+name: "Token Debug UI"
+type: module
+description: 'Provides a simple form to debug tokens.'
+core_version_requirement: ^8.7.7 || ^9
+configure: tokendebug.form
+
+# Information added by Drupal.org packaging script on 2020-12-07
+version: '8.x-1.0+2-dev'
+project: 'tokendebug'
+datestamp: 1607366329

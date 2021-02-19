@@ -1,0 +1,71 @@
+309,338d308
+<             if(substr( $field_value['field_value'], 0, 2 ) === "|@"){
+<             // Multiple value field.
+<             $arr = explode(chr(10) . '|@', $field_value['field_value']);
+<             
+<             if (substr($arr[0], 0, 2) == '|@') {
+<               $arr[0] = substr($arr[0], 2, strlen($arr[0]) - 2);
+<             }
+<             if (substr($arr[0], 0, 1) == '|') {
+<               $arr[0] = substr($arr[0], 1, strlen($arr[0]) - 1);
+<             }
+<             
+<             foreach ($arr as $key => $value) {
+<                 
+<                 $arr[$key] = substr($value, 0, strlen($value) - 1);
+<                 $test=explode('|',$arr[$key]);
+<                 foreach ($test as $k =>$v){
+<                   if($k %2 == 0){
+<                     if($test[$k+1]===''){$test2[$v]=NULL;}
+<                     else{$test2[$v]=$test[$k+1];}
+<                      }
+<                 }
+<                $arr[$key]=$test2;
+<                unset($test);
+<                unset($test2);
+<             }
+<             $t=json_encode($arr);
+<             
+<             $value=$arr;
+<             }
+<             else{
+351,352c321
+<             
+<               
+---
+> 
+362d330
+<              
+373c341
+<             
+---
+> 
+376c344
+<           
+---
+> 
+380c348
+<           }
+---
+> 
+382c350
+<           if (($cardinality===1)or(substr( $field_value['field_value'], 0, 2 ) != "|@"))
+---
+> 
+391,400c359
+<           else{
+<           $result[$field_value['entity_field']] = [
+<             '#type'   => 'markup',
+<             '#markup' => t('Entity variable: %variable field: %field filled with value: %value.', [
+<               '%variable' => $entity_variable_id,
+<               '%field'    => $field_value['entity_field'],
+<               '%value'    => 'address',
+<             ]),
+<           ];
+<           }
+---
+> 
+424c383
+<             $variable_name = explode('->',$variable_name)[0];
+---
+>             $variable_name = explode('->', $variable_name)[0];

@@ -9,7 +9,7 @@ dependencies:
   - drupal:node
   - drupal:system (>=8.4.0)
 
-# Information added by Drupal.org packaging script on 2020-06-05
-version: '8.x-2.5'
+# Information added by Drupal.org packaging script on 2020-12-02
+version: '8.x-2.6'
 project: 'override_node_options'
-datestamp: 1591363791
+datestamp: 1606950756

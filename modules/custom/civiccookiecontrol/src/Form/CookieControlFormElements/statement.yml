@@ -1,0 +1,41 @@
+civiccookiecontrol_stmt_descr:
+  '#type': 'textarea'
+  '#title': 'Statement Description'
+  '#default_value': 'civiccookiecontrol_stmt_descr'
+  '#description': 'The text description that introduces your privacy statement.'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_stmt_name:
+  '#type': 'textfield'
+  '#title': 'Statement Name'
+  '#default_value': 'civiccookiecontrol_stmt_name'
+  '#description': "The text that you wish to call your terms by, for example 'Privacy Statement'."
+  '#placeholder': 'Privacy Statement'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_stmt_date:
+  '#type': 'date'
+  '#title': 'Statement Updated Date'
+  '#default_value': 'civiccookiecontrol_stmt_date'
+  '#format': 'd/m/Y'
+  '#date_date_format': 'd/m/Y'
+  '#description': 'The date that your privacy statement was last issued.'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]
+civiccookiecontrol_privacynode:
+    '#type': 'number'
+    '#size': 5
+    '#maxlength': 7
+    '#min': 1
+    '#step': 1
+    '#title': 'Privacy Policy Link'
+    '#default_value': 'civiccookiecontrol_privacynode'
+    '#description': "Specify a node ID which represents your site's privacy policy. This will be appended at the end of your introductory text."
+    '#required': false
+    'needsApiValidation': true
+    'cookieVersion': [8,9]
+civiccookiecontrol_stmt_url:
+  '#type': 'hidden'
+  '#default_value': 'civiccookiecontrol_stmt_url'
+  'needsApiValidation': true
+  'cookieVersion': [8,9]

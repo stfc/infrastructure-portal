@@ -194,7 +194,7 @@ class SearchApiFilterLocation extends FilterPluginBase {
 
     $location = $plugin->getParsedInput($this->value);
     if (!$location) {
-      drupal_set_message($this->t('The location %location could not be resolved and was ignored.', ['%location' => $this->value['value']]), 'warning');
+      $this->messenger()->addWarning($this->t('The location %location could not be resolved and was ignored.', ['%location' => $this->value['value']]));
       return;
     }
     $location = explode(',', $location, 2);

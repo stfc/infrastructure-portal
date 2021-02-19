@@ -1,0 +1,13 @@
+name: 'Views Add Button'
+description: 'Creates a configurable entity add button for Views headers and footers.'
+type: module
+core: 8.x
+package: 'Views'
+dependencies:
+  - drupal:views
+  - token:token
+
+# Information added by Drupal.org packaging script on 2020-03-11
+version: '8.x-1.6'
+project: 'views_add_button'
+datestamp: 1583899911

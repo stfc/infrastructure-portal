@@ -1,0 +1,5 @@
+content_feedback.settings:
+  title: 'Content feedback settings'
+  description: 'Configure settings for content feedback.'
+  parent: system.admin_config_content
+  route_name: content_feedback.settings

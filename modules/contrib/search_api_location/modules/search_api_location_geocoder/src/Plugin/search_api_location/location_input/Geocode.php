@@ -2,6 +2,7 @@
 
 namespace Drupal\search_api_location_geocoder\Plugin\search_api_location\location_input;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\geocoder\Geocoder;
@@ -28,6 +29,13 @@ class Geocode extends LocationInputPluginBase implements ContainerFactoryPluginI
   protected $geocoder;
 
   /**
+   * The geocoder config.
+   *
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
+  protected $geocoderConfig;
+
+  /**
    * Constructs a Geocode Location input Plugin.
    *
    * @param array $configuration
@@ -38,17 +46,20 @@ class Geocode extends LocationInputPluginBase implements ContainerFactoryPluginI
    *   The plugin implementation definition.
    * @param \Drupal\geocoder\Geocoder $geocoder
    *   The geocoder service.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   A config factory for retrieving required config objects.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, Geocoder $geocoder) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, Geocoder $geocoder, ConfigFactoryInterface $config_factory) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->geocoder = $geocoder;
+    $this->geocoderConfig = $config_factory->get('geocoder.settings');
   }
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static($configuration, $plugin_id, $plugin_definition, $container->get('geocoder'));
+    return new static($configuration, $plugin_id, $plugin_definition, $container->get('geocoder'), $container->get('config.factory'));
   }
 
   /**
@@ -60,9 +71,11 @@ class Geocode extends LocationInputPluginBase implements ContainerFactoryPluginI
     }
     else {
       $active_plugins = $this->getActivePlugins();
+      $plugin_options = (array) $this->geocoderConfig->get('plugins_options');
+
       /** @var \Geocoder\Model\AddressCollection $geocoded_addresses */
       $geocoded_addresses = $this->geocoder
-        ->geocode($input['value'], $active_plugins);
+        ->geocode($input['value'], $active_plugins, $plugin_options);
       if ($geocoded_addresses) {
         return $geocoded_addresses->first()
           ->getLatitude() . ',' . $geocoded_addresses->first()
@@ -85,7 +98,6 @@ class Geocode extends LocationInputPluginBase implements ContainerFactoryPluginI
         $active_plugins[$id] = $id;
       }
     }
-
     return $active_plugins;
   }
 

@@ -42,12 +42,12 @@ class SettingsFormTest extends BrowserTestBase {
   /**
    * Url to the settings page
    */
-  const SETTINGS_PATH = 'admin/config/system/nagios';
+  private const SETTINGS_PATH = 'admin/config/system/nagios';
 
   /**
    * Url to the ignored modules page
    */
-  const IGNORED_MODULES_PATH = 'admin/config/system/nagios/ignoredmodules';
+  private const IGNORED_MODULES_PATH = 'admin/config/system/nagios/ignored_modules';
 
   /**
    * Perform any initial set up tasks that run before every test method

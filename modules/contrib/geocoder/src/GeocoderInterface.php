@@ -12,15 +12,15 @@ interface GeocoderInterface {
   /**
    * Geocodes a string.
    *
-   * @param string $data
-   *   The string to geocoded.
+   * @param string $address_string
+   *   The string to geocode.
    * @param \Drupal\geocoder\GeocoderProviderInterface[] $providers
    *   A list of Geocoder providers to use to perform the geocoding.
    *
    * @return \Geocoder\Model\AddressCollection|\Geometry|null
    *   An address collection or NULL on geocoding failure.
    */
-  public function geocode(string $data, array $providers);
+  public function geocode(string $address_string, array $providers);
 
   /**
    * Reverse geocodes coordinates.

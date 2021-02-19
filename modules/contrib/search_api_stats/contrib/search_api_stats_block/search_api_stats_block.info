@@ -1,0 +1,14 @@
+name = Search API stats term blocks
+description = "Display Drupal blocks for top search terms."
+dependencies[] = search_api_stats
+core = 7.x
+package = Search
+
+; Classes
+
+; Views Handlers
+; Information added by Drupal.org packaging script on 2020-06-13
+version = "8.x-1.0-alpha1"
+core = "8.x"
+project = "search_api_stats"
+datestamp = "1592068788"

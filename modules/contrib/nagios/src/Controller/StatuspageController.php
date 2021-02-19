@@ -90,7 +90,7 @@ class StatuspageController {
    * @param string $tmp_state
    * @param ImmutableConfig $config
    */
-  private function calculateOutdatesModuleAndThemeNames(&$tmp_state, ImmutableConfig $config) {
+  private function calculateOutdatedModuleAndThemeNames(&$tmp_state, ImmutableConfig $config) {
     $tmp_projects = update_calculate_project_data(\Drupal::service('update.manager')
       ->getProjects());
     $nagios_ignored_modules = $config->get('nagios.ignored_modules') ?: [];
@@ -98,29 +98,29 @@ class StatuspageController {
     $nagios_ignored_projects = $nagios_ignored_modules + $nagios_ignored_themes;
     $outdated_count = 0;
     $tmp_modules = '';
-    foreach ($tmp_projects as $projkey => $projval) {
-      if (!isset($nagios_ignored_projects[$projkey]) && $projval['status'] < UpdateManagerInterface::CURRENT && $projval['status'] >= UpdateManagerInterface::NOT_SECURE) {
-        switch ($projval['status']) {
+    foreach ($tmp_projects as $project_name => $value) {
+      if (!isset($nagios_ignored_projects[$project_name]) && $value['status'] < UpdateManagerInterface::CURRENT && $value['status'] >= UpdateManagerInterface::NOT_SECURE) {
+        switch ($value['status']) {
           case UpdateManagerInterface::NOT_SECURE:
-            $tmp_projstatus = $this->t('NOT SECURE');
+            $project_status = $this->t('NOT SECURE');
             break;
 
           case UpdateManagerInterface::REVOKED:
-            $tmp_projstatus = $this->t('REVOKED');
+            $project_status = $this->t('REVOKED');
             break;
 
           case UpdateManagerInterface::NOT_SUPPORTED:
-            $tmp_projstatus = $this->t('NOT SUPPORTED');
+            $project_status = $this->t('NOT SUPPORTED');
             break;
 
           case UpdateManagerInterface::NOT_CURRENT:
-            $tmp_projstatus = $this->t('NOT CURRENT');
+            $project_status = $this->t('NOT CURRENT');
             break;
 
           default:
-            $tmp_projstatus = $projval['status'];
+            $project_status = $value['status'];
         }
-        $tmp_modules .= ' ' . $projkey . ':' . $tmp_projstatus;
+        $tmp_modules .= ' ' . $project_name . ':' . $project_status;
         $outdated_count++;
       }
     }
@@ -224,10 +224,10 @@ class StatuspageController {
             // Check with automated tests.
             if (
               $key == 'ADMIN' &&
-              $value['text'] == 'Module and theme update status' &&
+              (string) $value['text'] == (string) $this->t('Module and theme update status') &&
               $this->config->get('nagios.show_outdated_names')
             ) {
-              $this->calculateOutdatesModuleAndThemeNames($tmp_state, $this->config);
+              $this->calculateOutdatedModuleAndThemeNames($tmp_state, $this->config);
             }
             $output_state[] = $tmp_state;
             break;

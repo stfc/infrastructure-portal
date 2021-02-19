@@ -1,0 +1,10 @@
+name: 'Page Specific Class'
+description: 'Page Specific Class intends to add class in body tag page-wise.'
+type: module
+core_version_requirement: ^8.8 || ^9
+configure: page_specific_class.settings
+
+# Information added by Drupal.org packaging script on 2020-06-02
+version: '2.0.1'
+project: 'page_specific_class'
+datestamp: 1591092977

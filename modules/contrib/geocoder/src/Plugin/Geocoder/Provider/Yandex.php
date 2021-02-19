@@ -12,7 +12,8 @@ use Drupal\geocoder\ConfigurableProviderUsingHandlerWithAdapterBase;
  *   name = "Yandex",
  *   handler = "\Geocoder\Provider\Yandex\Yandex",
  *   arguments = {
- *     "toponym"
+ *     "toponym" = "",
+ *     "apiKey" = ""
  *   }
  * )
  */

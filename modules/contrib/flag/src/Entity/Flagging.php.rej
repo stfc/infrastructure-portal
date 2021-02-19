@@ -1,0 +1,74 @@
+--- src/Entity/Flagging.php
++++ src/Entity/Flagging.php
+@@ -6,6 +6,7 @@
+ 
+ namespace Drupal\flag\Entity;
+ 
++use Drupal\Core\Entity\EntityStorageInterface;
+ use Drupal\Core\Entity\EntityTypeInterface;
+ use Drupal\Core\Entity\ContentEntityBase;
+ use Drupal\Core\Field\BaseFieldDefinition;
+@@ -37,8 +38,20 @@
+  * )
+  */
+ class Flagging extends ContentEntityBase implements FlaggingInterface {
++
+   // @todo should there be a data_table annotation?
+   // @todo should the bundle entity_key annotation be "flag" not "type"?
++
++  /**
++   * {@inheritdoc}
++   */
++  public function __construct(array $values, $entity_type, $bundle = FALSE, $translations = array()) {
++    if (isset($values['entity_id'])) {
++      $values['flagged_entity'] = $values['entity_id'];
++    }
++    parent::__construct($values, $entity_type, $bundle, $translations);
++  }
++
+   /**
+    * Gets the flag ID for the parent flag.
+    *
+@@ -116,6 +129,11 @@
+       ->setRequired(TRUE)
+       ->setDescription(t('The Entity ID.'));
+ 
++    $fields['flagged_entity'] = BaseFieldDefinition::create('entity_reference')
++      ->setLabel(t('Entity'))
++      ->setDescription(t('The flagged entity.'))
++      ->setComputed(TRUE);
++
+     // Also duplicates data on flag entity for querying purposes.
+     $fields['global'] = BaseFieldDefinition::create('boolean')
+       ->setLabel(t('Global'))
+@@ -136,4 +154,30 @@
+     return $fields;
+   }
+ 
++  /**
++   * {@inheritdoc}
++   */
++  public function onChange($name) {
++    if ($name == 'entity_id' && $this->get('flagged_entity')->isEmpty()) {
++      $this->flagged_entity->target_id = $this->entity_id->value;
++    }
++    if (in_array($name, ['flagged_entity', 'entity_id']) && $this->flagged_entity->target_id != $this->entity_id->value) {
++      throw new \LogicException("A flagging can't be moved to another entity.");
++    }
++    parent::onChange($name);
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public static function bundleFieldDefinitions(EntityTypeInterface $entity_type, $bundle, array $base_field_definitions) {
++    /** @var Flag $flag */
++    if ($flag = Flag::load($bundle)) {
++      $fields['flagged_entity'] = clone $base_field_definitions['flagged_entity'];
++      $fields['flagged_entity']->setSetting('target_type', $flag->getFlaggableEntityTypeId());
++      return $fields;
++    }
++    return parent::bundleFieldDefinitions($entity_type, $bundle, $base_field_definitions);
++  }
++
+ }

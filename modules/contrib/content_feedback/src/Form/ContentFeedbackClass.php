@@ -27,12 +27,13 @@ class ContentFeedbackClass {
    *
    * @throws \Exception
    */
-  public static function addContentFeedback($name, $email, $message, $path, $ipaddress, $timestamp) {
+  public static function addContentFeedback($name, $email, $category, $message, $path, $ipaddress, $timestamp) {
     $connection = Database::getConnection();
     $connection->insert('content_feedback')->fields(
       [
         'name' => $name,
         'email' => $email,
+        'category' => $category,
         'message' => $message,
         'path' => $path,
         'ipaddress' => $ipaddress,
@@ -59,6 +60,7 @@ class ContentFeedbackClass {
       'id',
       'name',
       'email',
+      'category',
       'message',
       'path',
       'ipaddress',
@@ -91,6 +93,7 @@ class ContentFeedbackClass {
       'id',
       'name',
       'email',
+      'category',
       'message',
       'path',
       'ipaddress',
@@ -131,7 +134,7 @@ class ContentFeedbackClass {
    *
    * @throws \Exception
    */
-  public static function updateFeedback($status, $name, $email, $ip, $message, $path, $id) {
+  public static function updateFeedback($status, $name, $email,$category, $ip, $message, $path, $id) {
     $connection = Database::getConnection();
     $updated = $connection->update('content_feedback')
       ->fields(
@@ -139,6 +142,7 @@ class ContentFeedbackClass {
           'status' => $status,
           'name' => $name,
           'email' => $email,
+          'category' => $category,
           'ipaddress' => $ip,
           'message' => $message,
           'path' => $path,

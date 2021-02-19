@@ -8,6 +8,7 @@ use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\geocoder\Annotation\GeocoderDumper;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Field\FieldConfigInterface;
+use Drupal\Core\Locale\CountryManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 
 /**
@@ -26,6 +27,13 @@ class DumperPluginManager extends GeocoderPluginManagerBase {
   ];
 
   /**
+   * The country manager service.
+   *
+   * @var \Drupal\Core\Locale\CountryManagerInterface
+   */
+  protected $countryManager;
+
+  /**
    * The logger factory.
    *
    * @var \Drupal\Core\Logger\LoggerChannelFactoryInterface
@@ -42,10 +50,11 @@ class DumperPluginManager extends GeocoderPluginManagerBase {
   /**
    * {@inheritdoc}
    */
-  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler, LoggerChannelFactoryInterface $logger_factory, MessengerInterface $messenger) {
+  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler, CountryManagerInterface $country_manager, LoggerChannelFactoryInterface $logger_factory, MessengerInterface $messenger) {
     parent::__construct('Plugin/Geocoder/Dumper', $namespaces, $module_handler, DumperInterface::class, GeocoderDumper::class);
     $this->alterInfo('geocoder_dumper_info');
     $this->setCacheBackend($cache_backend, 'geocoder_dumper_plugins');
+    $this->countryManager = $country_manager;
     $this->logger = $logger_factory;
     $this->messenger = $messenger;
   }
@@ -62,42 +71,61 @@ class DumperPluginManager extends GeocoderPluginManagerBase {
   public function setAddressFieldFromGeojson($geojson): array {
     $geojson_array = Json::decode($geojson);
 
-    $country_code = $this->setCountryFromGeojson($geojson);
+    // Get the country code, with some advanced logic and hook.
+    $country_code = $this->setCountryFromGeojson($geojson_array);
 
     $geojson_array['properties'] += [
+      'adminLevels' => '',
       'streetName' => '',
+      'streetNumber' => '',
       'postalCode' => '',
       'locality' => '',
     ];
 
+    // Define an administrative_area line1 from adminLevels name, if existing.
+    $administrative_area = '';
+    if (!empty($geojson_array['properties']['adminLevels'])) {
+      $administrative_area = array_shift($geojson_array['properties']['adminLevels'])['name'];
+    }
+
+    // Define the address line1, adding a street number to it, if existing.
+    $address_line1 = $geojson_array['properties']['streetName'];
+    if (!empty($geojson_array['properties']['streetNumber'])) {
+      $address_line1 .= ' ' . $geojson_array['properties']['streetNumber'];
+    }
+
     return [
       'country_code' => $country_code,
-      'address_line1' => $geojson_array['properties']['streetName'],
+      'address_line1' => $address_line1,
       'postal_code' => $geojson_array['properties']['postalCode'],
       'locality' => $geojson_array['properties']['locality'],
+      'administrative_area' => $administrative_area,
     ];
   }
 
   /**
    * Define a Country value from a Geojson string.
    *
-   * @param string $geojson
-   *   The GeoJson place string.
+   * @param array $geojson_array
+   *   The GeoJson place array.
    *
    * @return string
    *   A country code.
    */
-  public function setCountryFromGeojson($geojson): string {
-    $geojson_array = Json::decode($geojson);
+  public function setCountryFromGeojson(array $geojson_array): string {
 
-    $country_code = isset($geojson_array['properties']['countryCode']) ? strtoupper(substr($geojson_array['properties']['countryCode'], 0, 2)) : NULL;
+    $country_code = isset($geojson_array['properties']['countryCode']) ? strtoupper(substr($geojson_array['properties']['countryCode'], 0, 2)) : '';
 
-    // Some provider (like MapQuest) might not return the countryCode but just
-    // the country name, so try to convert it into countryCode, as it seems to
-    // be mandatory in Address Field Entity API.
-    if ($country_code === NULL) {
-      $country_code = isset($geojson_array['properties']['country']) ? strtoupper(substr($geojson_array['properties']['country'], 0, 2)) : '';
+    // Some provider (like MapQuest) might not return the 2 digits countryCode
+    // but just the country name or a 3 digits code,
+    // so try to convert it into countryCode,
+    // as it seems to be mandatory in Address Field Entity API.
+    if (!array_key_exists($country_code, $this->countryManager->getList()) && isset($geojson_array['properties']['country'])) {
+      $country_code = strtoupper(substr($geojson_array['properties']['country'], 0, 2));
     }
+
+    // Allow others modules to adjust the country_code at the end.
+    $this->moduleHandler->alter('geocode_country_code', $country_code, $geojson_array);
 
     return $country_code;
   }

@@ -1,0 +1,24 @@
+iabCMP: false
+iabLanguage: 'en'
+iabGdprAppliesGlobally: true
+iabRecommendedState: '{ 1 : false, 2 : false, 3 : false, 4 : false, 5 : false }'
+iabRecommendedState_1: false
+iabRecommendedState_2: false
+iabRecommendedState_3: false
+iabRecommendedState_4: false
+iabRecommendedState_5: false
+iabLabelText: 'Ad Vendors'
+iabDescriptionText: 'When you visit our site, pre-selected companies may access and use certain information on your device to serve relevant ads or personalised content. Certain partners rely on your consent while others require you to opt-out.'
+iabConfigureText: 'Configure Ad Vendors'
+iabPanelTitleText: 'Ad Vendors : What information is collected and how it may be used'
+iabPanelIntroText: 'We and select companies may access information such as the device, operating system and type of browser your using; cookie information and information about your activity on that device, including web pages and mobile apps visited or used, along with the the IP address and associated geographic location of the device when it accesses a website or mobile application.'
+iabAboutIabText: 'You may control how this information is used by signaling your consent to the following purposes outlined by '
+iabIabNameText: 'IAB Europe'
+iabIabLinkText: 'https://advertisingconsent.eu/'
+iabPanelBackText: 'Back to All Categories'
+iabVendorTitleText: 'Ad Vendors'
+iabVendorConfigureText: 'Show Ad Vendors'
+iabVendorBackText: 'Back to Ad Vendor Purposes'
+iabAcceptAllText: 'Accept All'
+iabRejectAllText: 'Reject All'
+iabBackText: 'Back'

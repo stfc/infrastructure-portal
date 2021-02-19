@@ -1,0 +1,43 @@
+civiccookiecontrol.cookiecategory.*:
+  type: config_entity
+  label: 'Cookie Control Cookie Category'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    uuid:
+      type: string
+      label: 'UUID'
+    cookieName:
+      type: label
+      label: 'Cookie Name'
+    cookieLabel:
+      type: string
+      label: 'Cookie Label'
+    cookieDescription:
+      type: text
+      label: 'Cookie Description'
+    cookies:
+      type: string
+      label: 'Cookies'
+    thirdPartyCookies:
+      type: string
+      label: 'Third Party Cookies'
+    thirdPartyCookiesCount:
+      type: string
+      label: 'Third Party Cookies Count'
+    onAcceptCallback:
+      type: text
+      label: 'On Accept Callback'
+    onRevokeCallback:
+      type: text
+      label: 'On Revoke Callback'
+    recommendedState:
+      type: boolean
+      label: 'Initial Consent State'
+    lawfulBasis:
+      type: text
+      label: 'Lawful Basis'
+    langcode:
+      type: string
+      label: ‘Language code’

@@ -92,7 +92,12 @@ class AddContentFeedback extends FormBase {
       '#default_value' => $this->currentUser()->getEmail(),
       '#required' => ($email['required'] === 'required') ? TRUE : FALSE,
     ];
-
+    $form['category'] = [
+      '#type' => 'select',
+      '#title' => $this->t('What would you like to provide feedback on?'),
+      '#options' => array('Infrastructure Content Page' => 'Infrastructure Content Page','Feature Suggestion'=>'Feature Suggestion','Technical Issue'=>'Technical Issue', 'Appearance and Accessibility'=>'Appearance and Accessibility','Other'=>'Other'),
+      '#required' => TRUE,
+    ];
     $form['message'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Do you have any suggestions to make this page better ?'),
@@ -153,11 +158,12 @@ class AddContentFeedback extends FormBase {
       $values = $form_state->getValues();
       $name = isset($values['name']) ? $values['name'] : NULL;
       $email = isset($values['email']) ? $values['email'] : NULL;
+      $category = $values['category'];
       $message = $values['message'];
       $path = $values['path'];
       $ipaddress = $values['ipaddress'];
       $timestamp = time();
-      ContentFeedbackClass::addContentFeedback($name, $email, $message, $path, $ipaddress, $timestamp);
+      ContentFeedbackClass::addContentFeedback($name, $email, $category, $message, $path, $ipaddress, $timestamp);
       $element = [
         '#type' => 'markup',
         '#markup' => $this->t('Your content feedback has been submitted successfully.'),

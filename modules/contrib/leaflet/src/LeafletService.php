@@ -96,7 +96,7 @@ class LeafletService {
       $attached_libraries[] = 'leaflet/leaflet.gesture_handling';
     }
 
-    // Add the Leaflet Markecluster library and functionalities, if requested.
+    // Add the Leaflet Markercluster library and functionalities, if requested.
     if ($this->moduleHandler->moduleExists('leaflet_markercluster') && isset($map['settings']['leaflet_markercluster']) && $map['settings']['leaflet_markercluster']['control']) {
       $attached_libraries[] = 'leaflet_markercluster/leaflet-markercluster';
       $attached_libraries[] = 'leaflet_markercluster/leaflet-markercluster-drupal';
@@ -336,9 +336,10 @@ class LeafletService {
   /**
    * Set Feature Icon Size & Shadow Size If Empty or Invalid.
    *
-   * @param $feature
+   * @param array $feature
+   *   The feature array.
    */
-  public function setFeatureIconSizesIfEmptyOrInvalid(&$feature): void {
+  public function setFeatureIconSizesIfEmptyOrInvalid(array &$feature) {
     if (isset($feature["icon"]["iconSize"])
       && (empty(intval($feature["icon"]["iconSize"]["x"])) && empty(intval($feature["icon"]["iconSize"]["y"])))
       && (!empty($feature["icon"]["iconUrl"]) && $this->fileExists($feature["icon"]["iconUrl"]))) {
@@ -367,8 +368,8 @@ class LeafletService {
    */
   public function fileExists($fileUrl) {
     $file_headers = @get_headers($fileUrl);
-    if ((stripos($file_headers[0],"404 Not Found") == 0)
-      && (stripos($file_headers[0], "302 Found") == 0 && stripos($file_headers[7],"404 Not Found") == 0)) {
+    if ((stripos($file_headers[0], "404 Not Found") == 0)
+      && (stripos($file_headers[0], "302 Found") == 0 && stripos($file_headers[7], "404 Not Found") == 0)) {
       return TRUE;
     }
     return FALSE;
@@ -419,7 +420,7 @@ class LeafletService {
       }
       $geocoder_settings['settings']['providers'] = $enabled_providers;
       $geocoder_settings['settings']['options'] = [
-        'options' => Json::decode($geocoder_settings['settings']['options']),
+        'options' => Json::decode($geocoder_settings['settings']['options']) ?? '',
       ];
     }
   }

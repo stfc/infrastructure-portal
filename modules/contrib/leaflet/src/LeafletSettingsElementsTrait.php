@@ -8,7 +8,7 @@ use Drupal\Core\Url;
 use Drupal\Component\Serialization\Json;
 
 /**
- * Class GeofieldMapFieldTrait.
+ * Class LeafletSettingsElementsTrait.
  *
  * Provide common functions for Leaflet Settings Elements.
  *
@@ -38,12 +38,6 @@ trait LeafletSettingsElementsTrait {
     'float',
     'decimal',
   ];
-
-  /**
-   * The Link generator Service.
-   *
-   * @var \Drupal\Core\Utility\LinkGeneratorInterface $this->link
-   */
 
   /**
    * Get the Default Settings.
@@ -97,7 +91,7 @@ trait LeafletSettingsElementsTrait {
         'control' => FALSE,
         'options' => '{"spiderfyOnMaxZoom":true,"showCoverageOnHover":true,"removeOutsideVisibleBounds": false}',
       ],
-      'path' => '{"color":"#3388ff","opacity":"1.0","stroke":true,"weight":3,"fill":"depends","fillColor":"*","fillOpacity":"0.2"}',
+      'path' => '{"color":"#3388ff","opacity":"1.0","stroke":true,"weight":3,"fill":"depends","fillColor":"*","fillOpacity":"0.2","radius":"6"}',
       'geocoder' => [
         'control' => FALSE,
         'settings' => [

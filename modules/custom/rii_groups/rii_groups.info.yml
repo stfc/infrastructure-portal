@@ -1,0 +1,7 @@
+name: RII Groups 
+description: Custom module (made by Jyothish Thomas). Changes the default group view to have all content in one page. 
+package: Custom
+
+type: module
+core: 8.x
+

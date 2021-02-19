@@ -1,0 +1,4 @@
+page_specific_class.settings:
+  title: 'Page Specific Class'
+  route_name: page_specific_class.settings
+  parent: system.admin_config_ui

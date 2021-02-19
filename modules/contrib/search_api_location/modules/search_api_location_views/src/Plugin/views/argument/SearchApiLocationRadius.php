@@ -28,7 +28,14 @@ class SearchApiLocationRadius extends ArgumentPluginBase {
       $add_options = [
         'radius' => $this->argument,
       ];
-      $this->addFieldOptions($location_options, $add_options, $this->realField);
+      // We currently have no way of knowing what part of the field name was
+      // added to have the distance pseudo field name.
+      // So for now we remove '__distance' from the field name to get the
+      // location field.
+      /* @see search_api_location_views_views_data_alter */
+      $location_field_name = str_replace('__distance', '', $this->realField);
+
+      $this->addFieldOptions($location_options, $add_options, $location_field_name);
       $query->setOption('search_api_location', $location_options);
     }
   }

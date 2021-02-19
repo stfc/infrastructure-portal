@@ -47,14 +47,6 @@ class CountryItem extends FieldItemBase {
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
     $properties['value'] = DataDefinition::create('string')
       ->setLabel(t('Country'));
-
-    // Computed full name property.
-    $properties['country_name'] = DataDefinition::create('string')
-      ->setLabel(t('Country Full Name'))
-      ->setComputed(TRUE)
-      ->setClass('\Drupal\address\TypedData\CountryName')
-      ->setSetting('property source', 'value');
-
     return $properties;
   }
 

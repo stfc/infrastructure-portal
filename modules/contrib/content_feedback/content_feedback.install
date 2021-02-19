@@ -20,6 +20,11 @@ function content_feedback_schema() {
         'length' => 255,
         'not null' => FALSE,
       ],
+      'category' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ],
       'email' => [
         'type' => 'varchar',
         'length' => 255,

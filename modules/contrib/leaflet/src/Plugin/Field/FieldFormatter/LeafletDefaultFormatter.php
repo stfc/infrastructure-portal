@@ -313,8 +313,8 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
       $feature = $points[0];
       $feature['entity_id'] = $entity_id;
 
-      // Add its entity id, so that it might be referenced from outside.
-      $feature['weight'] = !empty($settings['zIndex']) ? intval(str_replace(["\n", "\r"], "", $this->token->replace($settings['zIndex'], $tokens))) : NULL;
+      // Generate the weight feature property (falls back to natural result ordering).
+      $feature['weight'] = !empty($settings['weight']) ? intval(str_replace(["\n", "\r"], "", $this->token->replace($settings['weight'], $tokens))) : $delta;
 
       // Eventually set the popup content.
       if ($settings['popup']) {
@@ -407,7 +407,7 @@ class LeafletDefaultFormatter extends FormatterBase implements ContainerFactoryP
             }
             // Set the Feature IconSize and ShadowSize to the IconUrl or
             // ShadowUrl Image sizes (if empty or invalid).
-            $this->leafletService-> setFeatureIconSizesIfEmptyOrInvalid($feature);
+            $this->leafletService->setFeatureIconSizesIfEmptyOrInvalid($feature);
             break;
         }
       }

@@ -339,9 +339,14 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
         $field_storage_definition = $field_storage_definitions[$handler->definition['field_name']];
 
         $type = $field_storage_definition->getType();
-        $definition = $this->fieldTypeManager->getDefinition($type);
-        if (is_a($definition['class'], '\Drupal\geofield\Plugin\Field\FieldType\GeofieldItem', TRUE)) {
-          $fields_geo_data[$field_id] = $label;
+        try {
+          $definition = $this->fieldTypeManager->getDefinition($type);
+          if (is_a($definition['class'], '\Drupal\geofield\Plugin\Field\FieldType\GeofieldItem', TRUE)) {
+            $fields_geo_data[$field_id] = $label;
+          }
+        }
+        catch (\Exception $e) {
+          watchdog_exception("Leaflet Map - Get Available data sources", $e);
         }
       }
     }
@@ -826,8 +831,9 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
               // Add its entity id, so that it might be referenced from outside.
               $feature['entity_id'] = $entity->id();
 
-              // Add its entity id, so that it might be referenced from outside.
-              $feature['weight'] = !empty($this->options['zIndex']) ? intval(str_replace(["\n", "\r"], "", $this->viewsTokenReplace($this->options['zIndex'], $tokens))) : NULL;
+              // Generate the weight feature property
+              // (falls back to natural result ordering).
+              $feature['weight'] = !empty($this->options['weight']) ? intval(str_replace(["\n", "\r"], "", $this->viewsTokenReplace($this->options['weight'], $tokens))) : $id;
 
               // Attach pop-ups if we have a description field.
               if (isset($description)) {
@@ -846,7 +852,8 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
                 // Set Feature Icon properties.
                 $feature['icon'] = $this->options['icon'];
 
-                // Transforms Icon Options that support Replacement Patterns/Tokens.
+                // Transforms Icon Options that support Replacement
+                // Patterns/Tokens.
                 if (!empty($this->options["icon"]["iconSize"]["x"])) {
                   $feature['icon']["iconSize"]["x"] = $this->viewsTokenReplace($this->options["icon"]["iconSize"]["x"], $tokens);
                 }
@@ -873,7 +880,8 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
                   default:
                     if (!empty($this->options['icon']['iconUrl'])) {
                       $feature['icon']['iconUrl'] = str_replace(["\n", "\r"], "", $this->viewsTokenReplace($this->options['icon']['iconUrl'], $tokens));
-                      // Generate correct Absolute iconUrl & shadowUrl, if not external.
+                      // Generate correct Absolute iconUrl & shadowUrl,
+                      // if not external.
                       if (!empty($feature['icon']['iconUrl'])) {
                         $feature['icon']['iconUrl'] = $this->leafletService->pathToAbsolute($feature['icon']['iconUrl']);
                       }
@@ -887,7 +895,7 @@ class LeafletMap extends StylePluginBase implements ContainerFactoryPluginInterf
 
                     // Set the Feature IconSize and ShadowSize to the IconUrl or
                     // ShadowUrl Image sizes (if empty or invalid).
-                    $this->leafletService-> setFeatureIconSizesIfEmptyOrInvalid($feature);
+                    $this->leafletService->setFeatureIconSizesIfEmptyOrInvalid($feature);
 
                     break;
                 }

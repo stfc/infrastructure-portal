@@ -121,6 +121,7 @@ class ContentImport extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $contentType = $form_state->getValue('contentimport_contenttype');
     create_node($this->file, $contentType);
+    dpm($this->file);
   }
 
 }

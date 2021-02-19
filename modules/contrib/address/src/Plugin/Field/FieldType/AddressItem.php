@@ -105,56 +105,31 @@ class AddressItem extends FieldItemBase implements AddressInterface {
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
     $properties = [];
     $properties['langcode'] = DataDefinition::create('string')
-      ->setLabel(t('The language code.'));
+      ->setLabel(t('The language code'));
     $properties['country_code'] = DataDefinition::create('string')
-      ->setLabel(t('The two-letter country code.'));
+      ->setLabel(t('The two-letter country code'));
     $properties['administrative_area'] = DataDefinition::create('string')
-      ->setLabel(t('The top-level administrative subdivision of the country.'));
+      ->setLabel(t('The top-level administrative subdivision of the country'));
     $properties['locality'] = DataDefinition::create('string')
-      ->setLabel(t('The locality (i.e. city).'));
+      ->setLabel(t('The locality (i.e. city)'));
     $properties['dependent_locality'] = DataDefinition::create('string')
-      ->setLabel(t('The dependent locality (i.e. neighbourhood).'));
+      ->setLabel(t('The dependent locality (i.e. neighbourhood)'));
     $properties['postal_code'] = DataDefinition::create('string')
-      ->setLabel(t('The postal code.'));
+      ->setLabel(t('The postal code'));
     $properties['sorting_code'] = DataDefinition::create('string')
-      ->setLabel(t('The sorting code.'));
+      ->setLabel(t('The sorting code'));
     $properties['address_line1'] = DataDefinition::create('string')
-      ->setLabel(t('The first line of the address block.'));
+      ->setLabel(t('The first line of the address block'));
     $properties['address_line2'] = DataDefinition::create('string')
-      ->setLabel(t('The second line of the address block.'));
+      ->setLabel(t('The second line of the address block'));
     $properties['organization'] = DataDefinition::create('string')
       ->setLabel(t('The organization'));
     $properties['given_name'] = DataDefinition::create('string')
-      ->setLabel(t('The given name.'));
+      ->setLabel(t('The given name'));
     $properties['additional_name'] = DataDefinition::create('string')
-      ->setLabel(t('The additional name.'));
+      ->setLabel(t('The additional name'));
     $properties['family_name'] = DataDefinition::create('string')
-      ->setLabel(t('The family name.'));
-
-    // Computed full name properties.
-    $properties['country_name'] = DataDefinition::create('string')
-      ->setLabel(t('The full name of the country.'))
-      ->setComputed(TRUE)
-      ->setClass('\Drupal\address\TypedData\CountryName')
-      ->setSetting('property source', 'country_code');
-
-    $properties['administrative_area_name'] = DataDefinition::create('string')
-      ->setLabel(t('The full name of the top-level administrative subdivision of the country.'))
-      ->setComputed(TRUE)
-      ->setClass('\Drupal\address\TypedData\SubdivisionName')
-      ->setSetting('property source', 'administrative_area');
-
-    $properties['locality_name'] = DataDefinition::create('string')
-      ->setLabel(t('The full name of the locality (i.e. city).'))
-      ->setComputed(TRUE)
-      ->setClass('\Drupal\address\TypedData\SubdivisionName')
-      ->setSetting('property source', 'locality');
-
-    $properties['dependent_locality_name'] = DataDefinition::create('string')
-      ->setLabel(t('The full name of the dependent locality (i.e. neighbourhood).'))
-      ->setComputed(TRUE)
-      ->setClass('\Drupal\address\TypedData\SubdivisionName')
-      ->setSetting('property source', 'dependent_locality');
+      ->setLabel(t('The family name'));
 
     return $properties;
   }

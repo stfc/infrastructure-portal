@@ -1,0 +1,16 @@
+civiccookiecontrol.necessarycookie.*:
+  type: config_entity
+  label: 'Cookie Control Necessary Cookie'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    uuid:
+      type: string
+      label: 'UUID'
+    necessaryCookieName:
+      type: label
+      label: 'Necessary Cookie Name'
+    langcode:
+      type: string
+      label: ‘Language code’
