@@ -95,7 +95,7 @@ class InviteForm extends FormBase {
         <p>Before the portal is public we would like to invite you to check your details are still up to date and amend them if necessary. We will only display the infrastructure’s name, description, keywords, location, links to sectors and the economy and the infrastructure’s contact details to the public. No other information that you provided in the questionnaire will be displayed (e.g. staff numbers, funding, costs). As you provided the information about your infrastructure for the purpose of the questionnaire, you may wish to amend fields such as the description and add keywords to make it more relevant as a discovery platform for industry, academia and policy makers.</p> 
 
         <p>We have provided you with a personal account on the portal, linked to your infrastructure(s), to allow you to check and edit your information. You can log in at 
-        https://www.infraportal.co.uk/user/login using the following details:</p>
+        https://www.infraportal.org.uk/user/login using the following details:</p>
 
         <p>Username: " . $user->getUsername() . "</p>
         <p>Password: " . $password ." (<b>Please change this after logging in</b>)</p>

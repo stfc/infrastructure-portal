@@ -8,9 +8,14 @@ if(!hidevalues.includes(modstate.querySelector('[selected="selected"]').value)){
 }
 }
 else{
-  document.getElementById('edit-moderation-state-0').style.display='none';
+  if(modstate.options[0].value=='save_draft' && modstate.options[1].value=='draft'){
+    //document.getElementById('edit-moderation-state-0-current').style.display='none';
+  }
+  else{
+    document.getElementById('edit-moderation-state-0').style.display='none';
+  }
 }
 }
 catch(error){
-  //document.getElementById('edit-moderation-state-0').style.display='none';
+  document.getElementById('edit-moderation-state-0').style.display='none';
 }

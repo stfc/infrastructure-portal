@@ -44,11 +44,17 @@
  * @see template_process()
  */
 #}
+{% if ('/edit' in url('<current>')|render|render or '/nodes' in url('<current>')|render|render or '/members' in url('<current>')|render|render or '/content' in url('<current>')|render|render) or '/delete' in url('<current>')|render|render or '/add' in url('<current>')|render|render or '/create' in url('<current>')|render|render %}
+    {% set isroot = 'notroot' %}
+    {% else %}
+    {% set isroot = 'isroot' %}
+    {% endif %},
 {%
   set body_classes = [
     logged_in ? 'user-logged-in',
-    not root_path ? 'path-frontpage' : 'path-' ~ root_path|clean_class,
+    not root_path ? 'path-frontpage' : 'path-' ~ root_path|clean_class, 
     node_type ? 'page-node-type-' ~ node_type|clean_class,
+    isroot,
     db_offline ? 'db-offline',
     theme.settings.navbar_position ? 'navbar-is-' ~ theme.settings.navbar_position,
     theme.has_glyphicons ? 'has-glyphicons',

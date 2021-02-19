@@ -207,6 +207,7 @@ class ComposerStaticInitDrupal8
             'Grasmash\\YamlExpander\\' => 22,
             'Grasmash\\Expander\\' => 18,
             'Geocoder\\Provider\\Nominatim\\' => 28,
+            'Geocoder\\Provider\\GoogleMaps\\' => 29,
             'Geocoder\\Http\\' => 14,
             'Geocoder\\' => 9,
         ),
@@ -540,6 +541,10 @@ class ComposerStaticInitDrupal8
         'Geocoder\\Provider\\Nominatim\\' => 
         array (
             0 => __DIR__ . '/..' . '/geocoder-php/nominatim-provider',
+        ),
+        'Geocoder\\Provider\\GoogleMaps\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/geocoder-php/google-maps-provider',
         ),
         'Geocoder\\Http\\' => 
         array (

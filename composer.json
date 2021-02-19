@@ -7,7 +7,7 @@
         "composer/installers": "^1.9",
         "league/oauth2-client": "^2.5",
         "guzzlehttp/guzzle": "^6.5",
-        "drupal/core": "^8.9.12",
+        "drupal/core": "8.9.13",
         "drupal/address": "^1.8",
         "drupal/address_map_link": "^1.0",
         "drupal/geofield_map": "^2.67",
@@ -64,7 +64,8 @@
         "drupal/webform": "^6.0",
         "drupal/charts": "^3.2",
         "drupal/search_api_stats": "^1.0@alpha",
-        "drupal/entity_print": "^2.2"
+        "drupal/entity_print": "^2.2",
+        "geocoder-php/google-maps-provider": "^4.5"
     },    
     "minimum-stability": "dev",
     "prefer-stable": true,

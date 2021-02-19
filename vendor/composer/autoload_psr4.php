@@ -76,6 +76,7 @@ return array(
     'Grasmash\\YamlExpander\\' => array($vendorDir . '/grasmash/yaml-expander/src'),
     'Grasmash\\Expander\\' => array($vendorDir . '/grasmash/expander/src'),
     'Geocoder\\Provider\\Nominatim\\' => array($vendorDir . '/geocoder-php/nominatim-provider'),
+    'Geocoder\\Provider\\GoogleMaps\\' => array($vendorDir . '/geocoder-php/google-maps-provider'),
     'Geocoder\\Http\\' => array($vendorDir . '/geocoder-php/common-http'),
     'Geocoder\\' => array($vendorDir . '/willdurand/geocoder'),
     'FontLib\\' => array($vendorDir . '/phenx/php-font-lib/src/FontLib'),
